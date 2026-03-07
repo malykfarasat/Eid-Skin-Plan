@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#c9a84c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Eid Skin">
+<meta name="description" content="14-Day Ramadan Skin Care Tracker for Farasat Ali">
+<title>Eid Skin Plan 🌙</title>
+<link rel="manifest" href="./manifest.json">
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07090f;
+  --surface: #0e1220;
+  --surface2: #141828;
+  --gold: #c9a84c;
+  --gold2: #e8c97a;
+  --gold-dim: rgba(201,168,76,0.12);
+  --text: #e8e4d9;
+  --text-dim: #8a8578;
+  --green: #4caf7d;
+  --green-dim: rgba(76,175,125,0.15);
+  --red: #e07070;
+  --red-dim: rgba(224,112,112,0.12);
+  --blue: #6aa0dc;
+  --border: rgba(201,168,76,0.18);
+  --radius: 16px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'DM Sans',sans-serif;font-weight:300;
+  min-height:100vh;overflow-x:hidden;padding-bottom:110px;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 80% 10%,rgba(201,168,76,0.07) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 60% at 10% 80%,rgba(201,168,76,0.04) 0%,transparent 50%);
+  pointer-events:none;z-index:0;
+}
+.wrap{position:relative;z-index:1;max-width:430px;margin:0 auto;padding:0 16px}
+
+/* ── LOGO HEADER ── */
+.header{text-align:center;padding:32px 16px 20px;position:relative}
+.logo-wrap{display:inline-block;margin-bottom:10px}
+.logo-svg{width:64px;height:64px;filter:drop-shadow(0 0 18px rgba(201,168,76,0.4));animation:float 4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.header h1{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:var(--gold2);letter-spacing:.04em;line-height:1.1}
+.header p{font-size:.78rem;color:var(--text-dim);margin-top:5px;letter-spacing:.1em;text-transform:uppercase}
+
+/* ── INSTALL BANNER ── */
+.install-banner{
+  background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.05));
+  border:1px solid var(--border);border-radius:14px;
+  padding:14px 16px;margin-bottom:14px;
+  display:flex;align-items:center;gap:12px;
+}
+.install-banner.hidden{display:none}
+.install-icon{font-size:1.6rem;flex-shrink:0}
+.install-text{flex:1}
+.install-text strong{font-size:.84rem;color:var(--gold2);display:block;font-weight:500}
+.install-text span{font-size:.72rem;color:var(--text-dim)}
+.install-btn{
+  background:var(--gold);color:#07090f;border:none;
+  padding:8px 14px;border-radius:10px;
+  font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+  transition:all .2s;
+}
+.install-btn:active{transform:scale(.95)}
+.install-dismiss{
+  background:none;border:none;color:var(--text-dim);
+  font-size:1rem;cursor:pointer;padding:4px;margin-left:4px;flex-shrink:0;
+}
+
+/* ── PROGRESS RING ── */
+.progress-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:20px;padding:22px;margin-bottom:14px;
+  display:flex;align-items:center;gap:18px;
+}
+.ring-wrap{position:relative;width:88px;height:88px;flex-shrink:0}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:rgba(201,168,76,0.1);stroke-width:7}
+.ring-fill{fill:none;stroke:var(--gold);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1)}
+.ring-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-num{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--gold2);line-height:1}
+.ring-label{font-size:.58rem;color:var(--text-dim);letter-spacing:.08em;margin-top:2px}
+.progress-info h3{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--text)}
+.progress-info p{font-size:.78rem;color:var(--text-dim);margin-top:4px;line-height:1.5}
+.days-left{display:inline-block;margin-top:8px;background:var(--gold-dim);border:1px solid var(--border);color:var(--gold);font-size:.72rem;padding:4px 12px;border-radius:20px;letter-spacing:.06em}
+
+/* ── TABS NAV ── */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(7,9,15,0.97);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-top:1px solid var(--border);
+  display:flex;padding:6px 0 max(6px,env(safe-area-inset-bottom));
+  z-index:100;
+}
+.nav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:5px 0;cursor:pointer;color:var(--text-dim);
+  font-size:.52rem;letter-spacing:.03em;border:none;
+  background:transparent;transition:color .2s;font-family:'DM Sans',sans-serif;
+}
+.nav-item.active{color:var(--gold2)}
+.nav-icon{font-size:1.1rem;transition:transform .2s}
+.nav-item.active .nav-icon{transform:translateY(-2px)}
+.notif-dot{
+  position:absolute;top:-2px;right:-4px;
+  width:8px;height:8px;border-radius:50%;
+  background:var(--red);display:none;
+}
+.nav-icon-wrap{position:relative;display:inline-block}
+
+/* ── SECTIONS ── */
+.section{display:none;animation:fadeIn .22s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── CARD ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;transition:border-color .2s}
+.card-header{padding:14px 16px 12px;border-bottom:1px solid rgba(201,168,76,0.08);display:flex;align-items:center;gap:10px}
+.card-icon{font-size:1.15rem}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;color:var(--gold2);flex:1}
+.card-badge{font-size:.7rem;padding:3px 9px;border-radius:20px;font-weight:500;background:rgba(201,168,76,0.1);color:var(--gold);transition:all .3s}
+.card-badge.done{background:rgba(76,175,125,0.2);color:var(--green)}
+
+/* ── CHECK ITEM ── */
+.check-item{
+  display:flex;align-items:center;gap:12px;padding:13px 16px;
+  cursor:pointer;transition:background .2s;
+  border-bottom:1px solid rgba(255,255,255,0.03);
+  user-select:none;-webkit-user-select:none;
+  position:relative;overflow:hidden;
+}
+.check-item:last-child{border-bottom:none}
+.check-item:active{background:rgba(201,168,76,0.04)}
+.check-item::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 50%,rgba(201,168,76,0.1) 0%,transparent 70%);
+  opacity:0;transition:opacity .4s;pointer-events:none;
+}
+.check-item.ripple::after{opacity:1}
+.checkbox{
+  width:24px;height:24px;border:2px solid rgba(201,168,76,0.25);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .25s;background:transparent;
+}
+.check-item.done .checkbox{background:var(--gold);border-color:var(--gold)}
+.checkbox svg{display:none}
+.check-item.done .checkbox svg{display:block}
+.check-label{font-size:.86rem;color:var(--text);line-height:1.4;flex:1}
+.check-item.done .check-label{color:var(--text-dim);text-decoration:line-through;text-decoration-color:rgba(138,133,120,0.4)}
+.check-sub{font-size:.7rem;color:var(--text-dim);margin-top:2px}
+
+/* ── WATER ── */
+.water-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px;margin-bottom:12px}
+.water-title{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.water-title-text{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--gold2)}
+.water-glasses{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:10px}
+.glass{
+  aspect-ratio:1;border:1.5px solid rgba(201,168,76,0.2);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;cursor:pointer;transition:all .2s;background:transparent;
+}
+.glass.filled{background:rgba(100,160,220,0.15);border-color:rgba(100,160,220,0.4)}
+.glass:active{transform:scale(.9)}
+.water-nums{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.water-num{text-align:center;font-size:.6rem;color:var(--text-dim)}
+.water-status{text-align:center;font-family:'Cormorant Garamond',serif;font-size:.95rem;color:var(--text-dim);margin-top:8px}
+.water-status strong{color:var(--blue)}
+
+/* ── CALENDAR ── */
+.cal-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:4px}
+.day-cell{
+  aspect-ratio:1;border:1px solid var(--border);border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s;background:var(--surface2);position:relative;
+}
+.day-cell.today{border-color:var(--gold);background:var(--gold-dim);animation:pulse-ring 2.5s ease infinite}
+.day-cell.complete{background:rgba(76,175,125,0.1);border-color:rgba(76,175,125,0.3)}
+.day-cell.future{opacity:.4}
+.day-cell:active{transform:scale(.93)}
+@keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(201,168,76,0.3)}70%{box-shadow:0 0 0 8px rgba(201,168,76,0)}100%{box-shadow:0 0 0 0 rgba(201,168,76,0)}}
+.day-num{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--text-dim);line-height:1}
+.day-cell.today .day-num{color:var(--gold2)}
+.day-cell.complete .day-num{color:var(--green)}
+.day-emoji{font-size:.85rem;margin-top:1px}
+.day-lbl{font-size:.52rem;color:var(--text-dim);margin-top:1px;letter-spacing:.03em}
+
+/* ── MASK BADGE ── */
+.mask-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);
+  border-radius:20px;padding:5px 14px 5px 10px;font-size:.74rem;color:var(--gold);
+  margin-bottom:12px;
+}
+
+/* ── RECIPE ── */
+.recipe-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px}
+.recipe-hdr{padding:13px 16px;background:var(--gold-dim);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.recipe-name{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--gold2)}
+.recipe-step{display:flex;gap:10px;align-items:flex-start;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.03)}
+.recipe-step:last-child{border-bottom:none}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--border);color:var(--gold);font-size:.68rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-text{font-size:.81rem;color:var(--text-dim);line-height:1.5}
+.step-text strong{color:var(--text);font-weight:500}
+
+/* ── TIP CARD ── */
+.tip-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:15px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
+.tip-icon{font-size:1.3rem;flex-shrink:0;margin-top:1px}
+.tip-title{font-size:.86rem;color:var(--text);font-weight:500;margin-bottom:3px}
+.tip-body{font-size:.77rem;color:var(--text-dim);line-height:1.5}
+
+/* ── AVOID ── */
+.avoid-item{display:flex;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.03)}
+.avoid-item:last-child{border-bottom:none}
+.avoid-x{width:22px;height:22px;border-radius:6px;background:var(--red-dim);color:var(--red);font-size:.72rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700}
+.avoid-text{font-size:.81rem;color:var(--text-dim);line-height:1.4}
+.avoid-text strong{color:var(--text);display:block;font-weight:500}
+
+/* ── SETTINGS ── */
+.setting-group{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px}
+.setting-group-title{padding:13px 16px 11px;border-bottom:1px solid rgba(201,168,76,0.08);font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--gold2);display:flex;align-items:center;gap:8px}
+.setting-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid rgba(255,255,255,0.03)}
+.setting-row:last-child{border-bottom:none}
+.setting-label{flex:1}
+.setting-label strong{font-size:.84rem;color:var(--text);display:block;font-weight:400}
+.setting-label span{font-size:.7rem;color:var(--text-dim)}
+.time-input{
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--gold2);border-radius:10px;padding:7px 10px;
+  font-family:'DM Sans',sans-serif;font-size:.82rem;
+  outline:none;width:100px;text-align:center;
+}
+.time-input:focus{border-color:var(--gold)}
+
+/* Toggle switch */
+.toggle{position:relative;width:46px;height:26px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{
+  position:absolute;inset:0;background:rgba(255,255,255,0.1);
+  border-radius:26px;cursor:pointer;transition:.3s;border:1px solid rgba(255,255,255,0.08);
+}
+.toggle-slider::before{
+  content:'';position:absolute;height:20px;width:20px;
+  left:2px;bottom:2px;background:var(--text-dim);
+  border-radius:50%;transition:.3s;
+}
+.toggle input:checked + .toggle-slider{background:var(--gold)}
+.toggle input:checked + .toggle-slider::before{transform:translateX(20px);background:#07090f}
+
+/* Notif permission btn */
+.perm-btn{
+  width:100%;padding:13px;border:none;border-radius:12px;
+  font-family:'DM Sans',sans-serif;font-size:.84rem;font-weight:500;
+  cursor:pointer;transition:all .2s;letter-spacing:.04em;margin-top:4px;
+}
+.perm-btn.ask{background:var(--gold);color:#07090f}
+.perm-btn.granted{background:var(--green-dim);color:var(--green);border:1px solid rgba(76,175,125,0.3)}
+.perm-btn.denied{background:var(--red-dim);color:var(--red);border:1px solid rgba(224,112,112,0.3)}
+.perm-btn:active{transform:scale(.97)}
+
+/* Install steps */
+.install-steps{padding:4px 0}
+.install-step{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.03)}
+.install-step:last-child{border-bottom:none}
+.step-circle{
+  width:28px;height:28px;border-radius:50%;background:var(--gold-dim);
+  border:1px solid var(--border);color:var(--gold);font-size:.78rem;font-weight:500;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.step-info strong{font-size:.84rem;color:var(--text);display:block;font-weight:500;margin-bottom:2px}
+.step-info span{font-size:.73rem;color:var(--text-dim);line-height:1.4}
+
+/* Reset btn */
+.reset-btn{
+  width:100%;padding:13px;background:var(--red-dim);color:var(--red);
+  border:1px solid rgba(224,112,112,0.25);border-radius:12px;
+  font-family:'DM Sans',sans-serif;font-size:.84rem;font-weight:500;
+  cursor:pointer;transition:all .2s;letter-spacing:.04em;
+}
+.reset-btn:active{transform:scale(.97)}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  z-index:300;display:none;align-items:flex-end;justify-content:center;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:24px 24px 0 0;padding:18px 18px 40px;
+  width:100%;max-width:430px;
+  animation:slideUp .3s cubic-bezier(.4,0,.2,1);
+  max-height:75vh;overflow-y:auto;position:relative;
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:36px;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;margin:0 auto 16px}
+.modal-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.07);border:none;color:var(--text-dim);width:30px;height:30px;border-radius:50%;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold2);margin-bottom:3px}
+.modal-sub{font-size:.76rem;color:var(--text-dim);margin-bottom:16px}
+.complete-btn{width:100%;padding:13px;background:var(--gold);color:#07090f;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:500;cursor:pointer;margin-top:14px;transition:all .2s;letter-spacing:.04em}
+.complete-btn:active{transform:scale(.97)}
+.complete-btn.done-btn{background:var(--green-dim);color:var(--green);border:1px solid rgba(76,175,125,0.3)}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:94px;left:50%;transform:translateX(-50%) translateY(16px);
+  background:var(--surface2);border:1px solid var(--border);color:var(--text);
+  padding:10px 20px;border-radius:30px;font-size:.8rem;
+  opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:200;
+  max-width:calc(100vw - 32px);text-align:center;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── SECTION TITLES ── */
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:300;color:var(--gold2);margin-bottom:3px}
+.sec-sub{font-size:.76rem;color:var(--text-dim);margin-bottom:14px}
+
+/* ── MISC ── */
+::-webkit-scrollbar{width:0}
+.notif-status-bar{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;background:var(--gold-dim);
+  border-radius:12px;margin-bottom:12px;
+}
+.notif-status-icon{font-size:1.1rem}
+.notif-status-text{font-size:.78rem;color:var(--text-dim);flex:1}
+.notif-status-text strong{color:var(--text);display:block;font-size:.82rem}
+
+/* ── IMPORT / EXPORT ── */
+.io-row{display:flex;gap:10px;margin-top:4px}
+.io-btn{
+  flex:1;padding:12px 10px;border-radius:12px;border:none;
+  font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;
+  cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.io-btn:active{transform:scale(.96)}
+.io-btn.export{background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);color:var(--gold)}
+.io-btn.import{background:rgba(76,175,125,0.12);border:1px solid rgba(76,175,125,0.25);color:var(--green)}
+.io-preview{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:14px;margin-top:14px;
+  font-size:.75rem;color:var(--text-dim);line-height:1.8;
+}
+.io-preview strong{color:var(--text);display:block;margin-bottom:6px;font-size:.82rem}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- INSTALL BANNER -->
+<div class="install-banner hidden" id="installBanner">
+  <span class="install-icon">📲</span>
+  <div class="install-text">
+    <strong>Add to Home Screen</strong>
+    <span>Use like a real app — works offline!</span>
+  </div>
+  <button class="install-btn" id="installBtn">Install</button>
+  <button class="install-dismiss" id="installDismiss">✕</button>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-item active" onclick="navTo('today',this)">
+    <span class="nav-icon">☀️</span>Today
+  </button>
+  <button class="nav-item" onclick="navTo('calendar',this)">
+    <span class="nav-icon">📅</span>Calendar
+  </button>
+  <button class="nav-item" onclick="navTo('recipes',this)">
+    <span class="nav-icon">🌿</span>Masks
+  </button>
+  <button class="nav-item" onclick="navTo('tips',this)">
+    <span class="nav-icon">💡</span>Tips
+  </button>
+  <button class="nav-item" onclick="navTo('settings',this)">
+    <div class="nav-icon-wrap">
+      <span class="nav-icon">⚙️</span>
+      <span class="notif-dot" id="notifDot"></span>
+    </div>Settings
+  </button>
+  <button class="nav-item" onclick="navTo('about',this)">
+    <span class="nav-icon">🌙</span>About
+  </button>
+</nav>
+
+<!-- CONTENT -->
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-wrap">
+      <svg class="logo-svg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#e8c97a" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="40" cy="40" r="38" fill="url(#glow)"/>
+        <!-- Crescent moon -->
+        <path d="M 48 14 A 26 26 0 1 0 48 66 A 18 18 0 1 1 48 14 Z" fill="#c9a84c"/>
+        <!-- Stars -->
+        <circle cx="60" cy="22" r="2.5" fill="#e8c97a" opacity=".9"/>
+        <circle cx="67" cy="36" r="1.8" fill="#e8c97a" opacity=".7"/>
+        <circle cx="58" cy="48" r="1.4" fill="#e8c97a" opacity=".5"/>
+        <!-- Shimmer lines -->
+        <path d="M 60 22 L 63 19 M 60 22 L 63 25 M 60 22 L 56 22 M 60 22 L 64 22" stroke="#e8c97a" stroke-width="1" stroke-linecap="round" opacity=".6"/>
+      </svg>
+    </div>
+    <h1>Eid Skin Plan</h1>
+    <p>Farasat Ali &middot; 14 Days to Eid</p>
+  </div>
+
+  <!-- INSTALL BANNER (inside wrap) -->
+  <div class="install-banner hidden" id="installBannerInner">
+    <span class="install-icon">📲</span>
+    <div class="install-text">
+      <strong>Install as App</strong>
+      <span>Tap menu → Add to Home Screen</span>
+    </div>
+    <button class="install-btn" id="installBtnInner" onclick="navTo('settings',document.querySelectorAll('.nav-item')[4])">Guide</button>
+    <button class="install-dismiss" onclick="document.getElementById('installBannerInner').classList.add('hidden');lsSet('install_dismissed','1')">✕</button>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-card">
+    <div class="ring-wrap">
+      <svg width="88" height="88" viewBox="0 0 88 88">
+        <circle class="ring-bg" cx="44" cy="44" r="35"/>
+        <circle class="ring-fill" id="ringFill" cx="44" cy="44" r="35" stroke-dasharray="219.9" stroke-dashoffset="219.9"/>
+      </svg>
+      <div class="ring-text">
+        <span class="ring-num" id="ringNum">0</span>
+        <span class="ring-label">% DONE</span>
+      </div>
+    </div>
+    <div class="progress-info">
+      <h3 id="progressTitle">Day 1 of 14</h3>
+      <p id="progressSub">Start your routine today!</p>
+      <span class="days-left" id="daysLeft">⏳ 14 days to Eid</span>
+    </div>
+  </div>
+
+  <!-- ═══ TODAY ═══ -->
+  <div class="section active" id="sec-today">
+    <div id="today-mask-badge"></div>
+
+    <!-- SEHRI -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🌅</span>
+        <span class="card-title">Sehri — Before Fajr</span>
+        <span class="card-badge" id="sehri-badge">0/3</span>
+      </div>
+      <div class="check-item" onclick="toggle(this,'sehri_water')" data-key="sehri_water">
+        <div class="checkbox"><svg width="12" height="9" viewBox="0 0 12 9"><polyline points="1,4.5 4,8 11,1" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><div class="check-label">Drink 3 glasses of water</div><div class="check-sub">Before eating anything at sehri</div></div>
+      </div>
+      <div class="check-item" onclick="toggle(this,'sehri_eat')" data-key="sehri_eat">
+        <div class="checkbox"><svg width="12" height="9" viewBox="0 0 12 9"><polyline points="1,4.5 4,8 11,1" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><div class="check-label">Eat healthy — fruits or yogurt</div><div class="check-sub">Papaya or dahi is best for skin</div></div>
+      </div>
+      <div class="check-item" onclick="toggle(this,'sehri_sunscreen')" data-key="sehri_sunscreen">
+        <div class="checkbox"><svg width="12" height="9" viewBox="0 0 12 9"><polyline points="1,4.5 4,8 11,1" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><div class="check-label">Apply AccuFix SPF 50 sunscreen</div><div class="check-sub">Face, neck &amp; arms before going out</div></div>
+      </div>
+    </div>
+
+    <!-- DAYTIME -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">☀️</span>
+        <span class="card-title">Daytime — During Fast</span>
+        <span class="card-badge" id="day-badge">0/2</span>
+      </div>
+      <div class="check-item" onclick="toggle(this,'day_sun')" data-key="day_sun">
+        <div class="checkbox"><svg width="12" height="9" viewBox="0 0 12 9"><polyline points="1,4.5 4,8 11,1" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><div class="check-label">Stay indoors 11am – 4pm</div><div class="check-sub">Strongest sun — avoid completely</div></div>
+      </div>
+      <div class="check-item" onclick="toggle(this,'day_reapply')" data-key="day_reapply">
+        <div class="checkbox"><svg width="12" height="9" viewBox="0 0 12 9"><polyline points="1,4.5 4,8 11,1" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><div class="check-label">Reapply sunscreen every 2–3 hrs outside</div><div class="check-sub">Skip this = all efforts wasted</div></div>
+      </div>
+    </div>
+
+    <!-- IFTAR -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🌇</span>
+        <span class="card-title">Iftar Time</span>
+        <span class="card-badge" id="iftar-badge">0/4</span>
+      </div>
+      <div class="check-item" onclick="toggle(this,'iftar_water1')" data-key="iftar_water1">
+        <div class="checkbox"><svg width="12" height="9" viewBox="0 0 12 9"><polyline points="1,4.5 4,8 11,1" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><div class="check-label">Drink 2 glasses immediately at Iftar</div><div class="check-sub">Open fast with dates + water</div></div>
+      </div>
+      <div class="check-item" onclick="toggle(this,'iftar_food')" data-key="iftar_food">
+        <div class="checkbox"><svg width="12" height="9" viewBox="0 0 12 9"><polyline points="1,4.5 4,8 11,1" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><div class="check-label">Eat skin-friendly foods</div><div class="check-sub">Watermelon, cucumber, papaya, dahi</div></div>
+      </div>
+      <div class="check-item" onclick="toggle(this,'iftar_water2')" data-key="iftar_water2">
+        <div class="checkbox"><svg width="12" height="9" viewBox="0 0 12 9"><polyline points="1,4.5 4,8 11,1" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><div class="check-label">Drink 2 more glasses after eating</div><div class="check-sub">During or after your iftar meal</div></div>
+      </div>
+      <div class="check-item" onclick="toggle(this,'iftar_ubtan')" data-key="iftar_ubtan">
+        <div class="checkbox"><svg width="12" height="9" viewBox="0 0 12 9"><polyline points="1,4.5 4,8 11,1" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><div class="check-label">Do Ubtan before shower</div><div class="check-sub">Besan + haldi + milk → 20 min → shower</div></div>
+      </div>
+    </div>
+
+    <!-- NIGHT -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🌙</span>
+        <span class="card-title">After Isha — Night</span>
+        <span class="card-badge" id="night-badge">0/4</span>
+      </div>
+      <div class="check-item" onclick="toggle(this,'night_water1')" data-key="night_water1">
+        <div class="checkbox"><svg width="12" height="9" viewBox="0 0 12 9"><polyline points="1,4.5 4,8 11,1" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><div class="check-label">Drink 2 glasses after Isha/Taraweeh</div><div class="check-sub">Keep hydrating after prayers</div></div>
+      </div>
+      <div class="check-item" onclick="toggle(this,'night_mask')" data-key="night_mask">
+        <div class="checkbox"><svg width="12" height="9" viewBox="0 0 12 9"><polyline points="1,4.5 4,8 11,1" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><div class="check-label" id="night-mask-label">Apply yogurt mask (15 min)</div><div class="check-sub">Face &amp; arms, then wash with cold water</div></div>
+      </div>
+      <div class="check-item" onclick="toggle(this,'night_aloe')" data-key="night_aloe">
+        <div class="checkbox"><svg width="12" height="9" viewBox="0 0 12 9"><polyline points="1,4.5 4,8 11,1" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><div class="check-label">Apply aloe vera gel (sleep with it on)</div><div class="check-sub">Do NOT wash — sleep overnight</div></div>
+      </div>
+      <div class="check-item" onclick="toggle(this,'night_sleep')" data-key="night_sleep">
+        <div class="checkbox"><svg width="12" height="9" viewBox="0 0 12 9"><polyline points="1,4.5 4,8 11,1" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><div class="check-label">Drink 1 glass water before sleep</div><div class="check-sub">Sleep before 1am — skin repairs during sleep!</div></div>
+      </div>
+    </div>
+
+    <!-- WATER -->
+    <div class="water-card">
+      <div class="water-title">
+        <span>💧</span>
+        <span class="water-title-text">Water Tracker — 10 Glasses</span>
+      </div>
+      <div class="water-glasses" id="waterGlasses"></div>
+      <div class="water-nums" id="waterNums"></div>
+      <div class="water-status" id="waterStatus">Tap to track &nbsp;•&nbsp; <strong>0 / 10</strong> glasses</div>
+    </div>
+  </div><!-- /today -->
+
+  <!-- ═══ CALENDAR ═══ -->
+  <div class="section" id="sec-calendar">
+    <div class="sec-title">15-Day Journey</div>
+    <div class="sec-sub">Tap any day · 🟡 Today · 🟢 Done · ⭐ Special mask</div>
+    <div class="card" style="padding:14px">
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-icon">📈</span><span class="card-title">Expected Results</span></div>
+      <div class="check-item" style="cursor:default">
+        <div style="width:26px;height:26px;border-radius:8px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;color:var(--gold)">1–5</div>
+        <div><div class="check-label">Skin feels softer &amp; smoother</div><div class="check-sub">Dullness starts reducing</div></div>
+      </div>
+      <div class="check-item" style="cursor:default">
+        <div style="width:26px;height:26px;border-radius:8px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;color:var(--gold)">6–10</div>
+        <div><div class="check-label">Skin looks visibly brighter</div><div class="check-sub">Tan fading, even skin tone appearing</div></div>
+      </div>
+      <div class="check-item" style="cursor:default">
+        <div style="width:26px;height:26px;border-radius:8px;background:rgba(76,175,125,0.15);display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;color:var(--green)">14</div>
+        <div><div class="check-label">Clear fairness &amp; glow ✨</div><div class="check-sub">Radiant skin ready for Eid!</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ RECIPES ═══ -->
+  <div class="section" id="sec-recipes">
+    <div class="sec-title">Mask Recipes</div>
+    <div class="sec-sub">Step-by-step guide for each mask</div>
+    <div class="recipe-card">
+      <div class="recipe-hdr"><span>🟡</span><span class="recipe-name">Ubtan — Every Day</span></div>
+      <div class="recipe-step"><div class="step-num">1</div><div class="step-text">Take <strong>2 spoons of besan</strong> (gram flour)</div></div>
+      <div class="recipe-step"><div class="step-num">2</div><div class="step-text">Add <strong>tiny pinch of haldi</strong> — too much = yellow skin!</div></div>
+      <div class="recipe-step"><div class="step-num">3</div><div class="step-text">Add <strong>enough milk</strong> to make thick paste. Mix well.</div></div>
+      <div class="recipe-step"><div class="step-num">4</div><div class="step-text"><strong>Apply on face, neck, arms &amp; body</strong> before shower</div></div>
+      <div class="recipe-step"><div class="step-num">5</div><div class="step-text">Wait <strong>20 minutes</strong> until it dries</div></div>
+      <div class="recipe-step"><div class="step-num">6</div><div class="step-text">Rub gently with <strong>wet hands (light scrub)</strong>, then shower</div></div>
+    </div>
+    <div class="recipe-card">
+      <div class="recipe-hdr"><span>🟠</span><span class="recipe-name">Yogurt Mask — Most Nights</span></div>
+      <div class="recipe-step"><div class="step-num">1</div><div class="step-text">Take <strong>2 spoons of plain dahi</strong> — nothing else!</div></div>
+      <div class="recipe-step"><div class="step-num">2</div><div class="step-text"><strong>Apply on face &amp; arms</strong> after Isha</div></div>
+      <div class="recipe-step"><div class="step-num">3</div><div class="step-text">Wait <strong>15 minutes</strong></div></div>
+      <div class="recipe-step"><div class="step-num">4</div><div class="step-text">Wash with <strong>cold water</strong>, then apply aloe vera</div></div>
+    </div>
+    <div class="recipe-card">
+      <div class="recipe-hdr"><span>🍋</span><span class="recipe-name">Lemon + Honey — Day 4, 7, 10, 13 Only</span></div>
+      <div class="recipe-step"><div class="step-num">1</div><div class="step-text">Mix <strong>1 spoon honey</strong> + <strong>4–5 drops lemon</strong></div></div>
+      <div class="recipe-step"><div class="step-num">2</div><div class="step-text">Apply on face &amp; arms. Wait <strong>15 minutes</strong>.</div></div>
+      <div class="recipe-step"><div class="step-num">3</div><div class="step-text">Wash with <strong>cold water</strong></div></div>
+      <div class="recipe-step"><div class="step-num">4</div><div class="step-text">⚠️ <strong>Only at night</strong> — never go in sun after lemon!</div></div>
+      <div class="recipe-step"><div class="step-num">5</div><div class="step-text">Then apply <strong>aloe vera gel</strong> and sleep</div></div>
+    </div>
+    <div class="recipe-card">
+      <div class="recipe-hdr"><span>🟢</span><span class="recipe-name">Aloe Vera — Every Night</span></div>
+      <div class="recipe-step"><div class="step-num">1</div><div class="step-text">Buy <strong>Aloe Vera gel</strong> from pharmacy (Rs. 150–300)</div></div>
+      <div class="recipe-step"><div class="step-num">2</div><div class="step-text">Apply on <strong>face &amp; arms</strong> after night mask</div></div>
+      <div class="recipe-step"><div class="step-num">3</div><div class="step-text"><strong>Do NOT wash</strong> — sleep with it all night</div></div>
+      <div class="recipe-step"><div class="step-num">4</div><div class="step-text">Wash normally <strong>in the morning</strong></div></div>
+    </div>
+  </div>
+
+  <!-- ═══ TIPS ═══ -->
+  <div class="section" id="sec-tips">
+    <div class="sec-title">Tips &amp; Avoid</div>
+    <div class="sec-sub">Follow strictly for best results</div>
+    <div class="tip-card"><span class="tip-icon">☀️</span><div><div class="tip-title">AccuFix SPF 50 — Your #1 Weapon</div><div class="tip-body">Apply every morning at sehri. Reapply every 2–3 hrs outside. Without this — ALL efforts wasted.</div></div></div>
+    <div class="tip-card"><span class="tip-icon">💧</span><div><div class="tip-title">10 Glasses Water = Fairer Skin</div><div class="tip-body">Flushes toxins inside out. Spread across Sehri → Iftar → Night. Skin clears visibly in 5 days.</div></div></div>
+    <div class="tip-card"><span class="tip-icon">😴</span><div><div class="tip-title">Sleep Before 1am Maximum</div><div class="tip-body">Skin produces collagen only during sleep. Late night = dark circles + dull skin.</div></div></div>
+    <div class="tip-card"><span class="tip-icon">🍉</span><div><div class="tip-title">Best Iftar Foods for Skin</div><div class="tip-body">Watermelon (92% water), cucumber, papaya, coconut water, plain yogurt. Include 1–2 daily.</div></div></div>
+    <div class="card">
+      <div class="card-header"><span class="card-icon">🚫</span><span class="card-title">Strictly Avoid for 14 Days</span></div>
+      <div class="avoid-item"><div class="avoid-x">✕</div><div class="avoid-text"><strong>Cold drinks &amp; soda</strong>Sugar causes skin to dull and darken</div></div>
+      <div class="avoid-item"><div class="avoid-x">✕</div><div class="avoid-text"><strong>Excess pakoras &amp; fried food</strong>Makes skin oily and breaks out</div></div>
+      <div class="avoid-item"><div class="avoid-x">✕</div><div class="avoid-text"><strong>Cheap whitening creams</strong>Contain steroids — permanent damage</div></div>
+      <div class="avoid-item"><div class="avoid-x">✕</div><div class="avoid-text"><strong>Touching face with dirty hands</strong>Causes pimples and spots</div></div>
+      <div class="avoid-item"><div class="avoid-x">✕</div><div class="avoid-text"><strong>Going out without sunscreen</strong>Sun undoes everything. Never skip.</div></div>
+      <div class="avoid-item"><div class="avoid-x">✕</div><div class="avoid-text"><strong>Skipping even ONE day</strong>Consistency is the only secret!</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ SETTINGS ═══ -->
+  <div class="section" id="sec-settings">
+    <div class="sec-title">Settings</div>
+    <div class="sec-sub">Notifications, reminders &amp; install guide</div>
+
+    <!-- NOTIFICATION PERMISSION -->
+    <div class="setting-group">
+      <div class="setting-group-title">🔔 Notifications</div>
+      <div style="padding:14px 16px 10px">
+        <div class="notif-status-bar" id="notifStatusBar">
+          <span class="notif-status-icon" id="notifStatusIcon">🔔</span>
+          <div class="notif-status-text">
+            <strong id="notifStatusTitle">Enable Notifications</strong>
+            <span id="notifStatusDesc">Get daily reminders for Sehri, Iftar &amp; night routine</span>
+          </div>
+        </div>
+        <button class="perm-btn ask" id="notifPermBtn" onclick="requestNotifPermission()">🔔 Allow Notifications</button>
+        <!-- Unblock steps — shown only when denied -->
+        <div id="unblockSteps" style="display:none;margin-top:14px">
+          <div style="font-size:.78rem;color:var(--gold2);font-weight:500;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(201,168,76,0.12)">📋 How to unblock notifications in Chrome:</div>
+          <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px">
+            <div style="width:22px;height:22px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--border);color:var(--gold);font-size:.68rem;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
+            <div style="font-size:.78rem;color:var(--text-dim);line-height:1.5">In Chrome address bar at top, tap the <strong style="color:var(--text)">lock 🔒 or warning ⚠️ icon</strong> on the left of the URL</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px">
+            <div style="width:22px;height:22px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--border);color:var(--gold);font-size:.68rem;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+            <div style="font-size:.78rem;color:var(--text-dim);line-height:1.5">Tap <strong style="color:var(--text)">"Site settings"</strong> from the popup menu</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px">
+            <div style="width:22px;height:22px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--border);color:var(--gold);font-size:.68rem;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>
+            <div style="font-size:.78rem;color:var(--text-dim);line-height:1.5">Find <strong style="color:var(--text)">"Notifications"</strong> and tap it</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px">
+            <div style="width:22px;height:22px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--border);color:var(--gold);font-size:.68rem;display:flex;align-items:center;justify-content:center;flex-shrink:0">4</div>
+            <div style="font-size:.78rem;color:var(--text-dim);line-height:1.5">Change from <strong style="color:var(--red)">"Block"</strong> to <strong style="color:var(--green)">"Allow"</strong></div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:14px">
+            <div style="width:22px;height:22px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--border);color:var(--gold);font-size:.68rem;display:flex;align-items:center;justify-content:center;flex-shrink:0">5</div>
+            <div style="font-size:.78rem;color:var(--text-dim);line-height:1.5">Come back here and tap the button below to refresh</div>
+          </div>
+          <button class="perm-btn granted" onclick="window.location.reload()">🔄 I allowed it — Refresh Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- REMINDER TIMES -->
+    <div class="setting-group" id="reminderGroup">
+      <div class="setting-group-title">⏰ Reminder Times</div>
+      <div class="setting-row">
+        <div class="setting-label">
+          <strong>🌅 Sehri Reminder</strong>
+          <span>Alert before sehri starts</span>
+        </div>
+        <input type="time" class="time-input" id="sehriTime" value="04:00" onchange="saveReminders()">
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">
+          <strong>🌇 Iftar Reminder</strong>
+          <span>Alert before iftar time</span>
+        </div>
+        <input type="time" class="time-input" id="iftarTime" value="18:30" onchange="saveReminders()">
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">
+          <strong>🌙 Night Routine</strong>
+          <span>Reminder for masks &amp; aloe</span>
+        </div>
+        <input type="time" class="time-input" id="nightTime" value="22:00" onchange="saveReminders()">
+      </div>
+      <div style="padding:4px 16px 14px">
+        <button class="perm-btn granted" style="margin-top:8px" onclick="scheduleAllReminders()">💾 Save &amp; Schedule Reminders</button>
+      </div>
+    </div>
+
+    <!-- TEST NOTIFICATION -->
+    <div class="setting-group">
+      <div class="setting-group-title">🧪 Test Notification</div>
+      <div style="padding:14px 16px">
+        <button class="perm-btn ask" onclick="sendTestNotif()">Send Test Notification Now</button>
+        <div style="margin-top:12px;background:rgba(76,175,125,0.07);border:1px solid rgba(76,175,125,0.18);border-radius:10px;padding:11px 13px">
+          <div style="font-size:.76rem;color:var(--green);font-weight:500;margin-bottom:5px">☁️ Cloud Messaging</div>
+          <div style="font-size:.73rem;color:var(--text-dim);line-height:1.65">Your reminders are delivered via <strong style="color:var(--text)">Google's push infrastructure</strong> — guaranteed delivery whether the app is open, minimised, or your screen is locked.<br><br>FCM Status: <span id="fcmStatus" style="color:var(--gold)">Checking...</span></div>
+          <button class="perm-btn ask" style="margin-top:10px;font-size:.75rem;padding:9px 14px" onclick="refreshFCMToken()">🔄 Refresh Token</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSTALL GUIDE -->
+    <div class="setting-group">
+      <div class="setting-group-title">📲 Install as App on Android</div>
+      <div class="install-steps">
+        <div class="install-step">
+          <div class="step-circle">1</div>
+          <div class="step-info">
+            <strong>Open in Chrome</strong>
+            <span>Make sure you're using Google Chrome browser on your Android phone</span>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="step-circle">2</div>
+          <div class="step-info">
+            <strong>Tap the 3-dot menu ⋮</strong>
+            <span>Top right corner of Chrome browser</span>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="step-circle">3</div>
+          <div class="step-info">
+            <strong>Tap "Add to Home Screen"</strong>
+            <span>Scroll down in the menu to find this option</span>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="step-circle">4</div>
+          <div class="step-info">
+            <strong>Tap "Add" to confirm</strong>
+            <span>The app icon will appear on your home screen</span>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="step-circle">5</div>
+          <div class="step-info">
+            <strong>Open from home screen</strong>
+            <span>Now it opens fullscreen like a real app — no browser bar!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMPORT / EXPORT -->
+    <div class="setting-group">
+      <div class="setting-group-title">💾 Backup & Restore</div>
+      <div style="padding:14px 16px">
+        <p style="font-size:.76rem;color:var(--text-dim);margin-bottom:12px;line-height:1.5">
+          Export your progress to a file and restore it anytime — useful when switching phones or reinstalling.
+        </p>
+        <div class="io-row">
+          <button class="io-btn export" onclick="exportData()">📤 Export Backup</button>
+          <button class="io-btn import" onclick="triggerImport()">📥 Import Backup</button>
+        </div>
+        <!-- Hidden file input for import -->
+        <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="handleImportFile(this)">
+      </div>
+    </div>
+
+    <!-- CACHE & DATA -->
+    <div class="setting-group">
+      <div class="setting-group-title">🔄 App Update & Cache</div>
+      <div style="padding:14px 16px">
+        <p style="font-size:.76rem;color:var(--text-dim);margin-bottom:12px;line-height:1.5">If the app is showing old content after an update, tap below to force-clear the cache and reload the latest version.</p>
+        <button class="perm-btn ask" style="margin-bottom:0" onclick="clearAppCache()">🔄 Clear Cache & Force Update</button>
+      </div>
+    </div>
+
+    <!-- DANGER ZONE -->
+    <div class="setting-group">
+      <div class="setting-group-title">⚠️ Reset Progress Data</div>
+      <div style="padding:14px 16px">
+        <p style="font-size:.76rem;color:var(--text-dim);margin-bottom:12px;line-height:1.5">Clears all your progress, completed days, and water tracking. Use only to start fresh.</p>
+        <button class="reset-btn" onclick="confirmReset()">🗑️ Reset All Progress</button>
+      </div>
+    </div>
+
+  </div><!-- /settings -->
+
+  <!-- ═══ ABOUT ═══ -->
+  <div class="section" id="sec-about">
+    <div class="sec-title">About</div>
+    <div class="sec-sub">Eid Skin Plan · v2.0</div>
+
+    <!-- App Identity -->
+    <div class="card" style="margin-bottom:12px;overflow:hidden">
+      <div style="background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(201,168,76,0.03));padding:24px 20px;text-align:center;border-bottom:1px solid var(--border)">
+        <svg width="52" height="52" viewBox="0 0 80 80" style="filter:drop-shadow(0 0 14px rgba(201,168,76,0.35));margin-bottom:10px">
+          <defs><radialGradient id="g2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#e8c97a" stop-opacity=".3"/><stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/></radialGradient></defs>
+          <circle cx="40" cy="40" r="38" fill="url(#g2)"/>
+          <path d="M 48 14 A 26 26 0 1 0 48 66 A 18 18 0 1 1 48 14 Z" fill="#c9a84c"/>
+          <circle cx="60" cy="22" r="2.5" fill="#e8c97a" opacity=".9"/>
+          <circle cx="67" cy="36" r="1.8" fill="#e8c97a" opacity=".7"/>
+        </svg>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gold2);font-weight:300">Eid Skin Plan</div>
+        <div style="font-size:.72rem;color:var(--text-dim);margin-top:4px;letter-spacing:.1em;text-transform:uppercase">14 Days to Radiant Skin</div>
+        <div style="display:inline-block;margin-top:10px;background:var(--gold-dim);border:1px solid var(--border);color:var(--gold);font-size:.68rem;padding:3px 12px;border-radius:20px">Version 2.0</div>
+      </div>
+      <div style="padding:16px 18px">
+        <p style="font-size:.8rem;color:var(--text-dim);line-height:1.7;text-align:center">
+          A personal 14-day Ramadan skincare tracker built for <strong style="color:var(--text)">Farasat Ali</strong> — combining daily routines, natural mask recipes, hydration tracking, and smart push reminders into one elegant app.
+        </p>
+      </div>
+    </div>
+
+    <!-- How it Works -->
+    <div class="setting-group">
+      <div class="setting-group-title">⚙️ How It Works</div>
+      <div style="padding:14px 16px">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:32px;height:32px;border-radius:10px;background:rgba(201,168,76,0.1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0">📱</div>
+            <div><div style="font-size:.82rem;color:var(--text);font-weight:500">Progressive Web App</div><div style="font-size:.74rem;color:var(--text-dim);margin-top:2px;line-height:1.5">Runs entirely in your browser with no app store required. Install it to your home screen for a native app experience — works offline too.</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:32px;height:32px;border-radius:10px;background:rgba(76,175,125,0.1);border:1px solid rgba(76,175,125,0.2);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0">🔔</div>
+            <div><div style="font-size:.82rem;color:var(--text);font-weight:500">Server-Push Notifications</div><div style="font-size:.74rem;color:var(--text-dim);margin-top:2px;line-height:1.5">Reminders are sent from Google's Firebase servers via a Google Apps Script scheduler — meaning they arrive even when your phone is locked or the app is fully closed.</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:32px;height:32px;border-radius:10px;background:rgba(100,160,220,0.1);border:1px solid rgba(100,160,220,0.2);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0">💾</div>
+            <div><div style="font-size:.82rem;color:var(--text);font-weight:500">Private Local Storage</div><div style="font-size:.74rem;color:var(--text-dim);margin-top:2px;line-height:1.5">All your progress — completed days, water logs, and task checks — is stored privately on your device. Only your notification token is sent to the server.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tech Stack -->
+    <div class="setting-group">
+      <div class="setting-group-title">🛠️ Built With</div>
+      <div style="padding:14px 16px;display:flex;flex-wrap:wrap;gap:8px">
+        <span style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:var(--gold);font-size:.72rem;padding:5px 12px;border-radius:20px">HTML · CSS · JS</span>
+        <span style="background:rgba(255,160,0,0.1);border:1px solid rgba(255,160,0,0.2);color:#ffa000;font-size:.72rem;padding:5px 12px;border-radius:20px">Firebase FCM</span>
+        <span style="background:rgba(76,175,125,0.1);border:1px solid rgba(76,175,125,0.2);color:var(--green);font-size:.72rem;padding:5px 12px;border-radius:20px">Google Apps Script</span>
+        <span style="background:rgba(100,160,220,0.1);border:1px solid rgba(100,160,220,0.2);color:var(--blue);font-size:.72rem;padding:5px 12px;border-radius:20px">Firebase Realtime DB</span>
+        <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text-dim);font-size:.72rem;padding:5px 12px;border-radius:20px">Service Worker API</span>
+        <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text-dim);font-size:.72rem;padding:5px 12px;border-radius:20px">Netlify (Hosting)</span>
+      </div>
+    </div>
+
+    <!-- Plan Summary -->
+    <div class="setting-group">
+      <div class="setting-group-title">📋 The 14-Day Plan</div>
+      <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+          <div style="font-size:.78rem;color:var(--text)">🌅 Daily Sehri</div>
+          <div style="font-size:.72rem;color:var(--text-dim)">Water · Sunscreen</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+          <div style="font-size:.78rem;color:var(--text)">🌇 Daily Iftar</div>
+          <div style="font-size:.72rem;color:var(--text-dim)">Water · Ubtan Shower</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+          <div style="font-size:.78rem;color:var(--text)">🌙 Every Night</div>
+          <div style="font-size:.72rem;color:var(--text-dim)">Mask · Aloe Vera</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:rgba(201,168,76,0.05);border-radius:10px;border:1px solid rgba(201,168,76,0.2)">
+          <div style="font-size:.78rem;color:var(--gold)">⭐ Days 4,7,10,13</div>
+          <div style="font-size:.72rem;color:var(--text-dim)">Lemon + Honey Mask</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div style="margin:4px 0 20px;padding:14px 16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px">
+      <p style="font-size:.72rem;color:var(--text-dim);line-height:1.7;text-align:center">
+        This app is for personal use only. Results vary based on skin type, diet, and consistency. All ingredients are natural — patch test before applying if you have sensitive skin. 🌿
+      </p>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+// ══════════════════════════════════════
+// CONSTANTS
+// ══════════════════════════════════════
+const TOTAL_DAYS = 14;
+const SPECIAL_MASK_DAYS = [4, 7, 10, 13];
+const KEYS_TODAY = ['sehri_water','sehri_eat','sehri_sunscreen','day_sun','day_reapply','iftar_water1','iftar_food','iftar_water2','iftar_ubtan','night_water1','night_mask','night_aloe','night_sleep'];
+
+// ══════════════════════════════════════
+// SAFE STORAGE
+// ══════════════════════════════════════
+const _mem = {};
+function lsGet(key) {
+  try { return localStorage.getItem(key); } catch(e) { return _mem[key] || null; }
+}
+function lsSet(key, val) {
+  try { localStorage.setItem(key, val); } catch(e) { _mem[key] = String(val); }
+}
+function lsDel(key) {
+  try { localStorage.removeItem(key); } catch(e) { delete _mem[key]; }
+}
+
+// ══════════════════════════════════════
+// DATA HELPERS
+// ══════════════════════════════════════
+function getTodayData() {
+  try { const d = lsGet('eid_today_data'); return d ? JSON.parse(d) : {}; } catch(e) { return {}; }
+}
+function saveTodayData(data) { lsSet('eid_today_data', JSON.stringify(data)); }
+function getStartDay() {
+  let s = lsGet('eid_start_day');
+  if (!s) { s = new Date().toDateString(); lsSet('eid_start_day', s); }
+  return new Date(s);
+}
+function getCurrentDay() {
+  try {
+    const start = getStartDay();
+    const diff = Math.floor((new Date() - start) / 86400000);
+    return Math.min(Math.max(diff + 1, 1), TOTAL_DAYS);
+  } catch(e) { return 1; }
+}
+function getWater() { const d = lsGet('eid_water_' + new Date().toDateString()); return d ? parseInt(d) : 0; }
+function setWater(n) { lsSet('eid_water_' + new Date().toDateString(), n); }
+function getCompletedDays() {
+  try { const d = lsGet('eid_completed_days'); return d ? JSON.parse(d) : []; } catch(e) { return []; }
+}
+function markDayComplete(day) {
+  const days = getCompletedDays();
+  if (!days.includes(day)) { days.push(day); lsSet('eid_completed_days', JSON.stringify(days)); }
+}
+function isDayComplete(day) { return getCompletedDays().includes(day); }
+
+
+
+// ══════════════════════════════════════
+// FIREBASE CONFIG — replace with your values from Firebase Console
+// ══════════════════════════════════════
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyAOfaaDUtJAeA56GuUMqF9JJfrhh7W3PwU",
+  authDomain:        "studio-3197135393-11508.firebaseapp.com",
+  databaseURL:       "https://studio-3197135393-11508-default-rtdb.firebaseio.com",
+  projectId:         "studio-3197135393-11508",
+  storageBucket:     "studio-3197135393-11508.firebasestorage.app",
+  messagingSenderId: "701895207293",
+  appId:             "1:701895207293:web:c7b98b78854dfd71aa8414"
+};
+const VAPID_KEY = "BAgbvCqjy3ew_yFMvdPw1YAH4Yh7vEG2DgqZ7O6Hcyi8xQVCKxhOyA1er7kwWsHbHc-izu240gOgOY6wNW_ha8A";
+
+let _fbApp = null, _fbMsg = null, _fbDb = null;
+
+function initFirebase() {
+  try {
+    _fbApp = firebase.initializeApp(FIREBASE_CONFIG);
+    _fbMsg = firebase.messaging();
+    _fbDb  = firebase.database();
+    // Handle foreground FCM messages (app is open)
+    _fbMsg.onMessage(payload => {
+      const title = (payload.data && payload.data.title) || (payload.notification && payload.notification.title) || '🌙 Eid Skin Plan';
+      const body  = (payload.data && payload.data.body)  || (payload.notification && payload.notification.body)  || 'Time for your routine!';
+      showNotif(title, body, 'fcm-foreground');
+    });
+  } catch(e) { console.log('Firebase init failed:', e.message); }
+}
+
+// ══════════════════════════════════════
+// SERVICE WORKER (unified — cache + FCM)
+// ══════════════════════════════════════
+function registerSW() {
+  if (!('serviceWorker' in navigator)) return;
+  // Single unified SW handles both offline cache and FCM push
+  navigator.serviceWorker.register('/firebase-messaging-sw.js')
+    .then(reg => { reg.update(); })
+    .catch(() => {});
+}
+
+// ══════════════════════════════════════
+// NOTIFICATIONS + FIREBASE FCM
+// ══════════════════════════════════════
+
+// Get FCM token and save reminder config to Firebase DB
+async function registerFCMAndSave() {
+  if (!_fbMsg || !_fbDb) { showToast('⚠️ Firebase not ready. Check your config.'); return false; }
+  try {
+    // Reuse the SAME SW registration — never register a second SW at same scope
+    const swReg = await navigator.serviceWorker.ready;
+    const token = await _fbMsg.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
+    if (!token) { showToast('⚠️ Could not get FCM token.'); return false; }
+
+    // Store token + reminder times + timezone offset in Firebase DB
+    const tokenHash = btoa(token).slice(0, 20); // safe key
+    const tzOffset  = -(new Date().getTimezoneOffset()); // e.g. +300 for PKT
+    await _fbDb.ref('users/' + tokenHash).set({
+      token:  token,
+      sehri:  lsGet('reminder_sehri') || '04:00',
+      iftar:  lsGet('reminder_iftar') || '18:30',
+      night:  lsGet('reminder_night') || '22:00',
+      tz:     tzOffset,
+      active: true,
+      saved:  Date.now()
+    });
+    lsSet('fcm_token_hash', tokenHash);
+    return true;
+  } catch(e) {
+    console.error('FCM register error:', e);
+    showToast('❌ FCM error: ' + e.message);
+    return false;
+  }
+}
+
+function updateNotifUI() {
+  const perm = ('Notification' in window) ? Notification.permission : 'unsupported';
+  const btn = document.getElementById('notifPermBtn');
+  const icon = document.getElementById('notifStatusIcon');
+  const title = document.getElementById('notifStatusTitle');
+  const desc = document.getElementById('notifStatusDesc');
+  const bar = document.getElementById('notifStatusBar');
+  const dot = document.getElementById('notifDot');
+  const stepsEl = document.getElementById('unblockSteps');
+
+  if (perm === 'granted') {
+    if (btn) { btn.className = 'perm-btn granted'; btn.textContent = '✅ Notifications Enabled'; btn.onclick = null; }
+    if (icon) icon.textContent = '✅';
+    if (title) title.textContent = 'Notifications Active';
+    if (desc) desc.textContent = 'You will get Sehri, Iftar & night reminders daily';
+    if (bar) bar.style.background = 'rgba(76,175,125,0.1)';
+    if (dot) dot.style.display = 'none';
+    if (stepsEl) stepsEl.style.display = 'none';
+  } else if (perm === 'denied') {
+    if (btn) { btn.className = 'perm-btn denied'; btn.textContent = '🚫 Blocked — See Steps Below'; btn.onclick = null; }
+    if (icon) icon.textContent = '🚫';
+    if (title) title.textContent = 'Notifications Blocked by Chrome';
+    if (desc) desc.textContent = 'Chrome blocked it when you tapped Deny. Follow the steps below to manually allow:';
+    if (bar) bar.style.background = 'rgba(224,112,112,0.08)';
+    if (dot) dot.style.display = 'block';
+    if (stepsEl) stepsEl.style.display = 'block';
+  } else if (perm === 'unsupported') {
+    if (btn) { btn.className = 'perm-btn denied'; btn.textContent = '❌ Not Supported'; btn.onclick = null; }
+    if (title) title.textContent = 'Not supported on this browser';
+    if (desc) desc.textContent = 'Open this page in Chrome on Android for notifications to work';
+    if (stepsEl) stepsEl.style.display = 'none';
+  } else {
+    // default — not yet asked
+    if (btn) { btn.className = 'perm-btn ask'; btn.textContent = '🔔 Allow Notifications'; btn.onclick = requestNotifPermission; }
+    if (dot) dot.style.display = 'block';
+    if (stepsEl) stepsEl.style.display = 'none';
+  }
+}
+
+// Update FCM status display
+function updateFCMStatus() {
+  const el = document.getElementById('fcmStatus');
+  if (!el) return;
+  const hash = lsGet('fcm_token_hash');
+  if (hash) {
+    el.textContent = '✅ Registered (token: ' + hash.slice(0,8) + '...)';
+    el.style.color = 'var(--green)';
+  } else {
+    el.textContent = '⚠️ Not registered — Allow notifications first';
+    el.style.color = 'var(--red)';
+  }
+}
+
+// Re-check notification state whenever user returns to tab
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) { try { updateNotifUI(); } catch(e) {} try { updateFCMStatus(); } catch(e) {} }
+});
+
+async function requestNotifPermission() {
+  if (!('Notification' in window)) {
+    showToast('❌ Notifications not supported on this browser');
+    return;
+  }
+  try {
+    const result = await Notification.requestPermission();
+    updateNotifUI();
+    if (result === 'granted') {
+      showToast('⏳ Registering with Firebase...');
+      const ok = await registerFCMAndSave();
+      if (ok) {
+        showToast('✅ Firebase notifications enabled!');
+        scheduleAllReminders();
+      }
+      loadReminderTimes();
+    } else {
+      showToast('⚠️ Notifications blocked. Enable in Chrome settings.');
+    }
+  } catch(e) { showToast('Could not request permission'); }
+}
+
+// ══════════════════════════════════════
+// SHOW NOTIFICATION (Chrome Android requires SW)
+// ══════════════════════════════════════
+function showNotif(title, body, tag) {
+  const opts = {
+    body: body,
+    icon: './icon-192.png',
+    badge: './icon-192.png',
+    tag: tag || 'eid-notif',
+    vibrate: [200, 100, 200],
+    requireInteraction: false
+  };
+  // ALWAYS use serviceWorker.ready — never check .controller (null on first load)
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready
+      .then(reg => reg.showNotification(title, opts))
+      .catch(() => { try { new Notification(title, opts); } catch(e2) {} });
+  } else {
+    try { new Notification(title, opts); } catch(e) {}
+  }
+}
+
+function sendTestNotif() {
+  if (Notification.permission !== 'granted') {
+    showToast('⚠️ Please enable notifications first!');
+    return;
+  }
+  showNotif('🌙 Eid Skin Plan — Test', 'Notifications working! You will get Sehri, Iftar & night reminders.', 'test-notif');
+  showToast('✅ Test notification sent!');
+}
+
+
+function loadReminderTimes() {
+  const s = lsGet('reminder_sehri') || '04:00';
+  const i = lsGet('reminder_iftar') || '18:30';
+  const n = lsGet('reminder_night') || '22:00';
+  const sEl = document.getElementById('sehriTime');
+  const iEl = document.getElementById('iftarTime');
+  const nEl = document.getElementById('nightTime');
+  if (sEl) sEl.value = s;
+  if (iEl) iEl.value = i;
+  if (nEl) nEl.value = n;
+}
+
+function saveReminders() {
+  const s = document.getElementById('sehriTime').value;
+  const i = document.getElementById('iftarTime').value;
+  const n = document.getElementById('nightTime').value;
+  lsSet('reminder_sehri', s);
+  lsSet('reminder_iftar', i);
+  lsSet('reminder_night', n);
+}
+
+function scheduleAllReminders() {
+  if (Notification.permission !== 'granted') return;
+  saveReminders();
+  // Save updated times to Firebase so the Cloud Function picks them up
+  const hash = lsGet('fcm_token_hash');
+  if (_fbDb && hash) {
+    _fbDb.ref('users/' + hash).update({
+      sehri: lsGet('reminder_sehri') || '04:00',
+      iftar: lsGet('reminder_iftar') || '18:30',
+      night: lsGet('reminder_night') || '22:00',
+      tz:    -(new Date().getTimezoneOffset()),
+      active: true
+    }).then(() => showToast('✅ Reminders saved to Firebase! Alerts will fire on time.'))
+      .catch(() => showToast('⚠️ Could not save to Firebase. Check config.'));
+  } else if (!hash) {
+    // Not registered yet — try to register first
+    registerFCMAndSave().then(ok => {
+      if (ok) showToast('✅ Registered & reminders saved!');
+    });
+  } else {
+    showToast('⚠️ Firebase not connected. Check config.');
+  }
+}
+
+// ══════════════════════════════════════
+// INSTALL PROMPT
+// ══════════════════════════════════════
+let _deferredInstall = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _deferredInstall = e;
+  if (!lsGet('install_dismissed')) {
+    document.getElementById('installBannerInner').classList.remove('hidden');
+  }
+  document.getElementById('installBtn').onclick = triggerInstall;
+  document.getElementById('installBtnInner').onclick = triggerInstall;
+});
+
+async function triggerInstall() {
+  if (!_deferredInstall) {
+    navTo('settings', document.querySelectorAll('.nav-item')[4]);
+    showToast('Follow the install guide in Settings!');
+    return;
+  }
+  _deferredInstall.prompt();
+  const { outcome } = await _deferredInstall.userChoice;
+  if (outcome === 'accepted') {
+    showToast('🎉 App installed successfully!');
+    document.getElementById('installBannerInner').classList.add('hidden');
+    lsSet('install_dismissed','1');
+  }
+  _deferredInstall = null;
+}
+
+window.addEventListener('appinstalled', () => {
+  showToast('🎉 Eid Skin Plan installed!');
+  document.getElementById('installBannerInner').classList.add('hidden');
+});
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+const currentDay = getCurrentDay();
+
+window.onload = function() {
+  try { initFirebase(); } catch(e) { console.log("FB init:",e); }
+  try { registerSW(); } catch(e) {}
+  try { initTodayChecks(); } catch(e) {}
+  try { renderWater(); } catch(e) {}
+  try { renderProgress(); } catch(e) {}
+  try { renderCalendar(); } catch(e) {}
+  try { renderMaskBadge(); } catch(e) {}
+  try { updateBadges(); } catch(e) {}
+  try { updateNotifUI(); } catch(e) {}
+  try { updateFCMStatus(); } catch(e) {}
+  try { loadReminderTimes(); } catch(e) {}
+  try { scheduleAllReminders(); } catch(e) {}
+  try {
+    if (!lsGet('install_dismissed') && !window.matchMedia('(display-mode: standalone)').matches) {
+      // Show install hint after 3 seconds
+      setTimeout(() => {
+        if (!_deferredInstall) {
+          document.getElementById('installBannerInner').classList.remove('hidden');
+        }
+      }, 3000);
+    }
+  } catch(e) {}
+};
+
+// ══════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════
+function navTo(sec, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + sec).classList.add('active');
+  if (btn && btn.classList) btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ══════════════════════════════════════
+// CHECKLIST
+// ══════════════════════════════════════
+function initTodayChecks() {
+  const data = getTodayData();
+  const todayStr = new Date().toDateString();
+  const savedDay = lsGet('eid_check_day');
+  if (savedDay !== todayStr) {
+    lsSet('eid_check_day', todayStr);
+    saveTodayData({});
+    return;
+  }
+  document.querySelectorAll('.check-item[data-key]').forEach(item => {
+    if (data[item.dataset.key]) item.classList.add('done');
+  });
+  updateNightMaskLabel();
+}
+
+function toggle(el, key) {
+  el.classList.add('ripple');
+  setTimeout(() => el.classList.remove('ripple'), 500);
+  const data = getTodayData();
+  if (el.classList.contains('done')) {
+    el.classList.remove('done');
+    data[key] = false;
+  } else {
+    el.classList.add('done');
+    data[key] = true;
+    try { navigator.vibrate(30); } catch(e) {}
+  }
+  saveTodayData(data);
+  updateBadges();
+  renderProgress();
+  checkAllDone();
+}
+
+function updateBadges() {
+  const data = getTodayData();
+  const groups = {
+    'sehri': ['sehri_water','sehri_eat','sehri_sunscreen'],
+    'day': ['day_sun','day_reapply'],
+    'iftar': ['iftar_water1','iftar_food','iftar_water2','iftar_ubtan'],
+    'night': ['night_water1','night_mask','night_aloe','night_sleep']
+  };
+  Object.entries(groups).forEach(([id, keys]) => {
+    const done = keys.filter(k => data[k]).length;
+    const badge = document.getElementById(id + '-badge');
+    if (!badge) return;
+    badge.textContent = done + '/' + keys.length;
+    badge.className = 'card-badge' + (done === keys.length ? ' done' : '');
+  });
+}
+
+function checkAllDone() {
+  const data = getTodayData();
+  if (KEYS_TODAY.every(k => data[k]) && !isDayComplete(currentDay)) {
+    markDayComplete(currentDay);
+    renderCalendar();
+    showToast('🌟 Day ' + currentDay + ' complete! Amazing work!');
+  }
+}
+
+function updateNightMaskLabel() {
+  const el = document.getElementById('night-mask-label');
+  if (!el) return;
+  if (SPECIAL_MASK_DAYS.includes(currentDay)) {
+    el.textContent = 'Apply Lemon + Honey mask (15 min) ⭐';
+    el.style.color = 'var(--gold2)';
+  } else {
+    el.textContent = 'Apply yogurt mask (15 min)';
+    el.style.color = '';
+  }
+}
+
+function renderMaskBadge() {
+  const el = document.getElementById('today-mask-badge');
+  if (!el) return;
+  el.innerHTML = SPECIAL_MASK_DAYS.includes(currentDay)
+    ? `<div class="mask-badge">⭐ Special night — Lemon + Honey mask today (Day ${currentDay})</div>`
+    : '';
+  updateNightMaskLabel();
+}
+
+// ══════════════════════════════════════
+// PROGRESS RING
+// ══════════════════════════════════════
+function renderProgress() {
+  const data = getTodayData();
+  const done = KEYS_TODAY.filter(k => data[k]).length;
+  const pct = Math.round((done / KEYS_TODAY.length) * 100);
+  const circumference = 219.9;
+  const el = document.getElementById('ringFill');
+  if (el) el.style.strokeDashoffset = circumference - (pct / 100) * circumference;
+  const rn = document.getElementById('ringNum');
+  if (rn) rn.textContent = pct;
+  const pt = document.getElementById('progressTitle');
+  if (pt) pt.textContent = `Day ${currentDay} of ${TOTAL_DAYS}`;
+  const ps = document.getElementById('progressSub');
+  if (ps) ps.textContent = isDayComplete(currentDay) ? '✅ Today fully complete! Excellent!' : `${done}/${KEYS_TODAY.length} tasks done today`;
+  const dl = document.getElementById('daysLeft');
+  const left = TOTAL_DAYS - currentDay + 1;
+  if (dl) dl.textContent = `⏳ ${left} day${left !== 1 ? 's' : ''} to Eid`;
+}
+
+// ══════════════════════════════════════
+// WATER TRACKER
+// ══════════════════════════════════════
+function renderWater() {
+  const count = getWater();
+  let gh = '', nh = '';
+  for (let i = 0; i < 10; i++) {
+    gh += `<div class="glass${i < count ? ' filled' : ''}" onclick="toggleGlass(${i})">💧</div>`;
+    nh += `<div class="water-num">${i + 1}</div>`;
+  }
+  const wg = document.getElementById('waterGlasses');
+  const wn = document.getElementById('waterNums');
+  const ws = document.getElementById('waterStatus');
+  if (wg) wg.innerHTML = gh;
+  if (wn) wn.innerHTML = nh;
+  if (ws) ws.innerHTML = `Total today &nbsp;•&nbsp; <strong>${count} / 10</strong> glasses`;
+}
+
+function toggleGlass(i) {
+  let count = getWater();
+  count = (i === count - 1) ? count - 1 : i + 1;
+  setWater(Math.max(0, count));
+  renderWater();
+  try { navigator.vibrate(20); } catch(e) {}
+  if (count === 10) showToast('💧 Water goal complete! Great job!');
+}
+
+// ══════════════════════════════════════
+// CALENDAR
+// ══════════════════════════════════════
+function renderCalendar() {
+  const grid = document.getElementById('calGrid');
+  if (!grid) return;
+  let html = '';
+  for (let d = 1; d <= TOTAL_DAYS; d++) {
+    const isToday = d === currentDay;
+    const isComplete = isDayComplete(d);
+    const isFuture = d > currentDay;
+    const isSpecial = SPECIAL_MASK_DAYS.includes(d);
+    const isEidEve = d === 14;
+    let cls = 'day-cell' + (isToday ? ' today' : isComplete ? ' complete' : isFuture ? ' future' : '');
+    let emoji = isComplete ? '✅' : isEidEve ? '🌙' : isSpecial ? '⭐' : isToday ? '📍' : '';
+    let lbl = isEidEve ? 'Eid Eve' : isSpecial ? 'Special' : '';
+    html += `<div class="${cls}" onclick="showDayModal(${d})">
+      <span class="day-num">${d}</span>
+      <span class="day-emoji">${emoji}</span>
+      ${lbl ? `<span class="day-lbl">${lbl}</span>` : ''}
+    </div>`;
+  }
+  grid.innerHTML = html;
+}
+
+// ══════════════════════════════════════
+// DAY MODAL
+// ══════════════════════════════════════
+function showDayModal(day) {
+  const isSpecial = SPECIAL_MASK_DAYS.includes(day);
+  const isComplete = isDayComplete(day);
+  const isToday = day === currentDay;
+  const isFuture = day > currentDay;
+  const isEidEve = day === 14;
+  const mask = isSpecial ? '🍋 Lemon + Honey mask ⭐' : '🥛 Yogurt mask';
+  let badge = isComplete ? '<span style="color:var(--green);font-size:.78rem">✅ Completed</span>'
+    : isToday ? '<span style="color:var(--gold);font-size:.78rem">📍 Today</span>'
+    : isFuture ? '<span style="color:var(--text-dim);font-size:.78rem">🔒 Upcoming</span>'
+    : '<span style="color:var(--text-dim);font-size:.78rem">📅 Past</span>';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-title">Day ${day}${isEidEve ? ' — Eid Eve 🌙' : ''}</div>
+    <div class="modal-sub">${badge}</div>
+    <div class="card" style="margin-bottom:12px">
+      <div class="check-item" style="cursor:default"><span style="font-size:1.1rem">🌅</span><div><div class="check-label">Sehri: 3 glasses water + AccuFix sunscreen</div></div></div>
+      <div class="check-item" style="cursor:default"><span style="font-size:1.1rem">☀️</span><div><div class="check-label">Stay indoors 11am–4pm</div></div></div>
+      <div class="check-item" style="cursor:default"><span style="font-size:1.1rem">🌇</span><div><div class="check-label">Iftar: 4 glasses water + healthy food + Ubtan shower</div></div></div>
+      <div class="check-item" style="cursor:default;${isSpecial ? 'background:rgba(201,168,76,0.04)' : ''}"><span style="font-size:1.1rem">🌙</span><div><div class="check-label">${mask} + Aloe vera overnight</div>${isSpecial ? '<div class="check-sub" style="color:var(--gold)">Special mask day!</div>' : ''}</div></div>
+    </div>
+    ${isToday && !isComplete ? `<button class="complete-btn" onclick="markTodayDone()">✅ Mark Day ${day} Complete</button>` : ''}
+    ${isComplete ? '<button class="complete-btn done-btn">✅ Already Completed</button>' : ''}
+  `;
+  document.getElementById('modal').classList.add('open');
+}
+
+function markTodayDone() {
+  markDayComplete(currentDay);
+  renderCalendar();
+  renderProgress();
+  closeModal();
+  showToast('🌟 Day ' + currentDay + ' marked complete!');
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modal')) {
+    document.getElementById('modal').classList.remove('open');
+  }
+}
+
+// ══════════════════════════════════════
+// RESET
+// ══════════════════════════════════════
+function confirmReset() {
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-title" style="color:var(--red)">Reset All Data?</div>
+    <div class="modal-sub">This cannot be undone. All progress will be lost.</div>
+    <button class="reset-btn" style="margin-bottom:10px" onclick="doReset()">Yes, Reset Everything</button>
+    <button class="complete-btn done-btn" onclick="closeModal()">Cancel</button>
+  `;
+  document.getElementById('modal').classList.add('open');
+}
+
+async function clearAppCache() {
+  showToast('🔄 Clearing cache...');
+  try {
+    // Delete all SW caches
+    const keys = await caches.keys();
+    await Promise.all(keys.map(k => caches.delete(k)));
+    // Unregister old service workers
+    const regs = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(regs.map(r => r.unregister()));
+    showToast('✅ Cache cleared! Reloading...');
+    setTimeout(() => window.location.reload(true), 1000);
+  } catch(e) {
+    showToast('Reloading...');
+    setTimeout(() => window.location.reload(true), 800);
+  }
+}
+
+function doReset() {
+  ['eid_today_data','eid_check_day','eid_completed_days','eid_start_day','install_dismissed'].forEach(k => lsDel(k));
+  // Reset water for today
+  lsDel('eid_water_' + new Date().toDateString());
+  closeModal();
+  showToast('🗑️ All data reset. Starting fresh!');
+  setTimeout(() => window.location.reload(), 1200);
+}
+
+// ══════════════════════════════════════
+// REFRESH FCM TOKEN (fixes UNREGISTERED error — safe, no data lost)
+// ══════════════════════════════════════
+async function refreshFCMToken() {
+  if (Notification.permission !== 'granted') {
+    showToast('⚠️ Allow notifications first!');
+    return;
+  }
+  showToast('⏳ Refreshing token...');
+  try {
+    if (_fbMsg) { try { await _fbMsg.deleteToken(); } catch(e) {} }
+    const ok = await registerFCMAndSave();
+    if (ok) {
+      // Force active:true in DB so sendReminders never skips this user
+      const hash = lsGet('fcm_token_hash');
+      if (_fbDb && hash) {
+        await _fbDb.ref('users/' + hash).update({ active: true });
+      }
+      showToast('✅ Token refreshed!');
+      updateFCMStatus();
+    } else {
+      showToast('❌ Could not refresh. Try again.');
+    }
+  } catch(e) {
+    showToast('❌ Refresh failed: ' + e.message);
+  }
+}
+
+// ══════════════════════════════════════
+// IMPORT / EXPORT
+// ══════════════════════════════════════
+
+// Keys to export (never export device-specific keys like fcm_token_hash)
+const EXPORT_KEYS = [
+  'eid_start_day',
+  'eid_completed_days',
+  'eid_today_data',
+  'eid_check_day',
+  'reminder_sehri',
+  'reminder_iftar',
+  'reminder_night'
+];
+// Also export all daily water keys (eid_water_*)
+function getAllExportData() {
+  const data = {};
+  // Fixed keys
+  EXPORT_KEYS.forEach(k => {
+    const v = lsGet(k);
+    if (v !== null) data[k] = v;
+  });
+  // Water keys — scan localStorage for eid_water_*
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith('eid_water_')) {
+        data[k] = localStorage.getItem(k);
+      }
+    }
+  } catch(e) {}
+  return data;
+}
+
+function exportData() {
+  try {
+    const data = getAllExportData();
+    // Build preview for user
+    const completedDays = (() => { try { return JSON.parse(data['eid_completed_days'] || '[]'); } catch(e) { return []; } })();
+    const startDay = data['eid_start_day'] || 'Not started';
+
+    const exportObj = {
+      version: 1,
+      app: 'eid-skin-plan',
+      exportedAt: new Date().toISOString(),
+      startDay: startDay,
+      completedCount: completedDays.length,
+      data: data
+    };
+
+    const json = JSON.stringify(exportObj, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'eid-skin-backup-' + new Date().toISOString().slice(0,10) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showToast('✅ Backup exported! Check your Downloads.');
+  } catch(e) {
+    showToast('❌ Export failed: ' + e.message);
+  }
+}
+
+function triggerImport() {
+  const input = document.getElementById('importFileInput');
+  if (input) { input.value = ''; input.click(); }
+}
+
+function handleImportFile(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const raw = e.target.result;
+      const obj = JSON.parse(raw);
+      // ── Validate ──
+      if (!obj || obj.app !== 'eid-skin-plan' || !obj.data) {
+        showToast('❌ Invalid backup file. Only use files exported from this app.');
+        return;
+      }
+      if (typeof obj.version !== 'number' || obj.version < 1) {
+        showToast('❌ Unsupported backup version.');
+        return;
+      }
+      // ── Show preview modal ──
+      const completedDays = (() => { try { return JSON.parse(obj.data['eid_completed_days'] || '[]'); } catch(e) { return []; } })();
+      const startDay  = obj.data['eid_start_day'] || 'Unknown';
+      const exported  = obj.exportedAt ? new Date(obj.exportedAt).toLocaleDateString() : 'Unknown';
+      const waterKeys = Object.keys(obj.data).filter(k => k.startsWith('eid_water_'));
+
+      document.getElementById('modal-body').innerHTML = `
+        <div class="modal-title">📥 Restore Backup?</div>
+        <div class="modal-sub" style="color:var(--text-dim);margin-bottom:14px">Review what will be restored:</div>
+        <div class="io-preview">
+          <strong>Backup Contents</strong>
+          📅 Plan started: ${startDay}<br>
+          ✅ Days completed: ${completedDays.length} day${completedDays.length !== 1 ? 's' : ''} (${completedDays.sort((a,b)=>a-b).join(', ') || 'none'})<br>
+          💧 Water logs: ${waterKeys.length} day${waterKeys.length !== 1 ? 's' : ''}<br>
+          ⏰ Reminders: ${obj.data['reminder_sehri'] || '04:00'} / ${obj.data['reminder_iftar'] || '18:30'} / ${obj.data['reminder_night'] || '22:00'}<br>
+          📤 Exported on: ${exported}
+        </div>
+        <p style="font-size:.74rem;color:var(--red);margin:12px 0 4px">⚠️ This will overwrite your current progress.</p>
+        <button class="complete-btn" style="margin-bottom:10px" onclick="applyImport(${JSON.stringify(JSON.stringify(obj.data))})">✅ Yes, Restore This Backup</button>
+        <button class="complete-btn done-btn" onclick="closeModal()">Cancel</button>
+      `;
+      document.getElementById('modal').classList.add('open');
+    } catch(err) {
+      showToast('❌ Could not read file: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function applyImport(dataStr) {
+  try {
+    const data = JSON.parse(dataStr);
+    // Restore all keys — skip device-specific ones
+    const SKIP = ['fcm_token_hash', 'install_dismissed'];
+    let count = 0;
+    Object.entries(data).forEach(([k, v]) => {
+      if (!SKIP.includes(k) && v !== null && v !== undefined) {
+        lsSet(k, v);
+        count++;
+      }
+    });
+    closeModal();
+    showToast('✅ Backup restored! (' + count + ' items)');
+    // Re-render everything
+    setTimeout(() => {
+      try { initTodayChecks(); } catch(e) {}
+      try { renderWater(); } catch(e) {}
+      try { renderProgress(); } catch(e) {}
+      try { renderCalendar(); } catch(e) {}
+      try { renderMaskBadge(); } catch(e) {}
+      try { updateBadges(); } catch(e) {}
+      try { loadReminderTimes(); } catch(e) {}
+    }, 100);
+  } catch(err) {
+    showToast('❌ Restore failed: ' + err.message);
+  }
+}
+
+// ══════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════
+let _toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.innerHTML = msg;
+  t.classList.add('show');
+  if (_toastTimer) clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'>
+  <rect width='512' height='512' rx='102' fill='#07090f'/>
+  <defs>
+    <radialGradient id='g' cx='50%' cy='45%' r='55%'>
+      <stop offset='0%' stop-color='#e8c97a' stop-opacity='0.25'/>
+      <stop offset='100%' stop-color='#c9a84c' stop-opacity='0'/>
+    </radialGradient>
+  </defs>
+  <rect width='512' height='512' rx='102' fill='url(#g)'/>
+  <path d='M 295 90 A 165 165 0 1 0 295 422 A 115 115 0 1 1 295 90 Z' fill='#c9a84c'/>
+  <circle cx='375' cy='145' r='22' fill='#e8c97a' opacity='0.95'/>
+  <circle cx='415' cy='230' r='16' fill='#e8c97a' opacity='0.75'/>
+  <circle cx='368' cy='308' r='12' fill='#e8c97a' opacity='0.55'/>
+  <line x1='375' y1='145' x2='375' y2='118' stroke='#e8c97a' stroke-width='5' stroke-linecap='round' opacity='0.7'/>
+  <line x1='375' y1='145' x2='375' y2='172' stroke='#e8c97a' stroke-width='5' stroke-linecap='round' opacity='0.7'/>
+  <line x1='375' y1='145' x2='348' y2='145' stroke='#e8c97a' stroke-width='5' stroke-linecap='round' opacity='0.7'/>
+  <line x1='375' y1='145' x2='402' y2='145' stroke='#e8c97a' stroke-width='5' stroke-linecap='round' opacity='0.7'/>
+</svg>
