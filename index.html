@@ -14,6 +14,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -126,7 +127,18 @@ body::before{
 }
 .nav-icon-wrap{position:relative;display:inline-block}
 
-/* ── SECTIONS ── */
+/* ── GOOGLE ACCOUNT ── */
+.account-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px}
+.account-signed-in{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.account-avatar{width:44px;height:44px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;flex-shrink:0}
+.account-avatar-placeholder{width:44px;height:44px;border-radius:50%;background:var(--gold-dim);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.account-info{flex:1;min-width:0}
+.account-name{font-size:.88rem;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.account-email{font-size:.72rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.account-badge{font-size:.62rem;color:var(--green);background:rgba(76,175,125,0.12);border:1px solid rgba(76,175,125,0.2);padding:2px 8px;border-radius:20px;margin-top:4px;display:inline-block}
+.sync-status{font-size:.7rem;padding:8px 16px 10px;border-top:1px solid var(--border);color:var(--text-dim);display:flex;align-items:center;gap:6px}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .section{display:none;animation:fadeIn .22s ease}
 .section.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -657,7 +669,75 @@ body::before{
   <!-- ═══ SETTINGS ═══ -->
   <div class="section" id="sec-settings">
     <div class="sec-title">Settings</div>
-    <div class="sec-sub">Notifications, reminders &amp; install guide</div>
+    <div class="sec-sub">Account, notifications, reminders &amp; install guide</div>
+
+    <!-- GOOGLE ACCOUNT -->
+    <div class="setting-group" id="accountGroup">
+      <div class="setting-group-title">👤 Google Account</div>
+      <div style="padding:14px 16px" id="accountContent">
+
+        <!-- Signed-out state -->
+        <div id="signedOutView">
+          <p style="font-size:.78rem;color:var(--text-dim);line-height:1.6;margin-bottom:14px">
+            Sign in to <strong style="color:var(--text)">sync your progress across devices</strong>, secure your data in the cloud, and link your notifications to your account.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
+            <div style="display:flex;gap:10px;align-items:center">
+              <span style="font-size:.9rem">☁️</span>
+              <span style="font-size:.76rem;color:var(--text-dim)">Progress saved to cloud — never lose your streak</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center">
+              <span style="font-size:.9rem">🔔</span>
+              <span style="font-size:.76rem;color:var(--text-dim)">Notifications tied to your account, not just this device</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center">
+              <span style="font-size:.9rem">📱</span>
+              <span style="font-size:.76rem;color:var(--text-dim)">Switch phones — your data follows you automatically</span>
+            </div>
+          </div>
+          <button class="perm-btn ask" onclick="signInWithGoogle()" style="display:flex;align-items:center;justify-content:center;gap:10px">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Sign in with Google
+          </button>
+          <p style="font-size:.68rem;color:var(--text-dim);margin-top:10px;text-align:center;line-height:1.5">Optional — app works fully without signing in</p>
+
+          <!-- Shown only if domain not yet authorized in Firebase Console -->
+          <div id="authDomainHelp" style="display:none;margin-top:14px;background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:12px 14px">
+            <div style="font-size:.74rem;color:var(--gold);font-weight:500;margin-bottom:8px">⚠️ One-Time Setup Required</div>
+            <div style="font-size:.72rem;color:var(--text-dim);line-height:1.7">
+              To enable Google Sign-In on this domain:<br>
+              1. Go to <strong style="color:var(--text)">console.firebase.google.com</strong><br>
+              2. Your project → <strong style="color:var(--text)">Authentication → Settings → Authorized Domains</strong><br>
+              3. Click <strong style="color:var(--text)">"Add domain"</strong> and add:<br>
+              <span style="color:var(--gold);font-family:monospace;font-size:.7rem">malykfarasat.github.io</span><br>
+              4. Come back and try signing in again ✅
+            </div>
+          </div>
+        </div>
+
+        <!-- Signed-in state -->
+        <div id="signedInView" style="display:none">
+          <div class="account-signed-in">
+            <img id="accountAvatar" class="account-avatar" src="" alt="" style="display:none">
+            <div class="account-avatar-placeholder" id="accountAvatarPlaceholder">👤</div>
+            <div class="account-info">
+              <div class="account-name" id="accountName">—</div>
+              <div class="account-email" id="accountEmail">—</div>
+              <div class="account-badge">✅ Synced to Cloud</div>
+            </div>
+          </div>
+          <div class="sync-status">
+            <div class="sync-dot"></div>
+            <span id="syncStatusText">Data syncing to your account</span>
+          </div>
+          <div style="padding:10px 16px 14px;display:flex;gap:8px">
+            <button class="perm-btn granted" style="flex:1;font-size:.76rem;padding:9px" onclick="forceSyncToCloud()">☁️ Sync Now</button>
+            <button class="perm-btn denied" style="flex:1;font-size:.76rem;padding:9px" onclick="signOutAccount()">Sign Out</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
 
     <!-- NOTIFICATION PERMISSION -->
     <div class="setting-group">
@@ -977,19 +1057,33 @@ const FIREBASE_CONFIG = {
 };
 const VAPID_KEY = "BAgbvCqjy3ew_yFMvdPw1YAH4Yh7vEG2DgqZ7O6Hcyi8xQVCKxhOyA1er7kwWsHbHc-izu240gOgOY6wNW_ha8A";
 
-let _fbApp = null, _fbMsg = null, _fbDb = null;
+let _fbApp = null, _fbMsg = null, _fbDb = null, _fbAuth = null;
+let _currentUser = null; // Firebase Auth user object
 
 function initFirebase() {
   try {
-    _fbApp = firebase.initializeApp(FIREBASE_CONFIG);
-    _fbMsg = firebase.messaging();
-    _fbDb  = firebase.database();
+    _fbApp  = firebase.initializeApp(FIREBASE_CONFIG);
+    _fbMsg  = firebase.messaging();
+    _fbDb   = firebase.database();
+    _fbAuth = firebase.auth();
+
     // Handle foreground FCM messages (app is open)
     _fbMsg.onMessage(payload => {
       const title = (payload.data && payload.data.title) || (payload.notification && payload.notification.title) || '🌙 Eid Skin Plan';
       const body  = (payload.data && payload.data.body)  || (payload.notification && payload.notification.body)  || 'Time for your routine!';
       showNotif(title, body, 'fcm-foreground');
     });
+
+    // Auth state listener — fires on login and logout
+    _fbAuth.onAuthStateChanged(user => {
+      _currentUser = user;
+      if (user) {
+        onUserSignedIn(user);
+      } else {
+        onUserSignedOut();
+      }
+    });
+
   } catch(e) { console.log('Firebase init failed:', e.message); }
 }
 
@@ -1005,22 +1099,188 @@ function registerSW() {
 }
 
 // ══════════════════════════════════════
-// NOTIFICATIONS + FIREBASE FCM
+// GOOGLE AUTH — Sign In / Sign Out / Sync
 // ══════════════════════════════════════
+
+async function signInWithGoogle() {
+  if (!_fbAuth) { showToast('⚠️ Auth not ready. Try again.'); return; }
+  try {
+    showToast('⏳ Opening Google sign-in...');
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    // On mobile/PWA use redirect — more reliable than popup
+    const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+    if (isMobile || isPWA) {
+      await _fbAuth.signInWithRedirect(provider);
+      // Page reloads — getRedirectResult() in window.onload handles the result
+    } else {
+      await _fbAuth.signInWithPopup(provider);
+    }
+  } catch(e) {
+    if (e.code === 'auth/popup-closed-by-user') {
+      showToast('ℹ️ Sign-in cancelled.');
+    } else if (e.code === 'auth/unauthorized-domain') {
+      showToast('⚠️ Domain not authorised. See setup steps below.');
+      document.getElementById('authDomainHelp') && (document.getElementById('authDomainHelp').style.display = 'block');
+    } else {
+      showToast('❌ Sign-in failed: ' + e.message);
+    }
+  }
+}
+
+async function signOutAccount() {
+  if (!_fbAuth) return;
+  try {
+    await _fbAuth.signOut();
+    showToast('👋 Signed out. Data still on this device.');
+  } catch(e) {
+    showToast('❌ Sign-out failed: ' + e.message);
+  }
+}
+
+// Called automatically when user signs in
+async function onUserSignedIn(user) {
+  // Update UI
+  updateAccountUI(user);
+
+  // Pull cloud data first — then merge with local if cloud is empty
+  const cloudData = await loadProgressFromCloud(user.uid);
+  if (cloudData && Object.keys(cloudData).length > 0) {
+    // Cloud has data — restore to localStorage (newer wins)
+    applyCloudDataToLocal(cloudData);
+    showToast('✅ Progress loaded from your account!');
+  } else {
+    // No cloud data — push current local data up
+    await syncLocalToCloud(user.uid);
+    showToast('✅ Signed in! Progress saved to your account.');
+  }
+
+  // Re-register FCM under this account's uid
+  if (Notification.permission === 'granted') {
+    await registerFCMAndSave();
+  }
+
+  // Re-render everything with cloud data
+  try { initTodayChecks(); } catch(e) {}
+  try { renderWater(); } catch(e) {}
+  try { renderProgress(); } catch(e) {}
+  try { renderCalendar(); } catch(e) {}
+  try { renderMaskBadge(); } catch(e) {}
+  try { updateBadges(); } catch(e) {}
+  try { loadReminderTimes(); } catch(e) {}
+}
+
+// Called when user signs out
+function onUserSignedOut() {
+  updateAccountUI(null);
+  // App continues working with localStorage — nothing else changes
+}
+
+// Update account card UI
+function updateAccountUI(user) {
+  const signedIn  = document.getElementById('signedInView');
+  const signedOut = document.getElementById('signedOutView');
+  if (!signedIn || !signedOut) return;
+
+  if (user) {
+    signedIn.style.display  = 'block';
+    signedOut.style.display = 'none';
+
+    const nameEl   = document.getElementById('accountName');
+    const emailEl  = document.getElementById('accountEmail');
+    const avatarEl = document.getElementById('accountAvatar');
+    const phEl     = document.getElementById('accountAvatarPlaceholder');
+
+    if (nameEl)  nameEl.textContent  = user.displayName || 'Google User';
+    if (emailEl) emailEl.textContent = user.email || '';
+    if (user.photoURL && avatarEl) {
+      avatarEl.src = user.photoURL;
+      avatarEl.style.display = 'block';
+      if (phEl) phEl.style.display = 'none';
+    }
+  } else {
+    signedIn.style.display  = 'none';
+    signedOut.style.display = 'block';
+  }
+}
+
+// Export keys that belong to progress (not device-specific)
+const SYNC_SKIP = ['fcm_token_hash', 'install_dismissed'];
+function getAllProgressKeys() {
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && (k.startsWith('eid_') || k.startsWith('reminder_')) && !SYNC_SKIP.includes(k)) {
+      keys.push(k);
+    }
+  }
+  return keys;
+}
+
+// Push all localStorage progress to Firebase under accounts/{uid}/progress/
+async function syncLocalToCloud(uid) {
+  if (!_fbDb || !uid) return;
+  try {
+    const progress = {};
+    getAllProgressKeys().forEach(k => {
+      const v = localStorage.getItem(k);
+      if (v !== null) progress[k.replace(/\./g,'_')] = v; // dots not allowed in FB keys
+    });
+    await _fbDb.ref('accounts/' + uid + '/progress').set(progress);
+    const syncEl = document.getElementById('syncStatusText');
+    if (syncEl) syncEl.textContent = 'Last synced: ' + new Date().toLocaleTimeString();
+  } catch(e) { console.log('Sync error:', e.message); }
+}
+
+// Load cloud progress for this uid
+async function loadProgressFromCloud(uid) {
+  if (!_fbDb || !uid) return null;
+  try {
+    const snap = await _fbDb.ref('accounts/' + uid + '/progress').once('value');
+    return snap.val();
+  } catch(e) { return null; }
+}
+
+// Apply cloud data to localStorage and re-render
+function applyCloudDataToLocal(cloudData) {
+  Object.entries(cloudData).forEach(([k, v]) => {
+    const realKey = k.replace(/_dot_/g, '.'); // reverse any encoding
+    if (!SYNC_SKIP.includes(realKey)) localStorage.setItem(realKey, v);
+  });
+}
+
+// Manual sync button
+async function forceSyncToCloud() {
+  if (!_currentUser) { showToast('⚠️ Not signed in.'); return; }
+  showToast('⏳ Syncing...');
+  await syncLocalToCloud(_currentUser.uid);
+  showToast('✅ All data synced to your account!');
+}
+
+// Auto-sync to cloud whenever a value is saved (wrap lsSet)
+const _origLsSet = lsSet;
+function lsSet(key, val) {
+  _origLsSet(key, val);
+  // If logged in, sync to cloud in background (debounced)
+  if (_currentUser && !SYNC_SKIP.includes(key)) {
+    clearTimeout(lsSet._syncTimer);
+    lsSet._syncTimer = setTimeout(() => syncLocalToCloud(_currentUser.uid), 1500);
+  }
+}
+lsSet._syncTimer = null;
 
 // Get FCM token and save reminder config to Firebase DB
 async function registerFCMAndSave() {
   if (!_fbMsg || !_fbDb) { showToast('⚠️ Firebase not ready. Check your config.'); return false; }
   try {
-    // Reuse the SAME SW registration — never register a second SW at same scope
     const swReg = await navigator.serviceWorker.ready;
     const token = await _fbMsg.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
     if (!token) { showToast('⚠️ Could not get FCM token.'); return false; }
 
-    // Store token + reminder times + timezone offset in Firebase DB
-    const tokenHash = btoa(token).slice(0, 20); // safe key
-    const tzOffset  = -(new Date().getTimezoneOffset()); // e.g. +300 for PKT
-    await _fbDb.ref('users/' + tokenHash).set({
+    const tokenHash = btoa(token).slice(0, 20);
+    const tzOffset  = -(new Date().getTimezoneOffset());
+    const fcmData   = {
       token:  token,
       sehri:  lsGet('reminder_sehri') || '04:00',
       iftar:  lsGet('reminder_iftar') || '18:30',
@@ -1028,7 +1288,22 @@ async function registerFCMAndSave() {
       tz:     tzOffset,
       active: true,
       saved:  Date.now()
-    });
+    };
+
+    if (_currentUser) {
+      // Logged in → save under account uid (follows user across devices)
+      await _fbDb.ref('accounts/' + _currentUser.uid + '/fcm').set({
+        ...fcmData, tokenHash, uid: _currentUser.uid,
+        name: _currentUser.displayName || '',
+        email: _currentUser.email || ''
+      });
+      // Also keep anonymous path so GAS can find it
+      await _fbDb.ref('users/' + tokenHash).set({ ...fcmData, uid: _currentUser.uid });
+    } else {
+      // Not logged in → save under token hash (existing anonymous behaviour)
+      await _fbDb.ref('users/' + tokenHash).set(fcmData);
+    }
+
     lsSet('fcm_token_hash', tokenHash);
     return true;
   } catch(e) {
@@ -1235,8 +1510,23 @@ window.addEventListener('appinstalled', () => {
 // ══════════════════════════════════════
 const currentDay = getCurrentDay();
 
-window.onload = function() {
+window.onload = async function() {
   try { initFirebase(); } catch(e) { console.log("FB init:",e); }
+
+  // Handle Google Sign-In redirect result (mobile flow)
+  if (_fbAuth) {
+    try {
+      const result = await _fbAuth.getRedirectResult();
+      if (result && result.user) {
+        showToast('✅ Signed in as ' + (result.user.displayName || result.user.email));
+      }
+    } catch(e) {
+      if (e.code === 'auth/unauthorized-domain') {
+        showToast('⚠️ Add this domain to Firebase Console → Auth → Authorized Domains');
+      }
+    }
+  }
+
   try { registerSW(); } catch(e) {}
   try { initTodayChecks(); } catch(e) {}
   try { renderWater(); } catch(e) {}
@@ -1250,7 +1540,6 @@ window.onload = function() {
   try { scheduleAllReminders(); } catch(e) {}
   try {
     if (!lsGet('install_dismissed') && !window.matchMedia('(display-mode: standalone)').matches) {
-      // Show install hint after 3 seconds
       setTimeout(() => {
         if (!_deferredInstall) {
           document.getElementById('installBannerInner').classList.remove('hidden');
