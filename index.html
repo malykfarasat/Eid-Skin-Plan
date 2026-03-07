@@ -35,10 +35,12 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
+/* ── SECURITY: disable text selection and context menu ── */
 body{
   background:var(--bg);color:var(--text);
   font-family:'DM Sans',sans-serif;font-weight:300;
   min-height:100vh;overflow-x:hidden;padding-bottom:110px;
+  -webkit-user-select:none;-moz-user-select:none;user-select:none;
 }
 body::before{
   content:'';position:fixed;inset:0;
@@ -435,7 +437,7 @@ body::before{
       </svg>
     </div>
     <h1>Eid Skin Plan</h1>
-    <p>Farasat Ali &middot; 14 Days to Eid</p>
+    <p>Farasat Ali &middot; <span id="headerSub">14 Days to Eid</span></p>
   </div>
 
   <!-- INSTALL BANNER (inside wrap) -->
@@ -733,7 +735,7 @@ body::before{
         <button class="perm-btn ask" onclick="sendTestNotif()">Send Test Notification Now</button>
         <div style="margin-top:12px;background:rgba(76,175,125,0.07);border:1px solid rgba(76,175,125,0.18);border-radius:10px;padding:11px 13px">
           <div style="font-size:.76rem;color:var(--green);font-weight:500;margin-bottom:5px">☁️ Cloud Messaging</div>
-          <div style="font-size:.73rem;color:var(--text-dim);line-height:1.65">Your reminders are delivered via <strong style="color:var(--text)">Google's push infrastructure</strong> — guaranteed delivery whether the app is open, minimised, or your screen is locked.<br><br>FCM Status: <span id="fcmStatus" style="color:var(--gold)">Checking...</span></div>
+          <div style="font-size:.73rem;color:var(--text-dim);line-height:1.65">Your reminders are delivered via <strong style="color:var(--text)">Pak Anonymous secure infrastructure</strong> — guaranteed delivery whether the app is open, minimised, or your screen is locked.<br><br>Server Status: <span id="fcmStatus" style="color:var(--gold)">Checking...</span></div>
           <button class="perm-btn ask" style="margin-top:10px;font-size:.75rem;padding:9px 14px" onclick="refreshFCMToken()">🔄 Refresh Token</button>
         </div>
       </div>
@@ -854,7 +856,7 @@ body::before{
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start">
             <div style="width:32px;height:32px;border-radius:10px;background:rgba(76,175,125,0.1);border:1px solid rgba(76,175,125,0.2);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0">🔔</div>
-            <div><div style="font-size:.82rem;color:var(--text);font-weight:500">Server-Push Notifications</div><div style="font-size:.74rem;color:var(--text-dim);margin-top:2px;line-height:1.5">Reminders are sent from Google's Firebase servers via a Google Apps Script scheduler — meaning they arrive even when your phone is locked or the app is fully closed.</div></div>
+            <div><div style="font-size:.82rem;color:var(--text);font-weight:500">Server-Push Notifications</div><div style="font-size:.74rem;color:var(--text-dim);margin-top:2px;line-height:1.5">Reminders are delivered via <strong style="color:var(--text)">Pak Anonymous secure servers</strong> — guaranteed to arrive even when your phone is locked or the app is fully closed.</div></div>
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start">
             <div style="width:32px;height:32px;border-radius:10px;background:rgba(100,160,220,0.1);border:1px solid rgba(100,160,220,0.2);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0">💾</div>
@@ -864,18 +866,6 @@ body::before{
       </div>
     </div>
 
-    <!-- Tech Stack -->
-    <div class="setting-group">
-      <div class="setting-group-title">🛠️ Built With</div>
-      <div style="padding:14px 16px;display:flex;flex-wrap:wrap;gap:8px">
-        <span style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:var(--gold);font-size:.72rem;padding:5px 12px;border-radius:20px">HTML · CSS · JS</span>
-        <span style="background:rgba(255,160,0,0.1);border:1px solid rgba(255,160,0,0.2);color:#ffa000;font-size:.72rem;padding:5px 12px;border-radius:20px">Firebase FCM</span>
-        <span style="background:rgba(76,175,125,0.1);border:1px solid rgba(76,175,125,0.2);color:var(--green);font-size:.72rem;padding:5px 12px;border-radius:20px">Google Apps Script</span>
-        <span style="background:rgba(100,160,220,0.1);border:1px solid rgba(100,160,220,0.2);color:var(--blue);font-size:.72rem;padding:5px 12px;border-radius:20px">Firebase Realtime DB</span>
-        <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text-dim);font-size:.72rem;padding:5px 12px;border-radius:20px">Service Worker API</span>
-        <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text-dim);font-size:.72rem;padding:5px 12px;border-radius:20px">Netlify (Hosting)</span>
-      </div>
-    </div>
 
     <!-- Plan Summary -->
     <div class="setting-group">
@@ -898,6 +888,15 @@ body::before{
           <div style="font-size:.72rem;color:var(--text-dim)">Lemon + Honey Mask</div>
         </div>
       </div>
+    </div>
+
+    <!-- Credits -->
+    <div style="margin:4px 0 12px;background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.03));border:1px solid rgba(201,168,76,0.2);border-radius:14px;padding:18px 20px;text-align:center">
+      <div style="font-size:.68rem;color:var(--text-dim);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px">Proudly Presented By</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:var(--gold2);font-weight:400;letter-spacing:.06em">PAKANONYMOUS.ORG</div>
+      <div style="width:40px;height:1px;background:var(--border);margin:10px auto"></div>
+      <div style="font-size:.68rem;color:var(--text-dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">Developed By</div>
+      <div style="font-size:.84rem;color:var(--text);font-weight:400;letter-spacing:.04em">Muhammad Farasat Ali</div>
     </div>
 
     <!-- Disclaimer -->
@@ -1184,7 +1183,7 @@ function scheduleAllReminders() {
       night: lsGet('reminder_night') || '22:00',
       tz:    -(new Date().getTimezoneOffset()),
       active: true
-    }).then(() => showToast('✅ Reminders saved to Firebase! Alerts will fire on time.'))
+    }).then(() => showToast('✅ Reminders Saved!'))
       .catch(() => showToast('⚠️ Could not save to Firebase. Check config.'));
   } else if (!hash) {
     // Not registered yet — try to register first
@@ -1684,8 +1683,18 @@ function applyImport() {
 }
 
 // ══════════════════════════════════════
-// TOAST
+// SECURITY — disable right-click, copy, inspect shortcuts
 // ══════════════════════════════════════
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  // Block F12, Ctrl+U, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+S
+  if (e.key === 'F12') { e.preventDefault(); return false; }
+  if (e.ctrlKey && ['u','U','s','S'].includes(e.key)) { e.preventDefault(); return false; }
+  if (e.ctrlKey && e.shiftKey && ['i','I','j','J','c','C'].includes(e.key)) { e.preventDefault(); return false; }
+});
+document.addEventListener('copy', e => e.preventDefault());
+document.addEventListener('cut',  e => e.preventDefault());
+
 let _toastTimer = null;
 function showToast(msg) {
   const t = document.getElementById('toast');
