@@ -140,6 +140,98 @@ body::before{
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 @keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ EID MODE ══ */
+body.eid-mode{
+  background:var(--bg);
+}
+body.eid-mode::before{
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 0%,  rgba(232,168,87,0.13) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 20%,  rgba(220,130,160,0.08) 0%,transparent 55%),
+    radial-gradient(ellipse 40% 60% at 10% 80%,  rgba(201,168,76,0.07) 0%,transparent 50%);
+}
+/* Eid CSS variable overrides */
+body.eid-mode{
+  --bg:#09070a;
+  --surface:#140f16;
+  --surface2:#1a1320;
+  --gold:#e8a857;
+  --gold2:#f5d27a;
+  --gold-dim:rgba(232,168,87,0.13);
+  --border:rgba(232,168,87,0.22);
+  --green:#5dbf8a;
+  --rose:#e87898;
+}
+/* Eid header glow */
+body.eid-mode .header h1{
+  font-size:2.4rem;
+  background:linear-gradient(135deg,#f5d27a,#e8a857,#f5d27a);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 20px rgba(232,168,87,0.4));
+}
+body.eid-mode .logo-svg{
+  filter:drop-shadow(0 0 28px rgba(232,168,87,0.6));
+  animation:eidFloat 3s ease-in-out infinite;
+}
+@keyframes eidFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-9px) rotate(3deg)}}
+/* Eid progress ring — rainbow gold */
+body.eid-mode .ring-fill{stroke:url(#eidGradient);filter:drop-shadow(0 0 6px rgba(232,168,87,0.5))}
+body.eid-mode .ring-bg{stroke:rgba(232,168,87,0.12)}
+/* Eid nav active gold */
+body.eid-mode .nav-item.active{color:#f5d27a}
+/* Confetti particles */
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:999;overflow:hidden}
+.confetti-piece{
+  position:absolute;top:-20px;width:8px;height:8px;border-radius:2px;
+  animation:confettiFall linear infinite;
+  transform-origin:center;
+}
+@keyframes confettiFall{
+  0%  {transform:translateY(0) rotate(0deg);  opacity:1}
+  80% {opacity:.8}
+  100%{transform:translateY(110vh) rotate(720deg);opacity:0}
+}
+/* Eid celebration card */
+.eid-hero{
+  background:linear-gradient(135deg,rgba(232,168,87,0.14),rgba(220,130,160,0.08),rgba(232,168,87,0.06));
+  border:1px solid rgba(232,168,87,0.3);border-radius:20px;
+  padding:28px 20px;text-align:center;margin-bottom:14px;
+  position:relative;overflow:hidden;
+}
+.eid-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(232,168,87,0.12),transparent);
+  pointer-events:none;
+}
+.eid-stars{font-size:1.6rem;letter-spacing:.3em;margin-bottom:12px;display:block}
+.eid-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--gold2);margin-bottom:6px;line-height:1.2}
+.eid-sub{font-size:.78rem;color:var(--text-dim);letter-spacing:.1em;text-transform:uppercase}
+.eid-badge{
+  display:inline-flex;align-items:center;gap:6px;margin-top:14px;
+  background:rgba(232,168,87,0.12);border:1px solid rgba(232,168,87,0.3);
+  border-radius:20px;padding:6px 14px;font-size:.72rem;color:var(--gold);font-weight:500;
+}
+.eid-stat-row{display:flex;gap:10px;margin-bottom:14px}
+.eid-stat{
+  flex:1;padding:14px 10px;background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;text-align:center;
+}
+.eid-stat-num{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--gold2);font-weight:400;line-height:1}
+.eid-stat-lbl{font-size:.62rem;color:var(--text-dim);margin-top:4px;letter-spacing:.06em;text-transform:uppercase}
+.eid-tip-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;
+}
+.eid-tip-icon{width:32px;height:32px;border-radius:10px;background:rgba(232,168,87,0.1);border:1px solid rgba(232,168,87,0.2);display:flex;align-items:center;justify-content:center;font-size:.88rem;flex-shrink:0}
+.eid-dua{
+  background:linear-gradient(135deg,rgba(232,168,87,0.08),rgba(220,130,160,0.05));
+  border:1px solid rgba(232,168,87,0.2);border-radius:14px;
+  padding:18px 16px;text-align:center;margin-bottom:14px;
+}
+/* Eid modal */
+.eid-modal-wrap{text-align:center;padding:8px 0 4px}
+
 .section{display:none;animation:fadeIn .22s ease}
 .section.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -468,6 +560,13 @@ body::before{
   <div class="progress-card">
     <div class="ring-wrap">
       <svg width="88" height="88" viewBox="0 0 88 88">
+        <defs>
+          <linearGradient id="eidGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f5d27a"/>
+            <stop offset="50%" stop-color="#e8a857"/>
+            <stop offset="100%" stop-color="#e87898"/>
+          </linearGradient>
+        </defs>
         <circle class="ring-bg" cx="44" cy="44" r="35"/>
         <circle class="ring-fill" id="ringFill" cx="44" cy="44" r="35" stroke-dasharray="219.9" stroke-dashoffset="219.9"/>
       </svg>
@@ -1717,6 +1816,268 @@ window.addEventListener('appinstalled', () => {
 // ══════════════════════════════════════
 const currentDay = getCurrentDay();
 
+// ══════════════════════════════════════
+// EID MODE — Full celebration transformation
+// ══════════════════════════════════════
+
+function isEidMode() {
+  try {
+    const start = getStartDay();
+    const diff = Math.floor((new Date() - start) / 86400000);
+    return diff >= TOTAL_DAYS; // Day 15+ = Eid day
+  } catch(e) { return false; }
+}
+
+function initEidMode() {
+  if (!isEidMode()) return;
+
+  // 1. Apply eid-mode class for CSS overrides
+  document.body.classList.add('eid-mode');
+
+  // 2. Transform header
+  const headerSub = document.getElementById('headerSub');
+  if (headerSub) headerSub.textContent = '✨ Eid Mubarak!';
+  const headerH1 = document.querySelector('.header h1');
+  if (headerH1) headerH1.textContent = 'Eid Mubarak! 🌙';
+  const headerP = document.querySelector('.header p');
+  if (headerP) headerP.innerHTML = 'Farasat Ali &middot; <span id="headerSub">Your skin is glowing! ✨</span>';
+
+  // 3. Transform logo SVG to star burst
+  const logoSvg = document.querySelector('.logo-svg');
+  if (logoSvg) {
+    logoSvg.innerHTML = `
+      <defs><radialGradient id="eg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f5d27a" stop-opacity=".5"/><stop offset="100%" stop-color="#e8a857" stop-opacity="0"/></radialGradient></defs>
+      <circle cx="40" cy="40" r="38" fill="url(#eg)"/>
+      <polygon points="40,8 44,30 66,30 49,44 55,66 40,52 25,66 31,44 14,30 36,30" fill="#e8a857" opacity=".9"/>
+      <polygon points="40,14 43,26 55,26 46,34 49,46 40,40 31,46 34,34 25,26 37,26" fill="#f5d27a"/>
+      <circle cx="40" cy="40" r="5" fill="#fff" opacity=".9"/>
+      <circle cx="62" cy="18" r="3" fill="#f5d27a" opacity=".8"/>
+      <circle cx="18" cy="20" r="2" fill="#f5d27a" opacity=".7"/>
+      <circle cx="65" cy="58" r="2.5" fill="#e87898" opacity=".7"/>
+      <circle cx="15" cy="56" r="2" fill="#e8a857" opacity=".6"/>
+    `;
+  }
+
+  // 4. Transform progress card
+  const completedDays = getCompletedDays().length;
+  const totalWater = calcTotalWater();
+  const progressCard = document.querySelector('.progress-card');
+  if (progressCard) {
+    progressCard.style.background = 'linear-gradient(135deg,rgba(232,168,87,0.15),rgba(220,130,160,0.08),rgba(232,168,87,0.06))';
+    progressCard.style.border = '1px solid rgba(232,168,87,0.35)';
+    progressCard.style.boxShadow = '0 0 40px rgba(232,168,87,0.12)';
+    // Full ring
+    const ring = document.getElementById('ringFill');
+    if (ring) ring.style.strokeDashoffset = '0';
+    const rn = document.getElementById('ringNum');
+    if (rn) { rn.textContent = '100'; rn.style.color = 'var(--gold2)'; }
+    const rl = document.querySelector('.ring-label');
+    if (rl) rl.textContent = '% DONE';
+    const pt = document.getElementById('progressTitle');
+    if (pt) { pt.textContent = '14 of 14 Complete!'; pt.style.color = 'var(--gold2)'; }
+    const ps = document.getElementById('progressSub');
+    if (ps) { ps.textContent = '🌟 All ' + completedDays + ' days completed — Amazing!'; }
+    const dl = document.getElementById('daysLeft');
+    if (dl) { dl.textContent = '🎉 Eid Mubarak!'; dl.style.background = 'rgba(232,168,87,0.2)'; dl.style.border = '1px solid rgba(232,168,87,0.4)'; }
+  }
+
+  // 5. Replace Today section with Eid celebration
+  const todaySec = document.getElementById('sec-today');
+  if (todaySec) {
+    todaySec.innerHTML = buildEidTodaySection(completedDays, totalWater);
+  }
+
+  // 6. Update nav Today button
+  const navToday = document.querySelector('.nav-item:first-child');
+  if (navToday) {
+    navToday.innerHTML = '<span class="nav-icon">🌙</span>Eid';
+  }
+
+  // 7. Launch confetti
+  launchConfetti();
+
+  // 8. Show celebration modal once
+  if (!lsGet('eid_celebration_shown')) {
+    lsSet('eid_celebration_shown', '1');
+    setTimeout(showEidCelebrationModal, 600);
+  }
+}
+
+function calcTotalWater() {
+  let total = 0;
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith('eid_water_')) {
+        total += parseInt(localStorage.getItem(k)) || 0;
+      }
+    }
+  } catch(e) {}
+  return total;
+}
+
+function buildEidTodaySection(completedDays, totalWater) {
+  return `
+    <!-- EID HERO -->
+    <div class="eid-hero">
+      <span class="eid-stars">✨ 🌙 ✨</span>
+      <div class="eid-title">Eid Mubarak!</div>
+      <div class="eid-sub">Your 14-Day Journey Is Complete</div>
+      <div class="eid-badge">🌟 Skin Goals Achieved</div>
+    </div>
+
+    <!-- STATS -->
+    <div class="eid-stat-row">
+      <div class="eid-stat">
+        <div class="eid-stat-num">${completedDays}</div>
+        <div class="eid-stat-lbl">Days Done</div>
+      </div>
+      <div class="eid-stat">
+        <div class="eid-stat-num">14</div>
+        <div class="eid-stat-lbl">Day Plan</div>
+      </div>
+      <div class="eid-stat">
+        <div class="eid-stat-num">${totalWater}</div>
+        <div class="eid-stat-lbl">Glasses 💧</div>
+      </div>
+    </div>
+
+    <!-- EID SKINCARE TIPS -->
+    <div class="setting-group" style="margin-bottom:12px">
+      <div class="setting-group-title" style="color:var(--gold2)">🌸 Eid Day Skin Tips</div>
+      <div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+        <div class="eid-tip-card">
+          <div class="eid-tip-icon">☀️</div>
+          <div>
+            <div style="font-size:.83rem;color:var(--text);font-weight:500;margin-bottom:3px">Apply SPF 50 Before Going Out</div>
+            <div style="font-size:.74rem;color:var(--text-dim);line-height:1.5">All your hard work — protect it. Apply AccuFix SPF 50 before Eid prayers and reapply if outdoors.</div>
+          </div>
+        </div>
+        <div class="eid-tip-card">
+          <div class="eid-tip-icon">💧</div>
+          <div>
+            <div style="font-size:.83rem;color:var(--text);font-weight:500;margin-bottom:3px">Keep Drinking Water</div>
+            <div style="font-size:.74rem;color:var(--text-dim);line-height:1.5">Eid celebrations = lots of food. Keep sipping water to maintain that inner glow you worked for.</div>
+          </div>
+        </div>
+        <div class="eid-tip-card">
+          <div class="eid-tip-icon">✨</div>
+          <div>
+            <div style="font-size:.83rem;color:var(--text);font-weight:500;margin-bottom:3px">Light Moisturiser This Morning</div>
+            <div style="font-size:.74rem;color:var(--text-dim);line-height:1.5">Apply a light moisturiser before makeup or going out. Your skin is conditioned — let it breathe.</div>
+          </div>
+        </div>
+        <div class="eid-tip-card">
+          <div class="eid-tip-icon">🌿</div>
+          <div>
+            <div style="font-size:.83rem;color:var(--text);font-weight:500;margin-bottom:3px">Aloe Vera Tonight</div>
+            <div style="font-size:.74rem;color:var(--text-dim);line-height:1.5">After the day's celebrations, apply aloe vera before sleeping to keep the freshness going.</div>
+          </div>
+        </div>
+        <div class="eid-tip-card">
+          <div class="eid-tip-icon">🚫</div>
+          <div>
+            <div style="font-size:.83rem;color:var(--text);font-weight:500;margin-bottom:3px">Avoid Heavy Fried Food</div>
+            <div style="font-size:.74rem;color:var(--text-dim);line-height:1.5">Samosas and pakoras are tempting — enjoy in moderation. Oily food shows on skin within hours.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DUA / BLESSING -->
+    <div class="eid-dua">
+      <div style="font-size:1.1rem;margin-bottom:10px">🤲</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--gold2);margin-bottom:8px;font-weight:300;line-height:1.4">
+        تَقَبَّلَ اللّٰهُ مِنَّا وَمِنكُم
+      </div>
+      <div style="font-size:.75rem;color:var(--text-dim);line-height:1.6;font-style:italic">
+        "Taqabbalallahu minna wa minkum"<br>
+        May Allah accept from us and from you.
+      </div>
+    </div>
+
+    <!-- WATER TRACKER (still works on Eid!) -->
+    <div class="water-card">
+      <div class="water-title">
+        <span>💧</span>
+        <span class="water-title-text">Eid Day Water Tracker — 10 Glasses</span>
+      </div>
+      <div class="water-glasses" id="waterGlasses"></div>
+      <div class="water-nums" id="waterNums"></div>
+      <div class="water-status" id="waterStatus">Keep drinking water on Eid! &nbsp;•&nbsp; <strong>0 / 10</strong> glasses</div>
+    </div>
+  `;
+}
+
+function showEidCelebrationModal() {
+  const completedDays = getCompletedDays().length;
+  document.getElementById('modal-body').innerHTML = `
+    <div class="eid-modal-wrap">
+      <div style="font-size:3rem;margin-bottom:12px;animation:eidFloat 2s ease-in-out infinite;display:inline-block">🌙</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.7rem;color:var(--gold2);margin-bottom:6px;font-weight:300">Eid Mubarak!</div>
+      <div style="font-size:.8rem;color:var(--text-dim);line-height:1.7;margin-bottom:20px;padding:0 8px">
+        You completed your <strong style="color:var(--text)">14-Day Ramadan Skin Plan</strong>!<br>
+        ${completedDays} days completed · Your skin is ready to glow ✨
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <div style="flex:1;padding:12px 8px;background:rgba(232,168,87,0.1);border:1px solid rgba(232,168,87,0.25);border-radius:12px;text-align:center">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold2)">${completedDays}</div>
+          <div style="font-size:.62rem;color:var(--text-dim);margin-top:2px;text-transform:uppercase;letter-spacing:.05em">Days Done</div>
+        </div>
+        <div style="flex:1;padding:12px 8px;background:rgba(232,168,87,0.1);border:1px solid rgba(232,168,87,0.25);border-radius:12px;text-align:center">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold2)">100%</div>
+          <div style="font-size:.62rem;color:var(--text-dim);margin-top:2px;text-transform:uppercase;letter-spacing:.05em">Complete</div>
+        </div>
+        <div style="flex:1;padding:12px 8px;background:rgba(232,168,87,0.1);border:1px solid rgba(232,168,87,0.25);border-radius:12px;text-align:center">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold2)">${calcTotalWater()}</div>
+          <div style="font-size:.62rem;color:var(--text-dim);margin-top:2px;text-transform:uppercase;letter-spacing:.05em">Glasses 💧</div>
+        </div>
+      </div>
+      <div style="font-size:.74rem;color:var(--text-dim);line-height:1.7;margin-bottom:18px;padding:8px 12px;background:rgba(232,168,87,0.06);border:1px solid rgba(232,168,87,0.15);border-radius:10px">
+        تَقَبَّلَ اللّٰهُ مِنَّا وَمِنكُم 🤲<br>
+        <span style="font-style:italic">May Allah accept from us and from you.</span>
+      </div>
+      <button onclick="closeModal()" style="width:100%;padding:13px;border-radius:12px;border:none;background:linear-gradient(135deg,#e8a857,#f5d27a);color:#0a0708;font-size:.88rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:.02em">
+        🌙 Eid Mubarak! Let's Celebrate
+      </button>
+    </div>
+  `;
+  document.getElementById('modal').classList.add('open');
+}
+
+function launchConfetti() {
+  const wrap = document.createElement('div');
+  wrap.className = 'confetti-wrap';
+  document.body.appendChild(wrap);
+
+  const colors = ['#f5d27a','#e8a857','#e87898','#a8d8ea','#b5ead7','#ffd700'];
+  const shapes = ['circle','square','triangle'];
+
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const size  = 5 + Math.random() * 7;
+    const left  = Math.random() * 100;
+    const delay = Math.random() * 4;
+    const dur   = 3 + Math.random() * 4;
+    const shape = shapes[Math.floor(Math.random() * shapes.length)];
+
+    p.style.cssText = `
+      left:${left}%;width:${size}px;height:${size}px;
+      background:${color};
+      animation-duration:${dur}s;animation-delay:${delay}s;
+      border-radius:${shape === 'circle' ? '50%' : shape === 'square' ? '2px' : '0'};
+      ${shape === 'triangle' ? `background:transparent;border-left:${size/2}px solid transparent;border-right:${size/2}px solid transparent;border-bottom:${size}px solid ${color};` : ''}
+      opacity:.85;
+    `;
+    wrap.appendChild(p);
+  }
+
+  // Auto-remove confetti after 20 seconds
+  setTimeout(() => { try { wrap.remove(); } catch(e) {} }, 20000);
+}
+
 window.onload = async function() {
   try { initFirebase(); } catch(e) { console.log("FB init:",e); }
   // Hide install guide if already running as installed PWA
@@ -1737,6 +2098,8 @@ window.onload = async function() {
   try { updateFCMStatus(); } catch(e) {}
   try { loadReminderTimes(); } catch(e) {}
   try { scheduleAllReminders(); } catch(e) {}
+  // Eid mode — must run after all renders so it can replace sections
+  try { initEidMode(); } catch(e) { console.log('Eid init:', e); }
   // Restore custom about name if saved
   try {
     const customName = lsGet('about_name_custom');
@@ -1901,16 +2264,17 @@ function toggleGlass(i) {
 function renderCalendar() {
   const grid = document.getElementById('calGrid');
   if (!grid) return;
+  const eidMode = isEidMode();
   let html = '';
   for (let d = 1; d <= TOTAL_DAYS; d++) {
-    const isToday = d === currentDay;
-    const isComplete = isDayComplete(d);
-    const isFuture = d > currentDay;
+    const isToday   = !eidMode && d === currentDay;
+    const isComplete = eidMode ? true : isDayComplete(d);
+    const isFuture  = !eidMode && d > currentDay;
     const isSpecial = SPECIAL_MASK_DAYS.includes(d);
-    const isEidEve = d === 14;
+    const isEidEve  = d === 14;
     let cls = 'day-cell' + (isToday ? ' today' : isComplete ? ' complete' : isFuture ? ' future' : '');
-    let emoji = isComplete ? '✅' : isEidEve ? '🌙' : isSpecial ? '⭐' : isToday ? '📍' : '';
-    let lbl = isEidEve ? 'Eid Eve' : isSpecial ? 'Special' : '';
+    let emoji = isComplete ? (eidMode ? '🌟' : '✅') : isEidEve ? '🌙' : isSpecial ? '⭐' : isToday ? '📍' : '';
+    let lbl = isEidEve && eidMode ? 'Eid Eve ✨' : isEidEve ? 'Eid Eve' : isSpecial ? 'Special' : '';
     html += `<div class="${cls}" onclick="showDayModal(${d})">
       <span class="day-num">${d}</span>
       <span class="day-emoji">${emoji}</span>
