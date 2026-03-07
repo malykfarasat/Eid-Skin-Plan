@@ -574,7 +574,7 @@ body::before{
 
   <!-- ═══ CALENDAR ═══ -->
   <div class="section" id="sec-calendar">
-    <div class="sec-title">15-Day Journey</div>
+    <div class="sec-title">14-Day Journey</div>
     <div class="sec-sub">Tap any day · 🟡 Today · 🟢 Done · ⭐ Special mask</div>
     <div class="card" style="padding:14px">
       <div class="cal-grid" id="calGrid"></div>
@@ -1675,17 +1675,9 @@ function applyImport() {
       }
     });
     closeModal();
-    showToast('✅ Backup restored! (' + count + ' items)');
-    // Re-render everything
-    setTimeout(() => {
-      try { initTodayChecks(); } catch(e) {}
-      try { renderWater(); } catch(e) {}
-      try { renderProgress(); } catch(e) {}
-      try { renderCalendar(); } catch(e) {}
-      try { renderMaskBadge(); } catch(e) {}
-      try { updateBadges(); } catch(e) {}
-      try { loadReminderTimes(); } catch(e) {}
-    }, 100);
+    showToast('✅ Backup restored! Reloading...');
+    // Full reload needed — currentDay is a const set at page load
+    setTimeout(() => window.location.reload(), 1000);
   } catch(err) {
     showToast('❌ Restore failed: ' + err.message);
   }
