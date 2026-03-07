@@ -416,8 +416,7 @@ body::before{
   <button class="nav-item" onclick="navTo('settings',this)">
     <div class="nav-icon-wrap">
       <span class="nav-icon">⚙️</span>
-      <span class="notif-dot" id="notifDot"></span>
-      <span id="accountNavDot" style="display:none;position:absolute;top:0;right:-2px;width:7px;height:7px;border-radius:50%;background:var(--green);border:1.5px solid var(--bg)"></span>
+      <span id="settingsNavDot" style="display:none;position:absolute;top:-2px;right:-4px;width:8px;height:8px;border-radius:50%;background:var(--red);border:1.5px solid var(--bg)"></span>
     </div>Settings
   </button>
   <button class="nav-item" onclick="navTo('about',this)">
@@ -460,7 +459,7 @@ body::before{
       <strong>Install as App</strong>
       <span>Tap menu → Add to Home Screen</span>
     </div>
-    <button class="install-btn" id="installBtnInner" onclick="navTo('settings',document.querySelectorAll('.nav-item')[4])">Guide</button>
+    <button class="install-btn" id="installBtnInner" onclick="triggerInstall()">Install</button>
     <button class="install-dismiss" onclick="document.getElementById('installBannerInner').classList.add('hidden');lsSet('install_dismissed','1')">✕</button>
   </div>
 
@@ -706,20 +705,6 @@ body::before{
           </button>
           <p style="font-size:.67rem;color:var(--text-dim);margin-top:10px;text-align:center;line-height:1.5">Optional — app works fully without signing in</p>
 
-          <!-- Required setup steps — visible by default -->
-          <div id="authDomainHelp" style="margin-top:14px;background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.25);border-radius:10px;padding:12px 14px">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-              <div style="font-size:.74rem;color:var(--gold);font-weight:600">⚠️ Required One-Time Setup</div>
-              <button onclick="document.getElementById('authDomainHelp').style.display='none'" style="font-size:.65rem;color:var(--text-dim);background:transparent;border:1px solid var(--border);border-radius:5px;padding:2px 7px;cursor:pointer;font-family:'DM Sans',sans-serif">✓ Done</button>
-            </div>
-            <div style="font-size:.72rem;color:var(--text-dim);line-height:1.85">
-              <strong style="color:var(--text)">1.</strong> Go to <strong style="color:var(--text)">console.firebase.google.com</strong><br>
-              <strong style="color:var(--text)">2.</strong> Your project → <strong style="color:var(--text)">Authentication → Settings → Authorized Domains</strong><br>
-              <strong style="color:var(--text)">3.</strong> Click "Add domain" and enter exactly:<br>
-              <div style="background:rgba(0,0,0,0.25);border-radius:6px;padding:5px 10px;margin:5px 0;font-family:monospace;color:var(--gold);font-size:.71rem">malykfarasat.github.io</div>
-              <strong style="color:var(--text)">4.</strong> Tap <strong style="color:var(--text)">Add</strong> → come back → tap Continue with Google ✅
-            </div>
-          </div>
         </div>
 
         <!-- Signed-in state -->
@@ -731,10 +716,10 @@ body::before{
             <div style="height:3px;background:linear-gradient(90deg,#c9a84c,#e8c97a,#c9a84c)"></div>
             <!-- Profile row -->
             <div style="display:flex;align-items:center;gap:14px;padding:18px 16px 14px">
-              <!-- Avatar: initials by default, photo overlaid if loads -->
-              <div style="position:relative;flex-shrink:0">
-                <div id="accountAvatarInitials" style="width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c97a);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:700;color:#0a0c14;box-shadow:0 0 16px rgba(201,168,76,0.3)">?</div>
-                <img id="accountAvatar" referrerpolicy="no-referrer" src="" alt="" style="display:none;position:absolute;inset:0;width:58px;height:58px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;box-shadow:0 0 16px rgba(201,168,76,0.3)">
+              <!-- Avatar: explicit 58×58 container, initials default, photo overlaid -->
+              <div style="position:relative;width:58px;height:58px;flex-shrink:0">
+                <div id="accountAvatarInitials" style="position:absolute;inset:0;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c97a);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:700;color:#0a0c14;box-shadow:0 0 16px rgba(201,168,76,0.3)">?</div>
+                <img id="accountAvatar" referrerpolicy="no-referrer" src="" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;border-radius:50%;border:2px solid var(--gold);object-fit:cover;box-shadow:0 0 16px rgba(201,168,76,0.3)">
                 <div style="position:absolute;bottom:1px;right:1px;width:14px;height:14px;border-radius:50%;background:var(--green);border:2px solid var(--bg)"></div>
               </div>
               <!-- Name + email + badge -->
@@ -768,7 +753,7 @@ body::before{
     </div>
 
     <!-- NOTIFICATION PERMISSION -->
-    <div class="setting-group">
+    <div class="setting-group" id="notifGroup" style="display:none">
       <div class="setting-group-title">🔔 Notifications</div>
       <div style="padding:14px 16px 10px">
         <div class="notif-status-bar" id="notifStatusBar">
@@ -833,19 +818,6 @@ body::before{
       </div>
       <div style="padding:4px 16px 14px">
         <button class="perm-btn granted" style="margin-top:8px" onclick="scheduleAllReminders()">💾 Save &amp; Schedule Reminders</button>
-      </div>
-    </div>
-
-    <!-- TEST NOTIFICATION -->
-    <div class="setting-group">
-      <div class="setting-group-title">🧪 Test Notification</div>
-      <div style="padding:14px 16px">
-        <button class="perm-btn ask" onclick="sendTestNotif()">Send Test Notification Now</button>
-        <div style="margin-top:12px;background:rgba(76,175,125,0.07);border:1px solid rgba(76,175,125,0.18);border-radius:10px;padding:11px 13px">
-          <div style="font-size:.76rem;color:var(--green);font-weight:500;margin-bottom:5px">☁️ Cloud Messaging</div>
-          <div style="font-size:.73rem;color:var(--text-dim);line-height:1.65">Your reminders are delivered via <strong style="color:var(--text)">Pak Anonymous secure infrastructure</strong> — guaranteed delivery whether the app is open, minimised, or your screen is locked.<br><br>Server Status: <span id="fcmStatus" style="color:var(--gold)">Checking...</span></div>
-          <button class="perm-btn ask" style="margin-top:10px;font-size:.75rem;padding:9px 14px" onclick="refreshFCMToken()">🔄 Refresh Token</button>
-        </div>
       </div>
     </div>
 
@@ -930,7 +902,7 @@ body::before{
   <!-- ═══ ABOUT ═══ -->
   <div class="section" id="sec-about">
     <div class="sec-title">About</div>
-    <div class="sec-sub">Eid Skin Plan · v2.0</div>
+    <div class="sec-sub">Eid Skin Plan · v3.0</div>
 
     <!-- App Identity -->
     <div class="card" style="margin-bottom:12px;overflow:hidden">
@@ -948,7 +920,7 @@ body::before{
       </div>
       <div style="padding:16px 18px">
         <p style="font-size:.8rem;color:var(--text-dim);line-height:1.7;text-align:center">
-          A personal 14-day Ramadan skincare tracker built for <strong style="color:var(--text)">Farasat Ali</strong> — combining daily routines, natural mask recipes, hydration tracking, and smart push reminders into one elegant app.
+          A personal 14-day Ramadan skincare tracker built for <strong id="aboutUserName" style="color:var(--text);cursor:default" title="Double-tap to edit" ondblclick="editAboutName()">Farasat Ali</strong> — combining daily routines, natural mask recipes, hydration tracking, and smart push reminders into one elegant app.
         </p>
       </div>
     </div>
@@ -1168,6 +1140,25 @@ async function signInWithGoogle() {
 
 async function signOutAccount() {
   if (!_fbAuth) return;
+  // Show confirmation modal
+  const body = `
+    <div style="text-align:center;padding:8px 0 4px">
+      <div style="font-size:2rem;margin-bottom:12px">👤</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:var(--gold2);margin-bottom:8px">Sign Out?</div>
+      <div style="font-size:.8rem;color:var(--text-dim);line-height:1.6;margin-bottom:20px;padding:0 8px">
+        Your progress stays safely on this device.<br>You can sign back in anytime to restore cloud data.
+      </div>
+      <div style="display:flex;gap:10px">
+        <button onclick="closeModal()" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:.82rem;cursor:pointer;font-family:'DM Sans',sans-serif">Cancel</button>
+        <button onclick="confirmSignOut()" style="flex:1;padding:12px;border-radius:10px;border:1px solid rgba(224,112,112,0.3);background:rgba(224,112,112,0.1);color:var(--red);font-size:.82rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif">Sign Out</button>
+      </div>
+    </div>`;
+  document.getElementById('modal-body').innerHTML = body;
+  document.getElementById('modal').classList.add('open');
+}
+
+async function confirmSignOut() {
+  closeModal();
   try {
     await _fbAuth.signOut();
     showToast('👋 Signed out. Data still on this device.');
@@ -1215,32 +1206,46 @@ function onUserSignedOut() {
 }
 
 // Update account card UI
+// Title-case a string (handles ALL-CAPS Google names)
+function toTitleCase(str) {
+  return str.replace(/\S+/g, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+}
+
 function updateAccountUI(user) {
   const signedIn  = document.getElementById('signedInView');
   const signedOut = document.getElementById('signedOutView');
   if (!signedIn || !signedOut) return;
 
+  const notifGroup   = document.getElementById('notifGroup');
+  const reminderGroup = document.getElementById('reminderGroup');
+
   if (user) {
     signedIn.style.display  = 'block';
     signedOut.style.display = 'none';
 
-    // Name & email
-    const name  = user.displayName || 'Google User';
+    // Show notification + reminder sections once signed in
+    if (notifGroup)    notifGroup.style.display    = 'block';
+    if (reminderGroup) reminderGroup.style.display = 'block';
+
+    // Name — convert ALL-CAPS Google names to title case
+    const rawName = user.displayName || 'Google User';
+    const name = /^[A-Z\s]+$/.test(rawName) ? toTitleCase(rawName) : rawName;
     const email = user.email || '';
+
     const nameEl  = document.getElementById('accountName');
     const emailEl = document.getElementById('accountEmail');
     if (nameEl)  nameEl.textContent  = name;
     if (emailEl) emailEl.textContent = email;
 
-    // Initials (shown by default, replaced by photo if it loads)
-    const initials = name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    // Initials from title-cased name (first two words' initials)
+    const initials = name.trim().split(/\s+/).slice(0,2).map(w => w[0]).join('').toUpperCase();
     const initialsEl = document.getElementById('accountAvatarInitials');
-    if (initialsEl) initialsEl.textContent = initials;
+    if (initialsEl) { initialsEl.textContent = initials; initialsEl.style.display = 'flex'; }
 
-    // Profile photo (with CORS fallback to initials)
+    // Profile photo — overlaid on initials when loaded
     const avatarEl = document.getElementById('accountAvatar');
     if (user.photoURL && avatarEl) {
-      const photoSrc = user.photoURL.replace(/=s\d+/, '=s200') + (user.photoURL.includes('?') ? '' : '?sz=200');
+      const photoSrc = user.photoURL.replace(/=s\d+-c/, '=s200-c').replace(/sz=\d+/, 'sz=200');
       avatarEl.onload = function() {
         avatarEl.style.display = 'block';
         if (initialsEl) initialsEl.style.display = 'none';
@@ -1252,21 +1257,32 @@ function updateAccountUI(user) {
       avatarEl.src = photoSrc;
     }
 
-    // Nav account dot — green badge when signed in
-    const navDot = document.getElementById('accountNavDot');
-    if (navDot) navDot.style.display = 'block';
+    // Update about section name dynamically (hidden feature — double-tap to override)
+    const aboutName = document.getElementById('aboutUserName');
+    if (aboutName && !lsGet('about_name_custom')) aboutName.textContent = name;
+
+    // Single nav dot — green when signed in
+    updateSettingsNavDot();
 
   } else {
     signedIn.style.display  = 'none';
     signedOut.style.display = 'block';
+
+    // Keep notif+reminder visible even when signed out (still useful)
+    if (notifGroup)    notifGroup.style.display    = 'block';
+    if (reminderGroup) reminderGroup.style.display = 'block';
+
     // Reset avatar
-    const avatarEl    = document.getElementById('accountAvatar');
-    const initialsEl  = document.getElementById('accountAvatarInitials');
+    const avatarEl   = document.getElementById('accountAvatar');
+    const initialsEl = document.getElementById('accountAvatarInitials');
     if (avatarEl)   { avatarEl.src = ''; avatarEl.style.display = 'none'; }
     if (initialsEl) { initialsEl.textContent = '?'; initialsEl.style.display = 'flex'; }
-    // Hide nav dot
-    const navDot = document.getElementById('accountNavDot');
-    if (navDot) navDot.style.display = 'none';
+
+    // Restore default about name
+    const aboutName = document.getElementById('aboutUserName');
+    if (aboutName && !lsGet('about_name_custom')) aboutName.textContent = lsGet('about_name_custom') || 'Farasat Ali';
+
+    updateSettingsNavDot();
   }
 }
 
@@ -1333,18 +1349,19 @@ function _lsSave(key, val) {
   try { localStorage.setItem(key, val); } catch(e) { _mem[key] = String(val); }
 }
 
-// Auto-sync to cloud whenever a value is saved (debounced 1.5s)
+// Auto-sync to cloud whenever a value is saved (debounced 300ms — fast enough to feel instant)
 const SYNC_SKIP = ['fcm_token_hash', 'install_dismissed'];
 function lsSet(key, val) {
   _lsSave(key, val);
   if (_currentUser && !SYNC_SKIP.includes(key)) {
+    // Show syncing indicator immediately
+    const syncEl = document.getElementById('syncStatusText');
+    if (syncEl) syncEl.textContent = '⏳ Saving...';
     clearTimeout(_syncTimer);
-    _syncTimer = setTimeout(() => {
-      syncLocalToCloud(_currentUser.uid).then(() => {
-        const el = document.getElementById('syncStatusText');
-        if (el) el.textContent = 'Last synced: ' + new Date().toLocaleTimeString();
-      });
-    }, 1500);
+    _syncTimer = setTimeout(async () => {
+      await syncLocalToCloud(_currentUser.uid);
+      if (syncEl) syncEl.textContent = '✅ Saved at ' + new Date().toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit'});
+    }, 300);
   }
 }
 
@@ -1391,6 +1408,22 @@ async function registerFCMAndSave() {
   }
 }
 
+function updateSettingsNavDot() {
+  const dot = document.getElementById('settingsNavDot');
+  if (!dot) return;
+  if (_currentUser) {
+    // Signed in = green dot (positive signal)
+    dot.style.background = 'var(--green)';
+    dot.style.display = 'block';
+  } else if (('Notification' in window) && Notification.permission !== 'granted') {
+    // Not signed in + notif not granted = red warning dot
+    dot.style.background = 'var(--red)';
+    dot.style.display = 'block';
+  } else {
+    dot.style.display = 'none';
+  }
+}
+
 function updateNotifUI() {
   const perm = ('Notification' in window) ? Notification.permission : 'unsupported';
   const btn = document.getElementById('notifPermBtn');
@@ -1398,7 +1431,6 @@ function updateNotifUI() {
   const title = document.getElementById('notifStatusTitle');
   const desc = document.getElementById('notifStatusDesc');
   const bar = document.getElementById('notifStatusBar');
-  const dot = document.getElementById('notifDot');
   const stepsEl = document.getElementById('unblockSteps');
 
   if (perm === 'granted') {
@@ -1407,7 +1439,6 @@ function updateNotifUI() {
     if (title) title.textContent = 'Notifications Active';
     if (desc) desc.textContent = 'You will get Sehri, Iftar & night reminders daily';
     if (bar) bar.style.background = 'rgba(76,175,125,0.1)';
-    if (dot) dot.style.display = 'none';
     if (stepsEl) stepsEl.style.display = 'none';
   } else if (perm === 'denied') {
     if (btn) { btn.className = 'perm-btn denied'; btn.textContent = '🚫 Blocked — See Steps Below'; btn.onclick = null; }
@@ -1415,7 +1446,6 @@ function updateNotifUI() {
     if (title) title.textContent = 'Notifications Blocked by Chrome';
     if (desc) desc.textContent = 'Chrome blocked it when you tapped Deny. Follow the steps below to manually allow:';
     if (bar) bar.style.background = 'rgba(224,112,112,0.08)';
-    if (dot) dot.style.display = 'block';
     if (stepsEl) stepsEl.style.display = 'block';
   } else if (perm === 'unsupported') {
     if (btn) { btn.className = 'perm-btn denied'; btn.textContent = '❌ Not Supported'; btn.onclick = null; }
@@ -1423,11 +1453,10 @@ function updateNotifUI() {
     if (desc) desc.textContent = 'Open this page in Chrome on Android for notifications to work';
     if (stepsEl) stepsEl.style.display = 'none';
   } else {
-    // default — not yet asked
     if (btn) { btn.className = 'perm-btn ask'; btn.textContent = '🔔 Allow Notifications'; btn.onclick = requestNotifPermission; }
-    if (dot) dot.style.display = 'block';
     if (stepsEl) stepsEl.style.display = 'none';
   }
+  updateSettingsNavDot();
 }
 
 // Update FCM status display
@@ -1601,6 +1630,11 @@ window.onload = async function() {
   try { updateFCMStatus(); } catch(e) {}
   try { loadReminderTimes(); } catch(e) {}
   try { scheduleAllReminders(); } catch(e) {}
+  // Restore custom about name if saved
+  try {
+    const customName = lsGet('about_name_custom');
+    if (customName) { const el = document.getElementById('aboutUserName'); if (el) el.textContent = customName; }
+  } catch(e) {}
   try {
     if (!lsGet('install_dismissed') && !window.matchMedia('(display-mode: standalone)').matches) {
       setTimeout(() => {
@@ -1833,6 +1867,39 @@ function confirmReset() {
     <button class="complete-btn done-btn" onclick="closeModal()">Cancel</button>
   `;
   document.getElementById('modal').classList.add('open');
+}
+
+// Fix 8: Editable name in About section (double-tap)
+function editAboutName() {
+  const el = document.getElementById('aboutUserName');
+  if (!el) return;
+  const current = el.textContent;
+  const input = document.createElement('input');
+  Object.assign(input.style, {
+    background:'rgba(201,168,76,0.1)',border:'1px solid var(--gold)',borderRadius:'6px',
+    padding:'2px 8px',color:'var(--text)',fontFamily:"'DM Sans',sans-serif",
+    fontSize:'.9rem',fontWeight:'500',width:'140px',outline:'none'
+  });
+  input.value = current;
+  el.replaceWith(input);
+  input.focus(); input.select();
+  const done = () => {
+    const val = input.value.trim() || 'Farasat Ali';
+    const strong = document.createElement('strong');
+    strong.id = 'aboutUserName';
+    strong.style.cssText = 'color:var(--text);cursor:default';
+    strong.title = 'Double-tap to edit';
+    strong.setAttribute('ondblclick','editAboutName()');
+    strong.textContent = val;
+    input.replaceWith(strong);
+    if (val !== 'Farasat Ali') {
+      lsSet('about_name_custom', val);
+    } else {
+      lsDel('about_name_custom');
+    }
+  };
+  input.onblur = done;
+  input.onkeydown = e => { if (e.key === 'Enter') done(); if (e.key === 'Escape') { input.value = current; done(); } };
 }
 
 async function clearAppCache() {
