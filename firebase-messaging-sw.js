@@ -52,8 +52,8 @@ messaging.onBackgroundMessage(payload => {
   const body  = (payload.data && payload.data.body)  || (payload.notification && payload.notification.body)  || 'Time for your skin routine!';
   return self.registration.showNotification(title, {
     body:    body,
-    icon:    '/icon-192.png',
-    badge:   '/icon-192.png',
+    icon:    './icon-192.png',
+    badge:   './icon-192.png',
     tag:     'eid-reminder',
     vibrate: [200, 100, 200],
     requireInteraction: false
