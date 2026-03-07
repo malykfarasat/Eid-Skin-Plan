@@ -822,7 +822,7 @@ body::before{
     </div>
 
     <!-- INSTALL GUIDE -->
-    <div class="setting-group">
+    <div class="setting-group" id="installGuideGroup">
       <div class="setting-group-title">📲 Install as App on Android</div>
       <div class="install-steps">
         <div class="install-step">
@@ -1610,6 +1610,8 @@ async function triggerInstall() {
 window.addEventListener('appinstalled', () => {
   showToast('🎉 Eid Skin Plan installed!');
   document.getElementById('installBannerInner').classList.add('hidden');
+  const g = document.getElementById('installGuideGroup');
+  if (g) g.style.display = 'none';
 });
 
 // ══════════════════════════════════════
@@ -1619,6 +1621,13 @@ const currentDay = getCurrentDay();
 
 window.onload = async function() {
   try { initFirebase(); } catch(e) { console.log("FB init:",e); }
+  // Hide install guide if already running as installed PWA
+  try {
+    if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
+      const g = document.getElementById('installGuideGroup');
+      if (g) g.style.display = 'none';
+    }
+  } catch(e) {}
   try { registerSW(); } catch(e) {}
   try { initTodayChecks(); } catch(e) {}
   try { renderWater(); } catch(e) {}
