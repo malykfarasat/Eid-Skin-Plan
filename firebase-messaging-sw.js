@@ -5,7 +5,7 @@ importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js'
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
 
 // ── Offline cache ──
-const CACHE = 'eid-skin-v9';
+const CACHE = 'eid-skin-v10';
 const ASSETS = ['/index.html','/manifest.json','/icon.svg','/icon-192.png','/icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -19,6 +19,11 @@ self.addEventListener('activate', e => {
       .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
       .then(() => clients.claim())
   );
+});
+
+// Allow page to trigger skipWaiting via postMessage
+self.addEventListener('message', e => {
+  if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('fetch', e => {

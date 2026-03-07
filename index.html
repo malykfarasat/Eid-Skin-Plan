@@ -139,6 +139,7 @@ body::before{
 .sync-status{font-size:.7rem;padding:8px 16px 10px;border-top:1px solid var(--border);color:var(--text-dim);display:flex;align-items:center;gap:6px}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .section{display:none;animation:fadeIn .22s ease}
 .section.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -1096,10 +1097,81 @@ function initFirebase() {
 // ══════════════════════════════════════
 function registerSW() {
   if (!('serviceWorker' in navigator)) return;
-  // Relative path works on ALL hosts (Netlify, GitHub Pages, any subdirectory)
+
   navigator.serviceWorker.register('./firebase-messaging-sw.js')
-    .then(reg => { reg.update(); })
+    .then(reg => {
+      // Check for updates immediately on every page load
+      reg.update();
+
+      // Re-check every 60 seconds while app is open
+      setInterval(() => reg.update(), 60 * 1000);
+
+      // When a brand new SW is found installing
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        if (!newWorker) return;
+        newWorker.addEventListener('statechange', () => {
+          // New SW installed and waiting to take over
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showUpdateBanner();
+          }
+        });
+      });
+    })
     .catch(() => {});
+
+  // When new SW takes over (skipWaiting fired) → reload page to get fresh content
+  let _reloading = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!_reloading) {
+      _reloading = true;
+      window.location.reload();
+    }
+  });
+}
+
+function showUpdateBanner() {
+  // Remove any existing banner
+  const old = document.getElementById('updateBanner');
+  if (old) old.remove();
+
+  const banner = document.createElement('div');
+  banner.id = 'updateBanner';
+  banner.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
+      <span style="font-size:1rem;flex-shrink:0">✨</span>
+      <div style="min-width:0">
+        <div style="font-size:.78rem;font-weight:500;color:var(--text)">New update available</div>
+        <div style="font-size:.68rem;color:var(--text-dim);margin-top:1px">Tap to get the latest version</div>
+      </div>
+    </div>
+    <button onclick="applyUpdate()" style="flex-shrink:0;background:var(--gold);color:#0a0c14;border:none;border-radius:8px;padding:7px 14px;font-size:.75rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Update</button>
+    <button onclick="document.getElementById('updateBanner').remove()" style="flex-shrink:0;background:transparent;border:none;color:var(--text-dim);font-size:1rem;cursor:pointer;padding:4px 6px;line-height:1">✕</button>
+  `;
+  Object.assign(banner.style, {
+    position:'fixed', bottom:'80px', left:'12px', right:'12px',
+    background:'var(--surface)', border:'1px solid var(--gold)',
+    borderRadius:'12px', padding:'12px 14px', display:'flex',
+    alignItems:'center', gap:'10px', zIndex:'200',
+    boxShadow:'0 4px 24px rgba(0,0,0,0.5)',
+    animation:'slideUp .3s ease'
+  });
+  document.body.appendChild(banner);
+}
+
+async function applyUpdate() {
+  try {
+    const reg = await navigator.serviceWorker.getRegistration();
+    if (reg && reg.waiting) {
+      // Tell waiting SW to skip waiting → triggers controllerchange → page reloads
+      reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+    } else {
+      // SW already active — just reload
+      window.location.reload(true);
+    }
+  } catch(e) {
+    window.location.reload(true);
+  }
 }
 
 // ══════════════════════════════════════
