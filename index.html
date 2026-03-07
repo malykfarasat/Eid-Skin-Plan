@@ -999,8 +999,8 @@ function initFirebase() {
 // ══════════════════════════════════════
 function registerSW() {
   if (!('serviceWorker' in navigator)) return;
-  // Single unified SW handles both offline cache and FCM push
-  navigator.serviceWorker.register('/firebase-messaging-sw.js')
+  // Relative path works on ALL hosts (Netlify, GitHub Pages, any subdirectory)
+  navigator.serviceWorker.register('./firebase-messaging-sw.js')
     .then(reg => { reg.update(); })
     .catch(() => {});
 }
@@ -1610,6 +1610,9 @@ function triggerImport() {
   if (input) { input.value = ''; input.click(); }
 }
 
+// Stores pending import data safely — avoids broken inline onclick JSON passing
+let _pendingImportData = null;
+
 function handleImportFile(input) {
   const file = input.files && input.files[0];
   if (!file) return;
@@ -1627,7 +1630,9 @@ function handleImportFile(input) {
         showToast('❌ Unsupported backup version.');
         return;
       }
-      // ── Show preview modal ──
+      // Store safely in global — never pass JSON through onclick attributes
+      _pendingImportData = obj.data;
+
       const completedDays = (() => { try { return JSON.parse(obj.data['eid_completed_days'] || '[]'); } catch(e) { return []; } })();
       const startDay  = obj.data['eid_start_day'] || 'Unknown';
       const exported  = obj.exportedAt ? new Date(obj.exportedAt).toLocaleDateString() : 'Unknown';
@@ -1645,7 +1650,7 @@ function handleImportFile(input) {
           📤 Exported on: ${exported}
         </div>
         <p style="font-size:.74rem;color:var(--red);margin:12px 0 4px">⚠️ This will overwrite your current progress.</p>
-        <button class="complete-btn" style="margin-bottom:10px" onclick="applyImport(${JSON.stringify(JSON.stringify(obj.data))})">✅ Yes, Restore This Backup</button>
+        <button class="complete-btn" style="margin-bottom:10px" onclick="applyImport()">✅ Yes, Restore This Backup</button>
         <button class="complete-btn done-btn" onclick="closeModal()">Cancel</button>
       `;
       document.getElementById('modal').classList.add('open');
@@ -1656,10 +1661,11 @@ function handleImportFile(input) {
   reader.readAsText(file);
 }
 
-function applyImport(dataStr) {
+function applyImport() {
   try {
-    const data = JSON.parse(dataStr);
-    // Restore all keys — skip device-specific ones
+    if (!_pendingImportData) { showToast('❌ No backup loaded. Try importing again.'); return; }
+    const data = _pendingImportData;
+    _pendingImportData = null; // clear after use
     const SKIP = ['fcm_token_hash', 'install_dismissed'];
     let count = 0;
     Object.entries(data).forEach(([k, v]) => {
