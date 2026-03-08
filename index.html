@@ -1834,19 +1834,30 @@ function saveReminders() {
 }
 
 function scheduleAllReminders() {
-  if (Notification.permission !== 'granted') return;
+  if (Notification.permission !== 'granted') {
+    showToast('⚠️ Allow notifications first, then tap Save again.');
+    return;
+  }
   saveReminders();
   // Save updated times to Firebase so the Cloud Function picks them up
   const hash = lsGet('fcm_token_hash');
   if (_fbDb && hash) {
-    _fbDb.ref('users/' + hash).update({
-      sehri: lsGet('reminder_sehri') || '04:00',
-      iftar: lsGet('reminder_iftar') || '18:30',
-      night: lsGet('reminder_night') || '22:00',
-      tz:    -(new Date().getTimezoneOffset()),
+    const newTimes = {
+      sehri:  lsGet('reminder_sehri') || '04:00',
+      iftar:  lsGet('reminder_iftar') || '18:30',
+      night:  lsGet('reminder_night') || '22:00',
+      tz:     -(new Date().getTimezoneOffset()),
       active: true
-    }).then(() => showToast('✅ Reminders Saved!'))
-      .catch(() => showToast('⚠️ Could not save to Firebase. Check config.'));
+    };
+    // Update anonymous path (always)
+    const updates = [_fbDb.ref('users/' + hash).update(newTimes)];
+    // If logged in, also update account path so GAS picks it up
+    if (_currentUser) {
+      updates.push(_fbDb.ref('accounts/' + _currentUser.uid + '/fcm').update(newTimes));
+    }
+    Promise.all(updates)
+      .then(() => showToast('✅ Reminders Saved!'))
+      .catch(() => showToast('⚠️ Could not reach Pak Anonymous servers.'));
   } else if (!hash) {
     // Not registered yet — try to register first
     registerFCMAndSave().then(ok => {
@@ -1856,7 +1867,6 @@ function scheduleAllReminders() {
     showToast('⚠️ Could not reach Pak Anonymous servers.');
   }
 }
-
 // ══════════════════════════════════════
 // INSTALL PROMPT
 // ══════════════════════════════════════

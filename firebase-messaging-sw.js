@@ -6,7 +6,7 @@ importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-comp
 
 // ── Offline cache ──
 const CACHE = 'eid-skin-v10';
-const ASSETS = ['/index.html','/manifest.json','/icon.svg','/icon-192.png','/icon-512.png'];
+const ASSETS = ['./index.html','./manifest.json','./icon.svg','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS).catch(() => {})));
@@ -72,7 +72,7 @@ self.addEventListener('notificationclick', e => {
   e.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => {
       for (const c of cs) { if ('focus' in c) return c.focus(); }
-      return clients.openWindow('/index.html');
+      return clients.openWindow('./index.html');
     })
   );
 });
