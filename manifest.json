@@ -4,7 +4,7 @@
   "description": "14-Day Ramadan Skin Care Tracker for Farasat Ali",
   "start_url": "./index.html",
   "scope": "./",
-  "display": "standalone",
+  "display": "fullscreen",
   "orientation": "portrait-primary",
   "background_color": "#07090f",
   "theme_color": "#c9a84c",

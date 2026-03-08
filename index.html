@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#07090f">
+<meta name="theme-color" content="#c9a84c">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Eid Skin">
@@ -50,7 +50,6 @@ body{
   background:var(--bg);color:var(--text);
   font-family:'DM Sans',sans-serif;font-weight:300;
   min-height:100vh;overflow-x:hidden;padding-bottom:110px;
-  padding-top:env(safe-area-inset-top);
   -webkit-user-select:none;-moz-user-select:none;user-select:none;
 }
 body::before{
@@ -1645,7 +1644,7 @@ function lsSet(key, val) {
 
 // Get FCM token and save reminder config to Firebase DB
 async function registerFCMAndSave() {
-  if (!_fbMsg || !_fbDb) { showToast('⚠️ Firebase not ready. Check your config.'); return false; }
+  if (!_fbMsg || !_fbDb) { showToast('⚠️ Server not ready. Try again in a moment.'); return false; }
   try {
     const swReg = await navigator.serviceWorker.ready;
     const token = await _fbMsg.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
@@ -1681,7 +1680,7 @@ async function registerFCMAndSave() {
     return true;
   } catch(e) {
     console.log('FCM register error:', e);
-    showToast('❌ FCM error: ' + e.message);
+    showToast('❌ Server error: ' + e.message);
     return false;
   }
 }
@@ -1715,7 +1714,7 @@ function updateNotifUI() {
     if (btn) { btn.className = 'perm-btn granted'; btn.textContent = '✅ Notifications Enabled'; btn.onclick = null; }
     if (icon) icon.textContent = '✅';
     if (title) title.textContent = 'Notifications Active';
-    if (desc) desc.textContent = 'You will get Sehri, Iftar & night reminders daily';
+    if (desc) desc.textContent = 'Reminders will come from Pak Anonymous servers daily';
     if (bar) bar.style.background = 'rgba(76,175,125,0.1)';
     if (stepsEl) stepsEl.style.display = 'none';
   } else if (perm === 'denied') {
@@ -1743,10 +1742,10 @@ function updateFCMStatus() {
   if (!el) return;
   const hash = lsGet('fcm_token_hash');
   if (hash) {
-    el.textContent = '✅ Registered (token: ' + hash.slice(0,8) + '...)';
+    el.textContent = '✅ Connected to Pak Anonymous (id: ' + hash.slice(0,8) + '...)';
     el.style.color = 'var(--green)';
   } else {
-    el.textContent = '⚠️ Not registered. Allow notifications first';
+    el.textContent = '⚠️ Not connected. Allow notifications first';
     el.style.color = 'var(--red)';
   }
 }
@@ -1768,10 +1767,10 @@ async function requestNotifPermission() {
     const result = await Notification.requestPermission();
     updateNotifUI();
     if (result === 'granted') {
-      showToast('⏳ Registering with Firebase...');
+      showToast('⏳ Connecting to Pak Anonymous servers...');
       const ok = await registerFCMAndSave();
       if (ok) {
-        showToast('✅ Notifications enabled!');
+        showToast('✅ Connected to Pak Anonymous servers!');
         scheduleAllReminders();
       }
       loadReminderTimes();
@@ -1854,7 +1853,7 @@ function scheduleAllReminders() {
       if (ok) showToast('✅ Registered & reminders saved!');
     });
   } else {
-    showToast('⚠️ Firebase not connected. Check config.');
+    showToast('⚠️ Could not reach Pak Anonymous servers.');
   }
 }
 
