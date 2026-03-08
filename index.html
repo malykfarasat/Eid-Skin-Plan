@@ -10,6 +10,17 @@
 <meta name="description" content="14-Day Ramadan Skin Care Tracker for Farasat Ali">
 <title>Eid Skin Plan 🌙</title>
 <link rel="manifest" href="./manifest.json">
+<!-- Theme applied instantly before render to avoid flash -->
+<script>
+(function(){
+  try {
+    var saved = localStorage.getItem('theme_mode') || 'system';
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var useDark = saved === 'dark' || (saved === 'system' && prefersDark);
+    if (!useDark) document.documentElement.classList.add('pre-light');
+  } catch(e) {}
+})();
+</script>
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
@@ -141,6 +152,25 @@ body::before{
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 @keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── PRE-LIGHT: applied by head script before render to prevent dark flash ── */
+html.pre-light body,
+body.light-mode {
+  --bg:#f5f0e8;
+  --surface:#ffffff;
+  --surface2:#ede8dc;
+  --gold:#a07220;
+  --gold2:#8a6018;
+  --gold-dim:rgba(160,114,32,0.1);
+  --text:#1a160e;
+  --text-dim:#7a6f5a;
+  --green:#2a7a4e;
+  --green-dim:rgba(42,122,78,0.12);
+  --red:#b83030;
+  --red-dim:rgba(184,48,48,0.1);
+  --blue:#2a60a8;
+  --border:rgba(160,114,32,0.22);
+}
 
 /* ══ LIGHT MODE ══ */
 body.light-mode {
@@ -2159,7 +2189,10 @@ function launchConfetti() {
 function applyTheme(mode) {
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const useDark = mode === 'dark' || (mode === 'system' && prefersDark);
+  // body.light-mode drives the full theme
   document.body.classList.toggle('light-mode', !useDark);
+  // html.pre-light was set early by head script, keep in sync
+  document.documentElement.classList.toggle('pre-light', !useDark);
   // Update active button
   ['light','system','dark'].forEach(m => {
     const btn = document.getElementById('themeBtn-' + m);
