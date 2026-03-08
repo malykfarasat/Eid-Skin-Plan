@@ -55,7 +55,7 @@ messaging.onBackgroundMessage(payload => {
   // Read from data field (data-only message) or notification field
   const title = (payload.data && payload.data.title) || (payload.notification && payload.notification.title) || '🌙 Eid Skin Plan';
   const body  = (payload.data && payload.data.body)  || (payload.notification && payload.notification.body)  || 'Time for your skin routine!';
-  const ICON = 'https://malykfarasat.github.io/Eid-Skin-Plan/icon-192.png';
+  const ICON = 'https://eidskinplan.pakanonymous.org/icon-192.png';
   return self.registration.showNotification(title, {
     body:    body,
     icon:    ICON,

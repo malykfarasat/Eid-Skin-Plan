@@ -10,14 +10,12 @@
 <meta name="description" content="14-Day Ramadan Skin Care Tracker for Farasat Ali">
 <title>Eid Skin Plan 🌙</title>
 <link rel="manifest" href="./manifest.json">
-<!-- Theme applied instantly before render to avoid flash -->
+<!-- Apply theme before render - prevents any flash -->
 <script>
 (function(){
   try {
-    var saved = localStorage.getItem('theme_mode') || 'system';
-    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    var useDark = saved === 'dark' || (saved === 'system' && prefersDark);
-    if (!useDark) document.documentElement.classList.add('pre-light');
+    var t = localStorage.getItem('theme_mode') || 'system';
+    if (t !== 'system') document.documentElement.setAttribute('data-theme', t);
   } catch(e) {}
 })();
 </script>
@@ -153,61 +151,47 @@ body::before{
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 @keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
-/* ── PRE-LIGHT: applied by head script before render to prevent dark flash ── */
-html.pre-light body,
-body.light-mode {
-  --bg:#f5f0e8;
-  --surface:#ffffff;
-  --surface2:#ede8dc;
-  --gold:#a07220;
-  --gold2:#8a6018;
-  --gold-dim:rgba(160,114,32,0.1);
-  --text:#1a160e;
-  --text-dim:#7a6f5a;
-  --green:#2a7a4e;
-  --green-dim:rgba(42,122,78,0.12);
-  --red:#b83030;
-  --red-dim:rgba(184,48,48,0.1);
-  --blue:#2a60a8;
-  --border:rgba(160,114,32,0.22);
+/* ══ LIGHT MODE (system auto + manual override) ══ */
+
+/* System = light: pure CSS media query, zero JS needed */
+@media (prefers-color-scheme: light) {
+  html:not([data-theme="dark"]) body {
+    --bg:#f5f0e8;--surface:#ffffff;--surface2:#ede8dc;
+    --gold:#a07220;--gold2:#8a6018;--gold-dim:rgba(160,114,32,0.1);
+    --text:#1a160e;--text-dim:#7a6f5a;
+    --green:#2a7a4e;--green-dim:rgba(42,122,78,0.12);
+    --red:#b83030;--red-dim:rgba(184,48,48,0.1);
+    --blue:#2a60a8;--border:rgba(160,114,32,0.22);
+  }
+  html:not([data-theme="dark"]) body::before {
+    background:
+      radial-gradient(ellipse 60% 40% at 80% 10%,rgba(160,114,32,0.06) 0%,transparent 60%),
+      radial-gradient(ellipse 40% 60% at 10% 80%,rgba(160,114,32,0.04) 0%,transparent 50%);
+  }
+  html:not([data-theme="dark"]) .bottom-nav{background:rgba(245,240,232,0.97)}
+  html:not([data-theme="dark"]) .ring-bg{stroke:rgba(160,114,32,0.12)}
+  html:not([data-theme="dark"]) .check-item.done{background:rgba(42,122,78,0.07)}
+  html:not([data-theme="dark"]) .glass.filled{filter:none}
 }
 
-/* ══ LIGHT MODE ══ */
-body.light-mode {
-  --bg:#f5f0e8;
-  --surface:#ffffff;
-  --surface2:#ede8dc;
-  --gold:#a07220;
-  --gold2:#8a6018;
-  --gold-dim:rgba(160,114,32,0.1);
-  --text:#1a160e;
-  --text-dim:#7a6f5a;
-  --green:#2a7a4e;
-  --green-dim:rgba(42,122,78,0.12);
-  --red:#b83030;
-  --red-dim:rgba(184,48,48,0.1);
-  --blue:#2a60a8;
-  --border:rgba(160,114,32,0.22);
+/* Force light (user picked Light) */
+html[data-theme="light"] body {
+  --bg:#f5f0e8;--surface:#ffffff;--surface2:#ede8dc;
+  --gold:#a07220;--gold2:#8a6018;--gold-dim:rgba(160,114,32,0.1);
+  --text:#1a160e;--text-dim:#7a6f5a;
+  --green:#2a7a4e;--green-dim:rgba(42,122,78,0.12);
+  --red:#b83030;--red-dim:rgba(184,48,48,0.1);
+  --blue:#2a60a8;--border:rgba(160,114,32,0.22);
 }
-body.light-mode::before {
+html[data-theme="light"] body::before {
   background:
     radial-gradient(ellipse 60% 40% at 80% 10%,rgba(160,114,32,0.06) 0%,transparent 60%),
     radial-gradient(ellipse 40% 60% at 10% 80%,rgba(160,114,32,0.04) 0%,transparent 50%);
 }
-body.light-mode .bottom-nav {
-  background:rgba(245,240,232,0.97);
-}
-body.light-mode .ring-bg { stroke:rgba(160,114,32,0.12); }
-body.light-mode .card,
-body.light-mode .water-card,
-body.light-mode .recipe-card,
-body.light-mode .tip-card,
-body.light-mode .setting-group,
-body.light-mode .progress-card {
-  box-shadow:0 1px 8px rgba(0,0,0,0.06);
-}
-body.light-mode .check-item.done { background:rgba(42,122,78,0.07); }
-body.light-mode .glass.filled { filter:none; }
+html[data-theme="light"] .bottom-nav{background:rgba(245,240,232,0.97)}
+html[data-theme="light"] .ring-bg{stroke:rgba(160,114,32,0.12)}
+html[data-theme="light"] .check-item.done{background:rgba(42,122,78,0.07)}
+html[data-theme="light"] .glass.filled{filter:none}
 
 /* Theme toggle pill */
 .theme-toggle {
@@ -1772,9 +1756,6 @@ document.addEventListener('visibilitychange', () => {
   if (!document.hidden) {
     try { updateNotifUI(); } catch(e) {}
     try { updateFCMStatus(); } catch(e) {}
-    // Re-check system theme when coming back to app.
-    // Android Chrome fires prefers-color-scheme AFTER visibilitychange, not during.
-    try { if ((lsGet('theme_mode') || 'system') === 'system') applyTheme('system'); } catch(e) {}
   }
 });
 
@@ -2185,15 +2166,20 @@ function launchConfetti() {
 
 // ══════════════════════════════════════
 // THEME (Light / Dark / System)
+// System mode = pure CSS @media, no JS required.
+// Manual modes = data-theme attribute on <html>.
 // ══════════════════════════════════════
 function applyTheme(mode) {
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const useDark = mode === 'dark' || (mode === 'system' && prefersDark);
-  // body.light-mode drives the full theme
-  document.body.classList.toggle('light-mode', !useDark);
-  // html.pre-light was set early by head script, keep in sync
-  document.documentElement.classList.toggle('pre-light', !useDark);
-  // Update active button
+  const html = document.documentElement;
+  if (mode === 'light') {
+    html.setAttribute('data-theme', 'light');
+  } else if (mode === 'dark') {
+    html.setAttribute('data-theme', 'dark');
+  } else {
+    // system: remove attribute, CSS @media handles it automatically
+    html.removeAttribute('data-theme');
+  }
+  // Update button active state
   ['light','system','dark'].forEach(m => {
     const btn = document.getElementById('themeBtn-' + m);
     if (btn) btn.classList.toggle('active', m === mode);
@@ -2208,18 +2194,8 @@ function setTheme(mode) {
 function initTheme() {
   const saved = lsGet('theme_mode') || 'system';
   applyTheme(saved);
-  try {
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const onSystemChange = () => {
-      if ((lsGet('theme_mode') || 'system') === 'system') applyTheme('system');
-    };
-    // addEventListener is modern, addListener is fallback for older Android Chrome
-    if (mq.addEventListener) {
-      mq.addEventListener('change', onSystemChange);
-    } else if (mq.addListener) {
-      mq.addListener(onSystemChange);
-    }
-  } catch(e) {}
+  // System mode is fully handled by CSS @media — no JS listener needed.
+  // But we still update buttons if user hasn't visited settings yet.
 }
 
 window.onload = async function() {
