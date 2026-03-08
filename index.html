@@ -1739,7 +1739,13 @@ function updateFCMStatus() {
 
 // Re-check notification state whenever user returns to tab
 document.addEventListener('visibilitychange', () => {
-  if (!document.hidden) { try { updateNotifUI(); } catch(e) {} try { updateFCMStatus(); } catch(e) {} }
+  if (!document.hidden) {
+    try { updateNotifUI(); } catch(e) {}
+    try { updateFCMStatus(); } catch(e) {}
+    // Re-check system theme when coming back to app.
+    // Android Chrome fires prefers-color-scheme AFTER visibilitychange, not during.
+    try { if ((lsGet('theme_mode') || 'system') === 'system') applyTheme('system'); } catch(e) {}
+  }
 });
 
 async function requestNotifPermission() {
@@ -2169,11 +2175,17 @@ function setTheme(mode) {
 function initTheme() {
   const saved = lsGet('theme_mode') || 'system';
   applyTheme(saved);
-  // Listen for system preference change (e.g. user switches phone to light)
   try {
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const onSystemChange = () => {
       if ((lsGet('theme_mode') || 'system') === 'system') applyTheme('system');
-    });
+    };
+    // addEventListener is modern, addListener is fallback for older Android Chrome
+    if (mq.addEventListener) {
+      mq.addEventListener('change', onSystemChange);
+    } else if (mq.addListener) {
+      mq.addListener(onSystemChange);
+    }
   } catch(e) {}
 }
 
