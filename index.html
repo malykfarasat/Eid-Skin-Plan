@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#c9a84c">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -41,6 +41,7 @@ body{
   background:var(--bg);color:var(--text);
   font-family:'DM Sans',sans-serif;font-weight:300;
   min-height:100vh;overflow-x:hidden;padding-bottom:110px;
+  padding-top:env(safe-area-inset-top);
   -webkit-user-select:none;-moz-user-select:none;user-select:none;
 }
 body::before{
@@ -140,6 +141,59 @@ body::before{
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 @keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ LIGHT MODE ══ */
+body.light-mode {
+  --bg:#f5f0e8;
+  --surface:#ffffff;
+  --surface2:#ede8dc;
+  --gold:#a07220;
+  --gold2:#8a6018;
+  --gold-dim:rgba(160,114,32,0.1);
+  --text:#1a160e;
+  --text-dim:#7a6f5a;
+  --green:#2a7a4e;
+  --green-dim:rgba(42,122,78,0.12);
+  --red:#b83030;
+  --red-dim:rgba(184,48,48,0.1);
+  --blue:#2a60a8;
+  --border:rgba(160,114,32,0.22);
+}
+body.light-mode::before {
+  background:
+    radial-gradient(ellipse 60% 40% at 80% 10%,rgba(160,114,32,0.06) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 60% at 10% 80%,rgba(160,114,32,0.04) 0%,transparent 50%);
+}
+body.light-mode .bottom-nav {
+  background:rgba(245,240,232,0.97);
+}
+body.light-mode .ring-bg { stroke:rgba(160,114,32,0.12); }
+body.light-mode .card,
+body.light-mode .water-card,
+body.light-mode .recipe-card,
+body.light-mode .tip-card,
+body.light-mode .setting-group,
+body.light-mode .progress-card {
+  box-shadow:0 1px 8px rgba(0,0,0,0.06);
+}
+body.light-mode .check-item.done { background:rgba(42,122,78,0.07); }
+body.light-mode .glass.filled { filter:none; }
+
+/* Theme toggle pill */
+.theme-toggle {
+  display:flex;gap:4px;background:var(--surface2);
+  border:1px solid var(--border);border-radius:12px;padding:4px;
+}
+.theme-btn {
+  flex:1;padding:8px 6px;border:none;border-radius:9px;
+  font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:400;
+  color:var(--text-dim);background:transparent;cursor:pointer;
+  transition:all .2s;display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.theme-btn.active {
+  background:var(--surface);color:var(--text);font-weight:500;
+  box-shadow:0 1px 6px rgba(0,0,0,0.12);
+}
 
 /* ══ EID MODE ══ */
 body.eid-mode{
@@ -959,6 +1013,19 @@ body.eid-mode .nav-item.active{color:#f5d27a}
             <strong>Open from home screen</strong>
             <span>Now it opens fullscreen like a real app. No browser bar!</span>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APPEARANCE -->
+    <div class="setting-group">
+      <div class="setting-group-title">🎨 Appearance</div>
+      <div style="padding:14px 16px">
+        <div style="font-size:.76rem;color:var(--text-dim);margin-bottom:10px">Choose your preferred theme.</div>
+        <div class="theme-toggle">
+          <button class="theme-btn" id="themeBtn-light" onclick="setTheme('light')">☀️ Light</button>
+          <button class="theme-btn" id="themeBtn-system" onclick="setTheme('system')">📱 System</button>
+          <button class="theme-btn" id="themeBtn-dark" onclick="setTheme('dark')">🌙 Dark</button>
         </div>
       </div>
     </div>
@@ -2080,11 +2147,46 @@ function launchConfetti() {
   setTimeout(() => { try { wrap.remove(); } catch(e) {} }, 20000);
 }
 
+// ══════════════════════════════════════
+// THEME (Light / Dark / System)
+// ══════════════════════════════════════
+function applyTheme(mode) {
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const useDark = mode === 'dark' || (mode === 'system' && prefersDark);
+  document.body.classList.toggle('light-mode', !useDark);
+  // Update active button
+  ['light','system','dark'].forEach(m => {
+    const btn = document.getElementById('themeBtn-' + m);
+    if (btn) btn.classList.toggle('active', m === mode);
+  });
+}
+
+function setTheme(mode) {
+  lsSet('theme_mode', mode);
+  applyTheme(mode);
+}
+
+function initTheme() {
+  const saved = lsGet('theme_mode') || 'system';
+  applyTheme(saved);
+  // Listen for system preference change (e.g. user switches phone to light)
+  try {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      if ((lsGet('theme_mode') || 'system') === 'system') applyTheme('system');
+    });
+  } catch(e) {}
+}
+
 window.onload = async function() {
+  // Theme must run first to avoid flash
+  try { initTheme(); } catch(e) {}
   try { initFirebase(); } catch(e) { console.log("FB init:",e); }
   // Hide install guide if already running as installed PWA
   try {
-    if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
+    const isInstalled = window.matchMedia('(display-mode: standalone)').matches
+      || window.matchMedia('(display-mode: fullscreen)').matches
+      || navigator.standalone;
+    if (isInstalled) {
       const g = document.getElementById('installGuideGroup');
       if (g) g.style.display = 'none';
     }
@@ -2100,15 +2202,20 @@ window.onload = async function() {
   try { updateFCMStatus(); } catch(e) {}
   try { loadReminderTimes(); } catch(e) {}
   try { scheduleAllReminders(); } catch(e) {}
-  // Eid mode — must run after all renders so it can replace sections
+  // Eid mode, must run after all renders so it can replace sections
   try { initEidMode(); } catch(e) { console.log('Eid init:', e); }
+  // Re-apply theme to set button active states after DOM renders
+  try { applyTheme(lsGet('theme_mode') || 'system'); } catch(e) {}
   // Restore custom about name if saved
   try {
     const customName = lsGet('about_name_custom');
     if (customName) { const el = document.getElementById('aboutUserName'); if (el) el.textContent = customName; }
   } catch(e) {}
   try {
-    if (!lsGet('install_dismissed') && !window.matchMedia('(display-mode: standalone)').matches) {
+    const _isInstalled = window.matchMedia('(display-mode: standalone)').matches
+      || window.matchMedia('(display-mode: fullscreen)').matches
+      || navigator.standalone;
+    if (!lsGet('install_dismissed') && !_isInstalled) {
       setTimeout(() => {
         if (!_deferredInstall) {
           document.getElementById('installBannerInner').classList.remove('hidden');
