@@ -1771,7 +1771,6 @@ async function requestNotifPermission() {
       const ok = await registerFCMAndSave();
       if (ok) {
         showToast('✅ Connected to Pak Anonymous servers!');
-        scheduleAllReminders();
       }
       loadReminderTimes();
     } else {
@@ -2231,7 +2230,6 @@ window.onload = async function() {
   try { updateNotifUI(); } catch(e) {}
   try { updateFCMStatus(); } catch(e) {}
   try { loadReminderTimes(); } catch(e) {}
-  try { scheduleAllReminders(); } catch(e) {}
   // Eid mode, must run after all renders so it can replace sections
   try { initEidMode(); } catch(e) { console.log('Eid init:', e); }
   // Re-apply theme to set button active states after DOM renders
