@@ -1237,13 +1237,25 @@ function getCurrentDay() {
 function getWater() { const d = lsGet('eid_water_' + new Date().toDateString()); return d ? parseInt(d) : 0; }
 function setWater(n) { lsSet('eid_water_' + new Date().toDateString(), n); }
 function getCompletedDays() {
-  try { const d = lsGet('eid_completed_days'); return d ? JSON.parse(d) : []; } catch(e) { return []; }
+  try {
+    const d = lsGet('eid_completed_days');
+    if (!d) return [];
+    const parsed = JSON.parse(d);
+    // Guard: if Firebase object came back as {0:1,1:2,...} instead of array
+    if (Array.isArray(parsed)) {
+      return parsed.map(Number); // ensure all values are numbers
+    } else if (parsed && typeof parsed === 'object') {
+      return Object.keys(parsed).sort((a,b)=>Number(a)-Number(b)).map(k=>Number(parsed[k]));
+    }
+    return [];
+  } catch(e) { return []; }
 }
 function markDayComplete(day) {
+  const d = Number(day);
   const days = getCompletedDays();
-  if (!days.includes(day)) { days.push(day); lsSet('eid_completed_days', JSON.stringify(days)); }
+  if (!days.includes(d)) { days.push(d); lsSet('eid_completed_days', JSON.stringify(days)); }
 }
-function isDayComplete(day) { return getCompletedDays().includes(day); }
+function isDayComplete(day) { return getCompletedDays().includes(Number(day)); }
 
 
 
@@ -1582,7 +1594,10 @@ async function syncLocalToCloud(uid) {
     const progress = {};
     getAllProgressKeys().forEach(k => {
       const v = localStorage.getItem(k);
-      if (v !== null) progress[k.replace(/\./g,'_')] = v; // dots not allowed in FB keys
+      if (v !== null) {
+        // Always store as string — Firebase must never receive raw arrays/objects
+        progress[k.replace(/\./g,'_')] = String(v);
+      }
     });
     await _fbDb.ref('accounts/' + uid + '/progress').set(progress);
     const syncEl = document.getElementById('syncStatusText');
@@ -1603,7 +1618,21 @@ async function loadProgressFromCloud(uid) {
 function applyCloudDataToLocal(cloudData) {
   Object.entries(cloudData).forEach(([k, v]) => {
     const realKey = k.replace(/_dot_/g, '.'); // reverse any encoding
-    if (!SYNC_SKIP.includes(realKey)) localStorage.setItem(realKey, v);
+    if (!SYNC_SKIP.includes(realKey)) {
+      // Firebase converts JS arrays to objects {0:x,1:y,...}
+      // If v is not a plain string, re-stringify so localStorage gets valid JSON
+      let toStore = v;
+      if (typeof v !== 'string') {
+        if (v !== null && typeof v === 'object') {
+          // Array stored as Firebase object — restore key order and stringify
+          const asArr = Object.keys(v).sort((a,b)=>Number(a)-Number(b)).map(key=>v[key]);
+          toStore = JSON.stringify(asArr);
+        } else {
+          toStore = String(v);
+        }
+      }
+      localStorage.setItem(realKey, toStore);
+    }
   });
 }
 
