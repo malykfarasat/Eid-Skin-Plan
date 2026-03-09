@@ -535,14 +535,15 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 
 /* ── LOADING / SYNC STATES ── */
 #appLoadingBar{
-  position:fixed;top:0;left:0;right:0;height:2px;z-index:9999;
-  background:linear-gradient(90deg,var(--gold),var(--gold2),var(--gold));
-  background-size:200% 100%;
-  animation:loadBar 1.2s ease-in-out infinite;
-  opacity:1;transition:opacity .4s ease;
+  position:fixed;top:0;left:0;right:0;height:3px;z-index:9999;
+  background:linear-gradient(90deg,transparent,var(--gold),var(--gold2),var(--gold),transparent);
+  background-size:300% 100%;
+  animation:loadBar 1.4s ease-in-out infinite;
+  opacity:1;transition:opacity .5s ease;
+  box-shadow:0 0 8px rgba(201,168,76,0.7),0 0 16px rgba(201,168,76,0.3);
 }
 #appLoadingBar.done{opacity:0;pointer-events:none}
-@keyframes loadBar{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@keyframes loadBar{0%{background-position:100% 0}100%{background-position:-100% 0}}
 
 /* Offline banner */
 #offlineBanner{
