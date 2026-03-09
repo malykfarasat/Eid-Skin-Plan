@@ -532,6 +532,66 @@ body.eid-mode .nav-item.active{color:#f5d27a}
   font-size:.75rem;color:var(--text-dim);line-height:1.8;
 }
 .io-preview strong{color:var(--text);display:block;margin-bottom:6px;font-size:.82rem}
+
+/* ── LOADING / SYNC STATES ── */
+#appLoadingBar{
+  position:fixed;top:0;left:0;right:0;height:2px;z-index:9999;
+  background:linear-gradient(90deg,var(--gold),var(--gold2),var(--gold));
+  background-size:200% 100%;
+  animation:loadBar 1.2s ease-in-out infinite;
+  opacity:1;transition:opacity .4s ease;
+}
+#appLoadingBar.done{opacity:0;pointer-events:none}
+@keyframes loadBar{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* Offline banner */
+#offlineBanner{
+  position:fixed;top:0;left:0;right:0;z-index:9998;
+  background:rgba(30,24,10,0.97);
+  border-bottom:1px solid rgba(201,168,76,0.25);
+  padding:8px 16px;
+  display:flex;align-items:center;gap:8px;
+  font-size:.74rem;color:var(--text-dim);
+  transform:translateY(-100%);transition:transform .3s ease;
+}
+#offlineBanner.visible{transform:translateY(0)}
+#offlineBanner .ob-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:#888;flex-shrink:0;
+}
+#offlineBanner .ob-msg{flex:1}
+#offlineBanner .ob-badge{
+  font-size:.65rem;background:rgba(201,168,76,0.1);
+  border:1px solid rgba(201,168,76,0.2);
+  color:var(--gold);padding:2px 8px;border-radius:20px;flex-shrink:0;
+}
+
+/* Sync dot states */
+.sync-dot-wrap{position:relative;display:inline-block}
+#syncDot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--green);
+  transition:background .4s ease;
+  flex-shrink:0;
+}
+#syncDot.idle   {background:var(--green);animation:pulse 2.5s infinite}
+#syncDot.syncing{background:var(--gold);animation:pulse .8s infinite}
+#syncDot.offline{background:#666;animation:none}
+#syncDot.error  {background:var(--red);animation:none}
+
+/* Progress card smooth transition */
+.progress-card{transition:opacity .3s ease}
+.progress-card.loading-state{opacity:.5}
+
+/* Smoother section transitions */
+.section{transition:opacity .2s ease}
+.section:not(.active){display:none}
+
+/* Smooth toast */
+.toast{
+  transition:opacity .25s ease,transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+
 </style>
 </head>
 <body>
@@ -585,6 +645,16 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 </nav>
 
 <!-- CONTENT -->
+<!-- App loading bar (top 2px golden line while Firebase inits) -->
+<div id="appLoadingBar"></div>
+
+<!-- Offline banner -->
+<div id="offlineBanner">
+  <div class="ob-dot"></div>
+  <span class="ob-msg">No internet connection. Changes are saved on this device.</span>
+  <span class="ob-badge">Offline</span>
+</div>
+
 <div class="wrap">
 
   <!-- HEADER -->
@@ -894,7 +964,7 @@ body.eid-mode .nav-item.active{color:#f5d27a}
                 <div id="accountName" style="font-size:.95rem;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">...</div>
                 <div id="accountEmail" style="font-size:.7rem;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">...</div>
                 <div style="margin-top:7px;display:inline-flex;align-items:center;gap:5px;background:rgba(76,175,125,0.12);border:1px solid rgba(76,175,125,0.25);border-radius:20px;padding:3px 9px">
-                  <div style="width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite"></div>
+                  <div id="syncDot" class="idle"></div>
                   <span style="font-size:.6rem;color:var(--green);font-weight:600;letter-spacing:.04em">SYNCED TO CLOUD</span>
                 </div>
               </div>
@@ -1293,14 +1363,24 @@ function initFirebase() {
     // Auth state listener — fires on login and logout
     _fbAuth.onAuthStateChanged(user => {
       _currentUser = user;
+      // Hide the startup loading bar once auth state is known
+      const bar = document.getElementById('appLoadingBar');
+      if (bar) bar.classList.add('done');
       if (user) {
         onUserSignedIn(user);
       } else {
         onUserSignedOut();
+        // Not signed in — show idle state
+        updateSyncStatus('idle');
       }
     });
 
-  } catch(e) { console.log('Firebase init failed:', e.message); }
+  } catch(e) {
+    // Firebase failed — show offline state so user knows
+    const bar = document.getElementById('appLoadingBar');
+    if (bar) bar.classList.add('done');
+    updateSyncStatus(navigator.onLine ? 'error' : 'offline');
+  }
 }
 
 // ══════════════════════════════════════
@@ -1460,17 +1540,33 @@ async function confirmSignOut() {
 async function onUserSignedIn(user) {
   // Update UI
   updateAccountUI(user);
+  updateSyncStatus('loading');
 
-  // Pull cloud data first — then merge with local if cloud is empty
-  const cloudData = await loadProgressFromCloud(user.uid);
-  if (cloudData && Object.keys(cloudData).length > 0) {
-    // Cloud has data — restore to localStorage (newer wins)
-    applyCloudDataToLocal(cloudData);
-    showToast('✅ Progress loaded.');
-  } else {
-    // No cloud data — push current local data up
-    await syncLocalToCloud(user.uid);
-    showToast('✅ Signed in. Progress synced.');
+  if (!navigator.onLine) {
+    // TASK 2: offline — skip cloud fetch, work from localStorage
+    updateSyncStatus('offline');
+    _offlineQueue = true; // will push when back online
+    try { initTodayChecks(); } catch(e) {}
+    try { renderWater(); } catch(e) {}
+    try { renderProgress(); } catch(e) {}
+    try { renderCalendar(); } catch(e) {}
+    try { renderMaskBadge(); } catch(e) {}
+    try { updateBadges(); } catch(e) {}
+    try { loadReminderTimes(); } catch(e) {}
+    return;
+  }
+
+  // Pull cloud data first — then push local if cloud is empty
+  try {
+    const cloudData = await loadProgressFromCloud(user.uid);
+    if (cloudData && Object.keys(cloudData).length > 0) {
+      applyCloudDataToLocal(cloudData);
+    } else {
+      await syncLocalToCloud(user.uid);
+    }
+    updateSyncStatus('synced');
+  } catch(e) {
+    updateSyncStatus('error');
   }
 
   // Re-register FCM under this account's uid
@@ -1590,6 +1686,7 @@ function getAllProgressKeys() {
 // Push all localStorage progress to Firebase under accounts/{uid}/progress/
 async function syncLocalToCloud(uid) {
   if (!_fbDb || !uid) return;
+  if (!navigator.onLine) { _offlineQueue = true; updateSyncStatus('offline'); return; }
   try {
     const progress = {};
     getAllProgressKeys().forEach(k => {
@@ -1600,9 +1697,13 @@ async function syncLocalToCloud(uid) {
       }
     });
     await _fbDb.ref('accounts/' + uid + '/progress').set(progress);
-    const syncEl = document.getElementById('syncStatusText');
-    if (syncEl) syncEl.textContent = 'Last synced: ' + new Date().toLocaleTimeString();
-  } catch(e) { console.log('Sync error:', e.message); }
+    _offlineQueue = false;
+    updateSyncStatus('synced');
+  } catch(e) {
+    // If network error, mark offline queue
+    if (!navigator.onLine) { _offlineQueue = true; updateSyncStatus('offline'); }
+    else { updateSyncStatus('error'); }
+  }
 }
 
 // Load cloud progress for this uid
@@ -1638,13 +1739,10 @@ function applyCloudDataToLocal(cloudData) {
 
 // Manual sync button
 async function forceSyncToCloud() {
-  if (!_currentUser) { showToast('⚠️ Sign in first to sync.'); return; }
-  const syncEl = document.getElementById('syncStatusText');
-  if (syncEl) syncEl.textContent = 'Syncing now...';
-  showToast('⏳ Syncing...');
+  if (!_currentUser) { showToast('Sign in first to sync.'); return; }
+  if (!navigator.onLine) { showToast('No internet. Changes saved on device.'); return; }
+  updateSyncStatus('syncing');
   await syncLocalToCloud(_currentUser.uid);
-  if (syncEl) syncEl.textContent = 'Last synced: ' + new Date().toLocaleTimeString();
-  showToast('✅ Synced to cloud!');
 }
 
 // Auto-sync debounce timer
@@ -1655,18 +1753,76 @@ function _lsSave(key, val) {
   try { localStorage.setItem(key, val); } catch(e) { _mem[key] = String(val); }
 }
 
-// Auto-sync to cloud whenever a value is saved (debounced 300ms — fast enough to feel instant)
+// ── SYNC STATE ──
 const SYNC_SKIP = ['fcm_token_hash', 'install_dismissed'];
+let _offlineQueue = false; // true if we have unsynced changes made while offline
+
+// Central sync status: 'idle' | 'loading' | 'syncing' | 'synced' | 'offline' | 'error'
+function updateSyncStatus(state, detail) {
+  const el    = document.getElementById('syncStatusText');
+  const dot   = document.getElementById('syncDot');
+  const badge = document.querySelector('#offlineBanner .ob-badge');
+
+  const dotClass = { idle:'idle', loading:'syncing', syncing:'syncing', synced:'idle', offline:'offline', error:'error' };
+  if (dot) { dot.className = dotClass[state] || 'idle'; }
+
+  if (!el) return;
+  const t = new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+  const msgs = {
+    idle:    'Changes save automatically',
+    loading: 'Loading your progress...',
+    syncing: 'Saving to cloud...',
+    synced:  'Saved at ' + t,
+    offline: 'Offline — saved on device',
+    error:   detail || 'Sync failed. Will retry when online.'
+  };
+  el.textContent = msgs[state] || msgs.idle;
+
+  // Offline banner
+  const banner = document.getElementById('offlineBanner');
+  if (banner) banner.classList.toggle('visible', state === 'offline');
+}
+
+// Network listeners — TASK 2: auto-sync when back online
+window.addEventListener('offline', () => {
+  updateSyncStatus('offline');
+});
+
+window.addEventListener('online', async () => {
+  if (_currentUser && _offlineQueue) {
+    _offlineQueue = false;
+    updateSyncStatus('syncing');
+    try {
+      await syncLocalToCloud(_currentUser.uid);
+      updateSyncStatus('synced');
+      showToast('Back online. Progress synced.');
+    } catch(e) {
+      updateSyncStatus('error');
+    }
+  } else {
+    updateSyncStatus(_currentUser ? 'idle' : 'idle');
+  }
+});
+
+// Auto-sync to cloud whenever a value is saved (debounced 300ms)
 function lsSet(key, val) {
   _lsSave(key, val);
   if (_currentUser && !SYNC_SKIP.includes(key)) {
-    // Show syncing indicator immediately
-    const syncEl = document.getElementById('syncStatusText');
-    if (syncEl) syncEl.textContent = '⏳ Saving...';
+    if (!navigator.onLine) {
+      // TASK 2: save locally, queue for when online
+      _offlineQueue = true;
+      updateSyncStatus('offline');
+      return;
+    }
+    updateSyncStatus('syncing');
     clearTimeout(_syncTimer);
     _syncTimer = setTimeout(async () => {
-      await syncLocalToCloud(_currentUser.uid);
-      if (syncEl) syncEl.textContent = '✅ Saved at ' + new Date().toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit'});
+      try {
+        await syncLocalToCloud(_currentUser.uid);
+        updateSyncStatus('synced');
+      } catch(e) {
+        updateSyncStatus('error');
+      }
     }, 300);
   }
 }
@@ -1796,14 +1952,13 @@ async function requestNotifPermission() {
     const result = await Notification.requestPermission();
     updateNotifUI();
     if (result === 'granted') {
-      showToast('⏳ Connecting to Pak Anonymous servers...');
       const ok = await registerFCMAndSave();
       if (ok) {
-        showToast('✅ Connected to Pak Anonymous servers!');
+        showToast('Reminders connected.');
       }
       loadReminderTimes();
     } else {
-      showToast('⚠️ Notifications blocked. Enable in Chrome settings.');
+      showToast('Notifications blocked. Go to Chrome Settings to allow.');
     }
   } catch(e) { showToast('Could not request permission'); }
 }
@@ -1884,12 +2039,12 @@ function scheduleAllReminders() {
       updates.push(_fbDb.ref('accounts/' + _currentUser.uid + '/fcm').update(newTimes));
     }
     Promise.all(updates)
-      .then(() => showToast('✅ Reminders Saved!'))
-      .catch(() => showToast('⚠️ Could not reach Pak Anonymous servers.'));
+      .then(() => showToast('Reminder times saved.'))
+      .catch(() => { if (!navigator.onLine) showToast('Offline. Times saved locally.'); else showToast('Could not save. Try again.'); });
   } else if (!hash) {
     // Not registered yet — try to register first
     registerFCMAndSave().then(ok => {
-      if (ok) showToast('✅ Registered & reminders saved!');
+      if (ok) showToast('Reminders registered.');
     });
   } else {
     showToast('⚠️ Could not reach Pak Anonymous servers.');
@@ -1918,7 +2073,7 @@ async function triggerInstall() {
   _deferredInstall.prompt();
   const { outcome } = await _deferredInstall.userChoice;
   if (outcome === 'accepted') {
-    showToast('🎉 App installed successfully!');
+    showToast('App installed.');
     document.getElementById('installBannerInner').classList.add('hidden');
     lsSet('install_dismissed','1');
   }
@@ -1926,7 +2081,7 @@ async function triggerInstall() {
 }
 
 window.addEventListener('appinstalled', () => {
-  showToast('🎉 Eid Skin Plan installed!');
+  showToast('Eid Skin Plan installed.');
   document.getElementById('installBannerInner').classList.add('hidden');
   const g = document.getElementById('installGuideGroup');
   if (g) g.style.display = 'none';
@@ -2238,7 +2393,16 @@ function initTheme() {
 window.onload = async function() {
   // Theme must run first to avoid flash
   try { initTheme(); } catch(e) {}
-  try { initFirebase(); } catch(e) { console.log("FB init:",e); }
+  // Show offline banner right away if no internet
+  if (!navigator.onLine) {
+    updateSyncStatus('offline');
+    const bar = document.getElementById('appLoadingBar');
+    if (bar) bar.classList.add('done');
+  }
+  try { initFirebase(); } catch(e) {
+    const bar = document.getElementById('appLoadingBar');
+    if (bar) bar.classList.add('done');
+  }
   // Hide install guide if already running as installed PWA
   try {
     const isInstalled = window.matchMedia('(display-mode: standalone)').matches
@@ -2351,7 +2515,7 @@ function checkAllDone() {
   if (KEYS_TODAY.every(k => data[k]) && !isDayComplete(currentDay)) {
     markDayComplete(currentDay);
     renderCalendar();
-    showToast('🌟 Day ' + currentDay + ' done!');
+    showToast('Day ' + currentDay + ' complete!');
   }
 }
 
@@ -2556,7 +2720,7 @@ async function refreshFCMToken() {
     showToast('⚠️ Allow notifications first!');
     return;
   }
-  showToast('⏳ Refreshing token...');
+  updateSyncStatus('syncing');
   try {
     if (_fbMsg) { try { await _fbMsg.deleteToken(); } catch(e) {} }
     const ok = await registerFCMAndSave();
@@ -2566,7 +2730,8 @@ async function refreshFCMToken() {
       if (_fbDb && hash) {
         await _fbDb.ref('users/' + hash).update({ active: true });
       }
-      showToast('✅ Token refreshed!');
+      updateSyncStatus('synced');
+      showToast('Reminder connection refreshed.');
       updateFCMStatus();
     } else {
       showToast('❌ Could not refresh. Try again.');
@@ -2637,7 +2802,7 @@ function exportData() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    showToast('✅ Backup exported! Check your Downloads.');
+    showToast('Backup saved to Downloads.');
   } catch(e) {
     showToast('❌ Export failed: ' + e.message);
   }
@@ -2713,7 +2878,7 @@ function applyImport() {
       }
     });
     closeModal();
-    showToast('✅ Backup restored! Reloading...');
+    showToast('Backup restored. Reloading...');
     // Full reload needed — currentDay is a const set at page load
     setTimeout(() => window.location.reload(), 1000);
   } catch(err) {
@@ -2735,14 +2900,24 @@ document.addEventListener('copy', e => e.preventDefault());
 document.addEventListener('cut',  e => e.preventDefault());
 
 let _toastTimer = null;
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  if (!t) return;
-  t.innerHTML = msg;
-  t.classList.add('show');
-  if (_toastTimer) clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+
+function showToast(msg, dur) {
+  dur = dur || 2600;
+  let t = document.getElementById('toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.className = 'toast show';
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => { t.className = 'toast'; }, dur);
 }
+
+// Alias — original showToast may be defined below, override it
+
+
 </script>
 </body>
 </html>
