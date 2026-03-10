@@ -597,6 +597,10 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 /* ═══════════════════════════════════════
    PAK ANONY AI
    ═══════════════════════════════════════ */
+/* AI section: fullscreen fixed overlay when active */
+#sec-ai{display:none;position:fixed;top:0;left:0;right:0;bottom:56px;z-index:50;background:var(--bg);overflow:hidden;flex-direction:column}
+body.ai-open{overflow:hidden;position:fixed;width:100%}
+#sec-ai.active{display:flex !important}
 .ai-loader{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:52px 24px;gap:16px}
 .ai-loader-ring{width:46px;height:46px;position:relative;flex-shrink:0}
 .ai-loader-ring::before,.ai-loader-ring::after{content:'';position:absolute;inset:0;border-radius:50%;border:2.5px solid transparent}
@@ -675,8 +679,8 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 </div>
 
 <!-- AI SECTION -->
-<div class="section" id="sec-ai" style="padding:0;display:flex;flex-direction:column;min-height:calc(100dvh - 60px)">
-  <div id="aiCard" style="border-radius:18px;overflow:hidden;border:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;flex:1;min-height:0">
+<div class="section" id="sec-ai">
+  <div id="aiCard" style="display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;border-top:1px solid var(--border)">
     <div id="aiContainer" style="display:flex;flex-direction:column;flex:1">
       <div class="ai-loader">
         <div class="ai-loader-ring"><div class="ai-loader-dot"></div></div>
@@ -2531,6 +2535,12 @@ window.onload = async function() {
 // ══════════════════════════════════════
 function navTo(sec, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  // Lock body scroll when AI section opens, restore when leaving
+  if (sec === 'ai') {
+    document.body.classList.add('ai-open');
+  } else {
+    document.body.classList.remove('ai-open');
+  }
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
   document.getElementById('sec-' + sec).classList.add('active');
   if (btn && btn.classList) btn.classList.add('active');
@@ -3430,61 +3440,82 @@ async function sendAIMsg() {
     const liveContext  = buildAIContext();
     const systemPrompt = AI_BASE_PROMPT + '\n\n' + liveContext;
 
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + groqKey, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model:       (_aiConfig && _aiConfig.model) || 'llama-3.3-70b-versatile',
-        messages:    [{ role: 'system', content: systemPrompt }, ..._aiConvo],
-        max_tokens:  480,
-        temperature: 0.70
-      })
-    });
+    const groqPayload = {
+      model:       (_aiConfig && _aiConfig.model) || 'llama-3.3-70b-versatile',
+      messages:    [{ role: 'system', content: systemPrompt }, ..._aiConvo],
+      max_tokens:  480,
+      temperature: 0.70
+    };
 
-    if (!res.ok) throw new Error('API ' + res.status);
+    let res;
+    try {
+      res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + groqKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify(groqPayload)
+      });
+    } catch(netErr) {
+      throw new Error('NETWORK: ' + (netErr.message || 'fetch failed'));
+    }
+
+    if (!res.ok) {
+      let errBody = '';
+      try { const j = await res.json(); errBody = (j.error && j.error.message) ? j.error.message : JSON.stringify(j); } catch(e2){}
+      throw new Error('HTTP' + res.status + (errBody ? ': ' + errBody : ''));
+    }
     const data  = await res.json();
     const reply = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
-    if (!reply) throw new Error('Empty response');
+    if (!reply) throw new Error('Empty response from Groq');
 
     _aiConvo.push({ role: 'assistant', content: reply });
 
-    // Save usage
-    const newCount = usedNow + 1;
-    await _fbDb.ref('ai_usage/' + _currentUser.uid + '/' + todayKey()).set({
-      count: newCount, last_message: Date.now()
-    });
-
-    const remaining = Math.max(0, limit - newCount);
-    updateAIUsagePill(remaining, limit);
+    // Show reply FIRST — usage save happens in background
+    // This means a Firebase rules error never hides a successful AI reply
     hideAITyping();
     _aiTyping = false;
     if (sendBtn) sendBtn.disabled = false;
     if (input)   { input.disabled = false; setTimeout(() => input.focus(), 100); }
     addAIMsg('bot', reply);
 
-    if (remaining === 0) {
-      if (input)   input.disabled   = true;
-      if (sendBtn) sendBtn.disabled = true;
-      showLimitNotice();
-    }
+    // Save usage in background (non-blocking)
+    const newCount = usedNow + 1;
+    _fbDb.ref('ai_usage/' + _currentUser.uid + '/' + todayKey()).set({
+      count: newCount, last_message: Date.now()
+    }).then(function() {
+      const remaining = Math.max(0, limit - newCount);
+      updateAIUsagePill(remaining, limit);
+      if (remaining === 0) {
+        if (document.getElementById('aiInput'))   document.getElementById('aiInput').disabled   = true;
+        if (document.getElementById('aiSend'))    document.getElementById('aiSend').disabled    = true;
+        showLimitNotice();
+      }
+    }).catch(function(saveErr) {
+      // Usage save failed (Firebase rules not configured) — reply already shown, just log
+      console.warn('[Pak Anony AI] Usage save failed (check Firebase rules for ai_usage):', saveErr && saveErr.message);
+    });
 
   } catch(e) {
     hideAITyping();
     _aiTyping = false;
     if (sendBtn) sendBtn.disabled = false;
     if (input)   input.disabled   = false;
-    var em = (e && e.message) ? e.message : '';
+    var em = (e && e.message) ? e.message : 'unknown';
+    console.error('[Pak Anony AI] Error:', em);
     var errTxt;
-    if      (em.indexOf('401') > -1 || em.indexOf('403') > -1)
-      errTxt = '&#128274; The API key is invalid or expired. Please ask the admin to update it in the dashboard &#8594; AI Control.';
-    else if (em.indexOf('429') > -1)
-      errTxt = '&#9203; The AI is rate limited right now. Please wait 30 seconds and try again.';
-    else if (em.indexOf('500') > -1 || em.indexOf('503') > -1)
-      errTxt = '&#128306; The AI server is temporarily down. Please try again in a minute.';
+    if (em.indexOf('401') > -1 || em.indexOf('invalid_api_key') > -1)
+      errTxt = '&#128274; <strong>Invalid API key.</strong> Admin: go to Dashboard &#8594; AI Control and re-save the Groq key.';
+    else if (em.indexOf('403') > -1)
+      errTxt = '&#128274; <strong>API key unauthorised.</strong> Check the Groq key in Dashboard &#8594; AI Control.';
+    else if (em.indexOf('429') > -1 || em.indexOf('rate') > -1)
+      errTxt = '&#9203; <strong>Rate limited.</strong> Please wait 30 seconds and try again.';
+    else if (em.indexOf('500') > -1 || em.indexOf('503') > -1 || em.indexOf('502') > -1)
+      errTxt = '&#128306; <strong>Groq server issue.</strong> Please try again in a minute.';
+    else if (em.indexOf('NETWORK') > -1 || em.indexOf('fetch') > -1 || em.indexOf('Failed to fetch') > -1)
+      errTxt = '&#128225; <strong>Network error.</strong> Check your internet connection and try again.';
     else if (em.indexOf('Empty') > -1)
-      errTxt = 'The AI returned an empty response. Please try again.';
+      errTxt = '&#129300; The AI returned an empty response. Please try again.';
     else
-      errTxt = 'I had trouble connecting. Check your internet and try again. If this keeps happening, the admin may need to reconfigure the API key in the dashboard.';
+      errTxt = '&#9888; <strong>Error:</strong> ' + em.substring(0, 120) + '<br><small style="opacity:.6">If this persists, admin check Dashboard &#8594; AI Control.</small>';
     addAIMsg('bot', errTxt, true);
   }
 }
