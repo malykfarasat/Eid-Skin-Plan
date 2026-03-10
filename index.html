@@ -627,7 +627,7 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 .ai-usage-pill.at-limit{color:var(--red);background:rgba(224,112,112,.08);border-color:rgba(224,112,112,.22)}
 .ai-day-badge{font-size:.58rem;color:var(--text-dim);background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:3px 9px;letter-spacing:.03em;white-space:nowrap;text-align:right}
 @keyframes aiPulse{0%,100%{opacity:1}50%{opacity:.38}}
-.ai-messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:12px;min-height:260px;max-height:400px}
+.ai-messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:12px;min-height:0}
 .ai-messages::-webkit-scrollbar{width:3px}
 .ai-messages::-webkit-scrollbar-thumb{background:rgba(201,168,76,.2);border-radius:3px}
 .ai-msg{display:flex;flex-direction:column;animation:aiIn .25s cubic-bezier(.4,0,.2,1)}
@@ -675,11 +675,8 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 </div>
 
 <!-- AI SECTION -->
-<div class="section" id="sec-ai">
-  <div class="sec-title">Pak Anony AI</div>
-  <div class="sec-sub">by PakAnonymous.ORG &#10024;</div>
-
-  <div id="aiCard" style="border-radius:18px;overflow:hidden;border:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;min-height:520px;box-shadow:0 8px 32px rgba(0,0,0,.18),0 0 0 1px rgba(201,168,76,.05)">
+<div class="section" id="sec-ai" style="padding:0;display:flex;flex-direction:column;min-height:calc(100dvh - 60px)">
+  <div id="aiCard" style="border-radius:18px;overflow:hidden;border:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;flex:1;min-height:0">
     <div id="aiContainer" style="display:flex;flex-direction:column;flex:1">
       <div class="ai-loader">
         <div class="ai-loader-ring"><div class="ai-loader-dot"></div></div>
@@ -688,11 +685,6 @@ body.eid-mode .nav-item.active{color:#f5d27a}
     </div>
   </div>
 
-  <div style="text-align:center;margin-top:10px;padding:0 12px">
-    <span style="font-size:.58rem;color:var(--text-dim);opacity:.38;line-height:1.8;letter-spacing:.04em;text-transform:uppercase">
-      Pak Anony AI &middot; PakAnonymous.ORG &middot; Skincare only
-    </span>
-  </div>
 </div>
 
 <!-- MODAL -->
@@ -3285,6 +3277,25 @@ function renderAIGate(type) {
     '</div>';
 }
 
+function _buildAIChips(day, isSpecial, isEid) {
+  var ch = function(t) { return '<div class="ai-chip" onclick="useAIChip(this)">' + t + '</div>'; };
+  if (isEid) return ch('Post-Eid glow routine') + ch('How to keep skin bright') + ch('Ingredients to keep using') + ch('Diet tips for glowing skin');
+  var out = [];
+  // Dynamic mask chip
+  out.push(ch(isSpecial ? '&#11088; Tonight&#39;s special mask?' : 'What is tonight&#39;s mask?'));
+  // Pending tasks chip
+  out.push(ch('What do I still have left today?'));
+  // Day-specific advice chip
+  if (day <= 3)       out.push(ch('How does the ubtan work?'));
+  else if (day <= 6)  out.push(ch('My skin feels oily &#8212; help'));
+  else if (day <= 9)  out.push(ch('Why aren&#39;t dark spots fading?'));
+  else if (day <= 12) out.push(ch('Almost Eid &#8212; what to prioritise?'));
+  else                out.push(ch('Final 2 days &#8212; what matters most?'));
+  // Always useful
+  out.push(ch('Sunscreen &#8212; when exactly?'));
+  return out.join('');
+}
+
 function renderAIChat(remaining, limit) {
   var container = document.getElementById('aiContainer');
   if (!container) return;
@@ -3312,12 +3323,7 @@ function renderAIChat(remaining, limit) {
       '</div>' +
     '</div>' +
     '<div class="ai-messages" id="aiMessages"></div>' +
-    '<div class="ai-suggestions" id="aiSuggestions">' +
-      '<div class="ai-chip" onclick="useAIChip(this)">Today&#39;s mask?</div>' +
-      '<div class="ai-chip" onclick="useAIChip(this)">Ubtan recipe</div>' +
-      '<div class="ai-chip" onclick="useAIChip(this)">My tasks today</div>' +
-      '<div class="ai-chip" onclick="useAIChip(this)">Sunscreen tips</div>' +
-    '</div>' +
+    '<div class="ai-suggestions" id="aiSuggestions">' + _buildAIChips(day, isSpecial, isEid) + '</div>' +
     '<div class="ai-input-wrap">' +
       '<input class="ai-input" id="aiInput" type="text" maxlength="500"' +
         ' placeholder="Ask about your routine..."' +
@@ -3334,21 +3340,27 @@ function renderAIChat(remaining, limit) {
   }
 
   var completed = getCompletedDays().length;
+
+  // Smart name: skip Pakistani/South Asian title words
+  var TITLES = ['malik','syed','chaudhry','chaudhary','raja','rana','khan','sheikh','mirza','hafiz','haji','mian','sardar'];
+  var nameParts = (_currentUser && _currentUser.displayName ? _currentUser.displayName.trim() : 'there').split(/\s+/);
+  var realName  = (nameParts.filter(function(p){ return p && TITLES.indexOf(p.toLowerCase()) === -1; })[0]) || nameParts[0] || 'there';
+
   var greet;
   if (isEid) {
-    greet = 'Eid Mubarak, <strong>' + firstName + '</strong>! &#127769; You completed all 14 days! I am <strong>Pak Anony AI</strong> by PakAnonymous.ORG. Ask me anything to maintain your glow.';
+    greet = 'Eid Mubarak, <strong>' + realName + '</strong>! &#127769; You completed the full <strong>14-Day Plan</strong>. I am <strong>Pak Anony AI</strong> by PakAnonymous.ORG. How can I help you maintain your glow?';
   } else {
-    greet = 'Assalam u Alaikum, <strong>' + firstName + '</strong>! &#127769;\n\n' +
-      'I am <strong>Pak Anony AI</strong> by PakAnonymous.ORG, your personal skincare assistant for the 14-Day Eid Skin Plan.';
+    greet = 'Assalam u Alaikum, <strong>' + realName + '</strong>! &#127769;\n\n';
+    greet += 'I am <strong>Pak Anony AI</strong> by PakAnonymous.ORG &#8212; your personal assistant for the <strong>14-Day Eid Skin Plan</strong>.';
     if (day > 0) {
       greet += '\n\nYou are on <strong>Day ' + day + '</strong> of 14.';
-      if (completed > 0) greet += ' ' + completed + ' day' + (completed > 1 ? 's' : '') + ' completed &#10003;';
+      if (completed > 0) greet += ' <strong>' + completed + ' day' + (completed > 1 ? 's' : '') + '</strong> completed &#10003;';
     }
-    if (isSpecial) greet += '\n\n&#11088; <strong>Special Day</strong> tonight: Lemon + Honey mask!';
-    greet += '\n\nAsk me about your tasks, routines, ingredients, or any skin concerns.';
+    if (isSpecial) greet += '\n\n&#11088; <strong>Special Day:</strong> tonight use <strong>Lemon + Honey</strong> mask instead of yogurt!';
+    greet += '\n\nAsk me anything &#8212; I have full access to your progress and routines.';
   }
 
-  addAIMsg('bot', greet);
+  addAIMsg('bot', greet, true);
   var input = document.getElementById('aiInput');
   if (input) setTimeout(function() { input.focus(); }, 300);
 }
@@ -3461,17 +3473,32 @@ async function sendAIMsg() {
     _aiTyping = false;
     if (sendBtn) sendBtn.disabled = false;
     if (input)   input.disabled   = false;
-    addAIMsg('bot', 'I had a connection issue. Please try again in a moment.');
+    var em = (e && e.message) ? e.message : '';
+    var errTxt;
+    if      (em.indexOf('401') > -1 || em.indexOf('403') > -1)
+      errTxt = '&#128274; The API key is invalid or expired. Please ask the admin to update it in the dashboard &#8594; AI Control.';
+    else if (em.indexOf('429') > -1)
+      errTxt = '&#9203; The AI is rate limited right now. Please wait 30 seconds and try again.';
+    else if (em.indexOf('500') > -1 || em.indexOf('503') > -1)
+      errTxt = '&#128306; The AI server is temporarily down. Please try again in a minute.';
+    else if (em.indexOf('Empty') > -1)
+      errTxt = 'The AI returned an empty response. Please try again.';
+    else
+      errTxt = 'I had trouble connecting. Check your internet and try again. If this keeps happening, the admin may need to reconfigure the API key in the dashboard.';
+    addAIMsg('bot', errTxt, true);
   }
 }
 
-function addAIMsg(role, text) {
+function addAIMsg(role, text, raw) {
   const container = document.getElementById('aiMessages');
   if (!container) return;
   const div  = document.createElement('div');
   div.className = 'ai-msg ai-msg-' + (role === 'user' ? 'user' : 'bot');
   const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-  div.innerHTML = '<div class="ai-bubble">' + escAI(text) + '</div><div class="ai-msg-time">' + time + '</div>';
+  // raw=true: text is already safe HTML (bot greetings) — just convert newlines
+  // raw=false (default): sanitize then convert **bold** markdown (user input / API output)
+  const rendered = raw ? text.split('\n').join('<br>') : escAI(text);
+  div.innerHTML = '<div class="ai-bubble">' + rendered + '</div><div class="ai-msg-time">' + time + '</div>';
   container.appendChild(div);
   container.scrollTop = container.scrollHeight;
 }
