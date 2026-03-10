@@ -594,52 +594,68 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 }
 
 
-/* ════════════════════════════════════════
-   PAK ANONYMOUS AI
-   ════════════════════════════════════════ */
-.ai-init-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:48px 20px;text-align:center}
-.ai-spinner{width:26px;height:26px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite}
-/* Gate */
-.ai-gate{display:flex;flex-direction:column;align-items:center;text-align:center;padding:44px 20px;flex:1}
-.ai-gate-ico{font-size:2.8rem;margin-bottom:16px;line-height:1}
-.ai-gate-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text);margin-bottom:8px;font-weight:400}
-.ai-gate-desc{font-size:.76rem;color:var(--text-dim);line-height:1.75;margin-bottom:24px;max-width:290px}
-.ai-gate-btn{padding:11px 26px;border-radius:24px;border:1px solid var(--gold);background:var(--gold-dim);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.02em}
-.ai-gate-btn:hover{background:rgba(201,168,76,.22)}
-.ai-gate-btn.sec{border-color:var(--border);color:var(--text-dim);background:transparent}
-/* Chat header */
-.ai-chat-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border);background:rgba(201,168,76,0.04);flex-shrink:0}
-.ai-chat-id{display:flex;align-items:center;gap:10px}
-.ai-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,rgba(201,168,76,0.2),rgba(201,168,76,0.04));border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
-.ai-name{font-family:'Cormorant Garamond',serif;font-size:.95rem;color:var(--text);font-weight:400;letter-spacing:.02em}
-.ai-status-line{font-size:.62rem;color:var(--text-dim);display:flex;align-items:center;gap:5px;margin-top:1px}
-.ai-online-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:0 0 5px rgba(76,175,125,0.55);animation:aiPulse 2.5s infinite}
-@keyframes aiPulse{0%,100%{opacity:1}50%{opacity:.45}}
-.ai-usage-pill{font-size:.64rem;color:var(--gold);background:var(--gold-dim);border:1px solid rgba(201,168,76,.22);padding:3px 9px;border-radius:99px;font-weight:500;white-space:nowrap}
+/* ═══════════════════════════════════════
+   PAK ANONY AI
+   ═══════════════════════════════════════ */
+.ai-loader{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:52px 24px;gap:16px}
+.ai-loader-ring{width:46px;height:46px;position:relative;flex-shrink:0}
+.ai-loader-ring::before,.ai-loader-ring::after{content:'';position:absolute;inset:0;border-radius:50%;border:2.5px solid transparent}
+.ai-loader-ring::before{border-top-color:var(--gold);animation:spin .9s linear infinite}
+.ai-loader-ring::after{border-bottom-color:rgba(201,168,76,.2);animation:spin 1.5s linear infinite reverse}
+.ai-loader-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);box-shadow:0 0 12px var(--gold),0 0 24px rgba(201,168,76,.4)}
+.ai-loader-txt{font-size:.7rem;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;animation:aiPulse 1.8s infinite}
+.ai-gate{display:flex;flex-direction:column;align-items:center;text-align:center;padding:42px 22px 34px;flex:1;position:relative;overflow:hidden}
+.ai-gate::before{content:'';position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(201,168,76,.08),transparent 70%);pointer-events:none}
+.ai-gate-ring{width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(201,168,76,.04));border:1px solid rgba(201,168,76,.28);display:flex;align-items:center;justify-content:center;font-size:2.1rem;margin-bottom:18px;box-shadow:0 0 28px rgba(201,168,76,.14),inset 0 1px 0 rgba(255,255,255,.05);position:relative}
+.ai-gate-ring::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(201,168,76,.14);animation:aiPulse 3s infinite}
+.ai-gate-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text);margin-bottom:8px;font-weight:500}
+.ai-gate-desc{font-size:.76rem;color:var(--text-dim);line-height:1.8;margin-bottom:6px;max-width:280px}
+.ai-gate-brand{font-size:.58rem;color:var(--text-dim);opacity:.35;margin-bottom:26px;letter-spacing:.06em;text-transform:uppercase}
+.ai-gate-btn{padding:13px 32px;border-radius:28px;border:1px solid var(--gold);background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(201,168,76,.06));color:var(--gold);font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .22s;box-shadow:0 4px 18px rgba(201,168,76,.14)}
+.ai-gate-btn:hover{background:linear-gradient(135deg,rgba(201,168,76,.3),rgba(201,168,76,.12));transform:translateY(-2px)}
+.ai-gate-btn:active{transform:translateY(0)}
+.ai-gate-btn.sec{border-color:var(--border);color:var(--text-dim);background:transparent;box-shadow:none}
+.ai-chat-header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border);background:linear-gradient(to bottom,rgba(201,168,76,.06),rgba(201,168,76,.01));flex-shrink:0}
+.ai-chat-id{display:flex;align-items:center;gap:12px}
+.ai-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,rgba(201,168,76,.3),rgba(201,168,76,.06));border:1px solid rgba(201,168,76,.32);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;box-shadow:0 0 16px rgba(201,168,76,.18),inset 0 1px 0 rgba(255,255,255,.06);position:relative}
+.ai-avatar-glow{position:absolute;inset:-4px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.18),transparent 65%);animation:aiPulse 3s infinite;pointer-events:none}
+.ai-name{font-family:'Cormorant Garamond',serif;font-size:1.02rem;color:var(--text);font-weight:500;letter-spacing:.02em;line-height:1.2}
+.ai-status-line{font-size:.61rem;color:var(--text-dim);display:flex;align-items:center;gap:5px;margin-top:2px}
+.ai-online-dot{width:6px;height:6px;border-radius:50%;background:#4caf7d;flex-shrink:0;box-shadow:0 0 7px rgba(76,175,125,.65);animation:aiPulse 2.5s infinite}
+.ai-sub{color:var(--gold);opacity:.75;font-size:.6rem}
+.ai-usage-pill{font-size:.63rem;color:var(--gold);background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);padding:4px 11px;border-radius:99px;font-weight:500;white-space:nowrap}
 .ai-usage-pill.at-limit{color:var(--red);background:rgba(224,112,112,.08);border-color:rgba(224,112,112,.22)}
-/* Messages */
-.ai-messages{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:10px;min-height:240px;max-height:380px}
-.ai-msg{display:flex;flex-direction:column;animation:aiIn .2s ease}
-@keyframes aiIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.ai-msg-user{align-items:flex-end}.ai-msg-bot{align-items:flex-start}
-.ai-bubble{max-width:83%;padding:10px 14px;border-radius:18px;font-size:.8rem;line-height:1.68;word-break:break-word}
-.ai-msg-user .ai-bubble{background:var(--gold);color:#06080a;border-bottom-right-radius:5px;font-weight:400}
-.ai-msg-bot .ai-bubble{background:var(--surface2);border:1px solid var(--border);border-bottom-left-radius:5px;color:var(--text)}
-.ai-msg-time{font-size:.58rem;color:var(--text-dim);margin-top:3px;padding:0 3px}
-/* Typing indicator */
-.ai-typing-inner{display:flex;gap:5px;align-items:center;padding:12px 16px !important}
-.ai-typing-inner span{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:aiDot 1.2s infinite}
-.ai-typing-inner span:nth-child(2){animation-delay:.2s}.ai-typing-inner span:nth-child(3){animation-delay:.4s}
-@keyframes aiDot{0%,80%,100%{opacity:.22;transform:scale(.9)}40%{opacity:1;transform:scale(1.1)}}
-/* Input */
-.ai-input-wrap{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border);flex-shrink:0}
-.ai-input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:24px;padding:10px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:300;outline:none;transition:border-color .2s}
-.ai-input:focus{border-color:var(--gold)}.ai-input:disabled{opacity:.35}
-.ai-send{width:38px;height:38px;min-width:38px;border-radius:50%;background:var(--gold);border:none;color:#060809;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .15s,transform .1s}
-.ai-send:hover:not(:disabled){background:var(--gold2)}.ai-send:active:not(:disabled){transform:scale(.91)}
-.ai-send:disabled{opacity:.35;cursor:not-allowed}
-.ai-limit-notice{text-align:center;padding:7px;font-size:.67rem;color:var(--red);background:rgba(224,112,112,.06);border-top:1px solid rgba(224,112,112,.15);flex-shrink:0}
-.ai-gate-brand{font-size:.58rem;color:var(--text-dim);opacity:.4;margin-bottom:14px;letter-spacing:.04em}
+.ai-day-badge{font-size:.58rem;color:var(--text-dim);background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:3px 9px;letter-spacing:.03em;white-space:nowrap;text-align:right}
+@keyframes aiPulse{0%,100%{opacity:1}50%{opacity:.38}}
+.ai-messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:12px;min-height:260px;max-height:400px}
+.ai-messages::-webkit-scrollbar{width:3px}
+.ai-messages::-webkit-scrollbar-thumb{background:rgba(201,168,76,.2);border-radius:3px}
+.ai-msg{display:flex;flex-direction:column;animation:aiIn .25s cubic-bezier(.4,0,.2,1)}
+@keyframes aiIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.ai-msg-user{align-items:flex-end}
+.ai-msg-bot{align-items:flex-start}
+.ai-bubble{max-width:85%;padding:11px 15px;font-size:.8rem;line-height:1.72;word-break:break-word}
+.ai-msg-user .ai-bubble{background:linear-gradient(135deg,#c9a84c,#b8953e);color:#06080a;border-radius:18px 18px 4px 18px;font-weight:400;box-shadow:0 3px 14px rgba(201,168,76,.28)}
+.ai-msg-bot .ai-bubble{background:var(--surface2);border:1px solid var(--border);border-radius:18px 18px 18px 4px;color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.ai-msg-time{font-size:.57rem;color:var(--text-dim);margin-top:4px;padding:0 4px;opacity:.6}
+.ai-typing-inner{display:flex;gap:6px;align-items:center;padding:13px 17px !important}
+.ai-typing-inner span{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:aiDot 1.4s ease-in-out infinite;opacity:.35}
+.ai-typing-inner span:nth-child(2){animation-delay:.18s}
+.ai-typing-inner span:nth-child(3){animation-delay:.36s}
+@keyframes aiDot{0%,60%,100%{opacity:.25;transform:scale(.85)}30%{opacity:1;transform:scale(1.2)}}
+.ai-suggestions{display:flex;gap:7px;padding:10px 14px 6px;flex-wrap:wrap;flex-shrink:0;border-top:1px solid rgba(201,168,76,.08);transition:all .3s}
+.ai-chip{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.18);border-radius:20px;padding:6px 13px;font-size:.7rem;color:var(--text-dim);cursor:pointer;transition:all .18s;white-space:nowrap}
+.ai-chip:hover{background:rgba(201,168,76,.16);border-color:rgba(201,168,76,.38);color:var(--gold);transform:translateY(-1px)}
+.ai-input-wrap{display:flex;align-items:center;gap:9px;padding:10px 14px 13px;border-top:1px solid var(--border);flex-shrink:0}
+.ai-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:26px;padding:11px 18px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:300;outline:none;transition:border-color .2s,box-shadow .2s}
+.ai-input:focus{border-color:rgba(201,168,76,.5);box-shadow:0 0 0 3px rgba(201,168,76,.07)}
+.ai-input:disabled{opacity:.3;cursor:not-allowed}
+.ai-input::placeholder{color:var(--text-dim);opacity:.55}
+.ai-send{width:40px;height:40px;min-width:40px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#b8953e);border:none;color:#06080a;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:transform .15s,box-shadow .15s;box-shadow:0 3px 14px rgba(201,168,76,.32)}
+.ai-send:hover:not(:disabled){transform:scale(1.09);box-shadow:0 5px 18px rgba(201,168,76,.42)}
+.ai-send:active:not(:disabled){transform:scale(.93)}
+.ai-send:disabled{opacity:.28;cursor:not-allowed;box-shadow:none;background:var(--border)}
+.ai-limit-notice{text-align:center;padding:8px;font-size:.68rem;color:var(--red);background:rgba(224,112,112,.05);border-top:1px solid rgba(224,112,112,.12);flex-shrink:0}
 </style>
 </head>
 <body>
@@ -660,22 +676,21 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 
 <!-- AI SECTION -->
 <div class="section" id="sec-ai">
-  <div class="sec-title">Pak Anonymous AI</div>
-  <div class="sec-sub">by PakAnonymous.ORG ✨</div>
+  <div class="sec-title">Pak Anony AI</div>
+  <div class="sec-sub">by PakAnonymous.ORG &#10024;</div>
 
-  <div class="card" id="aiCard" style="padding:0;overflow:hidden;display:flex;flex-direction:column;min-height:480px">
+  <div id="aiCard" style="border-radius:18px;overflow:hidden;border:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;min-height:520px;box-shadow:0 8px 32px rgba(0,0,0,.18),0 0 0 1px rgba(201,168,76,.05)">
     <div id="aiContainer" style="display:flex;flex-direction:column;flex:1">
-      <div class="ai-init-placeholder">
-        <div class="ai-spinner"></div>
-        <div style="font-size:.76rem;color:var(--text-dim);margin-top:14px">Connecting to Pak Anony AI...</div>
+      <div class="ai-loader">
+        <div class="ai-loader-ring"><div class="ai-loader-dot"></div></div>
+        <div class="ai-loader-txt">Connecting to Pak Anony AI</div>
       </div>
     </div>
   </div>
 
   <div style="text-align:center;margin-top:10px;padding:0 12px">
-    <span style="font-size:.6rem;color:var(--text-dim);opacity:.55;line-height:1.7">
-      Pak Anony AI &middot; PakAnonymous.ORG &middot; Skincare queries only<br>
-      Requires Google Account &middot; Internet required
+    <span style="font-size:.58rem;color:var(--text-dim);opacity:.38;line-height:1.8;letter-spacing:.04em;text-transform:uppercase">
+      Pak Anony AI &middot; PakAnonymous.ORG &middot; Skincare only
     </span>
   </div>
 </div>
@@ -3189,37 +3204,42 @@ let _aiTyping   = false;
 let _aiInit     = false;
 
 async function initAISection() {
-  if (_aiInit && _currentUser && navigator.onLine && _aiConfig && _aiConfig.enabled) return;
+  if (_aiInit && _currentUser && navigator.onLine && _aiConfig && _aiConfig.enabled !== false) return;
   _aiInit = false;
   _aiConvo = [];
-  const container = document.getElementById('aiContainer');
+  var container = document.getElementById('aiContainer');
   if (!container) return;
 
   if (!_currentUser) { renderAIGate('signin'); return; }
   if (!navigator.onLine) { renderAIGate('offline'); return; }
 
-  container.innerHTML = `<div class="ai-init-placeholder"><div class="ai-spinner"></div><div style="font-size:.76rem;color:var(--text-dim);margin-top:14px">Connecting to Pak Anony AI...</div></div>`;
+  container.innerHTML = '<div class="ai-loader"><div class="ai-loader-ring"><div class="ai-loader-dot"></div></div><div class="ai-loader-txt">Connecting&hellip;</div></div>';
 
+  // FIX: Read ai_config in its own try/catch
+  // If Firebase rules don't include ai_config yet, this throws PERMISSION_DENIED
+  // Previously this crashed the whole section showing "Connection Failed"
+  // Now we default to enabled so the section always loads
   try {
-    const [cfgSnap, usageSnap] = await Promise.all([
-      _fbDb.ref('ai_config').once('value'),
-      _fbDb.ref('ai_usage/' + _currentUser.uid + '/' + todayKey()).once('value')
-    ]);
+    var cfgSnap = await _fbDb.ref('ai_config').once('value');
     _aiConfig = cfgSnap.val() || {};
-
-    if (_aiConfig.enabled === false) { renderAIGate('disabled'); return; }
-
-    const usage     = usageSnap.val() || {};
-    const limit     = _aiConfig.daily_limit || 10;
-    const usedToday = usage.count || 0;
-    const remaining = Math.max(0, limit - usedToday);
-
-    renderAIChat(remaining, limit);
-    _aiInit = true;
-
   } catch(e) {
-    container.innerHTML = `<div class="ai-gate"><div class="ai-gate-ico">❌</div><div class="ai-gate-title">Connection Failed</div><div class="ai-gate-desc">Could not reach Pak Anony AI. Check your internet and try again.</div><button class="ai-gate-btn" onclick="initAISection()">Try Again</button></div>`;
+    _aiConfig = _aiConfig || {};
   }
+
+  if (_aiConfig.enabled === false) { renderAIGate('disabled'); return; }
+
+  // Read usage separately — one failure never blocks everything
+  var usedToday = 0;
+  try {
+    var uSnap = await _fbDb.ref('ai_usage/' + _currentUser.uid + '/' + todayKey()).once('value');
+    usedToday = ((uSnap.val() || {}).count) || 0;
+  } catch(e) { usedToday = 0; }
+
+  var limit     = (_aiConfig && _aiConfig.daily_limit) || 10;
+  var remaining = Math.max(0, limit - usedToday);
+
+  renderAIChat(remaining, limit);
+  _aiInit = true;
 }
 
 function todayKey() {
@@ -3227,99 +3247,119 @@ function todayKey() {
 }
 
 function renderAIGate(type) {
-  const container = document.getElementById('aiContainer');
+  var container = document.getElementById('aiContainer');
   if (!container) return;
   _aiInit = false;
 
-  const status      = (_aiConfig && _aiConfig.status) || 'maintenance';
-  const reason      = (_aiConfig && _aiConfig.status_reason) || '';
-  const statusIcon  = { maintenance:'🔧', shutdown:'⛔', server_problem:'⚠️' }[status] || '⚠️';
-  const statusTitle = { maintenance:'Under Maintenance', shutdown:'Service Unavailable', server_problem:'Server Issue' }[status] || 'Temporarily Unavailable';
-  const statusDesc  = reason || { maintenance:'Pak Anony AI is currently under scheduled maintenance. Please check back soon.', shutdown:'The AI service is temporarily unavailable.', server_problem:'Server issues detected. Our team at PakAnonymous.ORG is on it.' }[status] || 'AI is currently unavailable.';
+  var status      = (_aiConfig && _aiConfig.status) || 'maintenance';
+  var reason      = (_aiConfig && _aiConfig.status_reason) || '';
+  var statusIcon  = { maintenance:'&#128295;', shutdown:'&#9940;', server_problem:'&#9888;' }[status] || '&#9888;';
+  var statusTitle = { maintenance:'Under Maintenance', shutdown:'Service Unavailable', server_problem:'Server Issue' }[status] || 'Temporarily Unavailable';
+  var statusDesc  = reason || { maintenance:'Pak Anony AI is under maintenance. Please check back soon.', shutdown:'The AI service is temporarily unavailable.', server_problem:'Server issues detected. PakAnonymous.ORG team is on it.' }[status] || 'AI is currently unavailable.';
 
-  const gates = {
+  var gates = {
     signin: {
-      ico: '🔐',
-      title: 'Sign In Required',
-      desc: 'Pak Anony AI by PakAnonymous.ORG is available exclusively for Google Account users. Sign in to unlock your personal skincare assistant.',
-      action: `<button class="ai-gate-btn" onclick="navTo('settings', document.querySelectorAll('.nav-item')[4])">Sign In with Google</button>`
+      ico: '&#128272;', title: 'Sign In to Unlock AI',
+      desc: 'Pak Anony AI is exclusively for Google Account users. Sign in to access your personal skincare assistant.',
+      action: '<button class="ai-gate-btn" onclick="document.querySelectorAll(\'.nav-item\')[4].click()">&#128100; Sign In with Google</button>'
     },
     offline: {
-      ico: '📡',
-      title: 'No Internet Connection',
-      desc: 'Pak Anony AI requires an active internet connection. Please check your network and try again.',
-      action: `<button class="ai-gate-btn" onclick="initAISection()">Try Again</button>`
+      ico: '&#128225;', title: 'No Internet Connection',
+      desc: 'Pak Anony AI needs an active internet connection. Please check your network and try again.',
+      action: '<button class="ai-gate-btn" onclick="initAISection()">&#8635; Try Again</button>'
     },
     disabled: {
-      ico: statusIcon,
-      title: statusTitle,
-      desc: statusDesc,
-      action: `<button class="ai-gate-btn sec" onclick="initAISection()">↻ Refresh</button>`
+      ico: statusIcon, title: statusTitle, desc: statusDesc,
+      action: '<button class="ai-gate-btn sec" onclick="initAISection()">&#8635; Refresh</button>'
     }
   };
 
-  const g = gates[type] || gates.offline;
-  container.innerHTML = `
-    <div class="ai-gate">
-      <div class="ai-gate-ico">${g.ico}</div>
-      <div class="ai-gate-title">${g.title}</div>
-      <div class="ai-gate-desc">${g.desc}</div>
-      <div class="ai-gate-brand">Pak Anony AI &middot; PakAnonymous.ORG</div>
-      ${g.action}
-    </div>`;
+  var g = gates[type] || gates.offline;
+  container.innerHTML =
+    '<div class="ai-gate">' +
+      '<div class="ai-gate-ring">' + g.ico + '</div>' +
+      '<div class="ai-gate-title">' + g.title + '</div>' +
+      '<div class="ai-gate-desc">' + g.desc + '</div>' +
+      '<div class="ai-gate-brand">Pak Anony AI &middot; PakAnonymous.ORG</div>' +
+      g.action +
+    '</div>';
 }
 
 function renderAIChat(remaining, limit) {
-  const container = document.getElementById('aiContainer');
+  var container = document.getElementById('aiContainer');
   if (!container) return;
 
-  const limitedClass = remaining === 0 ? 'at-limit' : '';
-  const limitText    = remaining === 0 ? 'Limit reached' : remaining + '/' + limit + ' left';
-  const name         = _currentUser ? ((_currentUser.displayName || '').split(' ')[0] || 'there') : 'there';
+  var limitedClass = remaining === 0 ? 'at-limit' : '';
+  var limitText    = remaining === 0 ? 'Limit reached' : remaining + '/' + limit + ' msgs left';
+  var firstName    = _currentUser ? ((_currentUser.displayName || '').split(' ')[0] || 'there') : 'there';
+  var day          = getCurrentDay();
+  var isSpecial    = SPECIAL_MASK_DAYS.includes(day);
+  var isEid        = isEidMode();
+  var dayLabel     = isEid ? 'Eid Mode &#127769;' : 'Day ' + day + '/14';
 
-  container.innerHTML = `
-    <div class="ai-chat-header">
-      <div class="ai-chat-id">
-        <div class="ai-avatar">✨</div>
-        <div>
-          <div class="ai-name">Pak Anony AI</div>
-          <div class="ai-status-line"><span class="ai-online-dot"></span>Online &middot; PakAnonymous.ORG</div>
-        </div>
-      </div>
-      <div class="ai-usage-pill ${limitedClass}" id="aiUsagePill">${limitText}</div>
-    </div>
-    <div class="ai-messages" id="aiMessages"></div>
-    <div class="ai-input-wrap">
-      <input class="ai-input" id="aiInput" type="text" maxlength="500"
-        placeholder="Ask about your routine..."
-        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAIMsg();}">
-      <button class="ai-send" id="aiSend" onclick="sendAIMsg()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-    </div>
-    ${remaining === 0 ? '<div class="ai-limit-notice">Daily limit reached. Resets at midnight.</div>' : ''}
-  `;
+  container.innerHTML =
+    '<div class="ai-chat-header">' +
+      '<div class="ai-chat-id">' +
+        '<div class="ai-avatar"><div class="ai-avatar-glow"></div>&#10024;</div>' +
+        '<div>' +
+          '<div class="ai-name">Pak Anony AI</div>' +
+          '<div class="ai-status-line"><span class="ai-online-dot"></span>Online &middot; <span class="ai-sub">PakAnonymous.ORG</span></div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">' +
+        '<div class="ai-usage-pill ' + limitedClass + '" id="aiUsagePill">' + limitText + '</div>' +
+        '<div class="ai-day-badge">' + dayLabel + (isSpecial ? ' &#11088;' : '') + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="ai-messages" id="aiMessages"></div>' +
+    '<div class="ai-suggestions" id="aiSuggestions">' +
+      '<div class="ai-chip" onclick="useAIChip(this)">Today&#39;s mask?</div>' +
+      '<div class="ai-chip" onclick="useAIChip(this)">Ubtan recipe</div>' +
+      '<div class="ai-chip" onclick="useAIChip(this)">My tasks today</div>' +
+      '<div class="ai-chip" onclick="useAIChip(this)">Sunscreen tips</div>' +
+    '</div>' +
+    '<div class="ai-input-wrap">' +
+      '<input class="ai-input" id="aiInput" type="text" maxlength="500"' +
+        ' placeholder="Ask about your routine..."' +
+        ' onkeydown="if(event.key===&#39;Enter&#39;&&!event.shiftKey){event.preventDefault();sendAIMsg();}">' +
+      '<button class="ai-send" id="aiSend" onclick="sendAIMsg()">' +
+        '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+      '</button>' +
+    '</div>' +
+    (remaining === 0 ? '<div class="ai-limit-notice">Daily limit reached. Resets at midnight.</div>' : '');
 
   if (remaining === 0) {
     document.getElementById('aiInput').disabled = true;
     document.getElementById('aiSend').disabled  = true;
   }
 
-  // Personalised greeting with live data
-  const day       = getCurrentDay();
-  const isSpecial = SPECIAL_MASK_DAYS.includes(day);
-  const isEid     = isEidMode();
-  const completed = getCompletedDays().length;
-  let greet;
+  var completed = getCompletedDays().length;
+  var greet;
   if (isEid) {
-    greet = `Eid Mubarak, ${name}! 🌙 You completed your 14-Day Plan — ${completed} days logged. I'm <strong>Pak Anony AI</strong> by PakAnonymous.ORG. Ask me anything about maintaining your glow after Eid. ✨`;
+    greet = 'Eid Mubarak, <strong>' + firstName + '</strong>! &#127769; You completed all 14 days! I am <strong>Pak Anony AI</strong> by PakAnonymous.ORG. Ask me anything to maintain your glow.';
   } else {
-    greet = `Assalam u Alaikum, ${name}! 🌙 I'm <strong>Pak Anony AI</strong> by PakAnonymous.ORG — your personal skincare assistant.\n\nYou're on <strong>Day ${day}</strong> of 14. ${completed > 0 ? completed + ' day' + (completed > 1 ? 's' : '') + ' completed so far — great work!' : 'Let\'s get your Day 1 started!'} ${isSpecial ? '\n\n⭐ Today is a <strong>Special Day</strong> — Lemon + Honey mask tonight!' : ''}\n\nAsk me about your routine, ingredients, tasks, or anything skincare related.`;
+    greet = 'Assalam u Alaikum, <strong>' + firstName + '</strong>! &#127769;\n\n' +
+      'I am <strong>Pak Anony AI</strong> by PakAnonymous.ORG, your personal skincare assistant for the 14-Day Eid Skin Plan.';
+    if (day > 0) {
+      greet += '\n\nYou are on <strong>Day ' + day + '</strong> of 14.';
+      if (completed > 0) greet += ' ' + completed + ' day' + (completed > 1 ? 's' : '') + ' completed &#10003;';
+    }
+    if (isSpecial) greet += '\n\n&#11088; <strong>Special Day</strong> tonight: Lemon + Honey mask!';
+    greet += '\n\nAsk me about your tasks, routines, ingredients, or any skin concerns.';
   }
 
   addAIMsg('bot', greet);
-  const input = document.getElementById('aiInput');
-  if (input) setTimeout(() => input.focus(), 200);
+  var input = document.getElementById('aiInput');
+  if (input) setTimeout(function() { input.focus(); }, 300);
+}
+
+function useAIChip(el) {
+  var input = document.getElementById('aiInput');
+  if (!input || input.disabled) return;
+  input.value = el.textContent.trim();
+  var s = document.getElementById('aiSuggestions');
+  if (s) s.style.cssText += ';opacity:0;height:0;padding:0;overflow:hidden;border:none;transition:all .3s';
+  sendAIMsg();
 }
 
 async function sendAIMsg() {
