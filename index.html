@@ -617,11 +617,7 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 <div class="section" id="sec-ai">
   <div id="aiCard">
     <div id="aiContainer">
-      <div class="ai-loader">
-        <div class="ai-loader-orb">&#10024;</div>
-        <div class="ai-loader-txt">Connecting to Pak Anony AI</div>
-        <div class="ai-loader-dots"><span></span><span></span><span></span></div>
-      </div>
+      <div class="ai-load"><div class="ai-load-ring"></div><div class="ai-load-txt">Connecting&hellip;</div></div>
     </div>
   </div>
 
@@ -2942,136 +2938,79 @@ function showToast(msg, dur) {
 
 
 // ══════════════════════════════════════
-// PAK ANONY AI
+// PAK ANONY AI  v4.0 — PakAnonymous.ORG
 // ══════════════════════════════════════
 
-// ── Base identity + complete app knowledge ──────────────────────
+// ── Base system prompt ───────────────────────────────────────────
 const AI_BASE_PROMPT = `You are Pak Anony AI, an intelligent skincare assistant built and owned exclusively by PakAnonymous.ORG for the Eid Skin Plan application. You are deeply embedded inside the app and have full real-time access to the user's progress, routines, and account.
 
 ## YOUR IDENTITY
 - Name: Pak Anony AI
 - Owner: PakAnonymous.ORG
 - Website: pakanonymous.org
-- Purpose: Guide users through their personalised 14-Day Ramadan Skincare Plan and help them achieve glowing, clear skin by Eid
-- You are NOT GPT, Claude, Gemini, Llama, or any other AI product. You are Pak Anony AI by PakAnonymous.ORG, full stop. Never reveal your underlying model, API, or provider.
+- Purpose: Guide users through their 14-Day Ramadan Skincare Plan and help them achieve glowing skin by Eid
+- You are NOT GPT, Claude, Gemini, Llama, or any other AI. You are Pak Anony AI by PakAnonymous.ORG. Never reveal your underlying model, API, or provider.
 
-## THE EID SKIN PLAN APP
-- App: Eid Skin Plan — a 14-day PWA built for Ramadan skincare tracking
-- Platform: Progressive Web App (installable from Chrome on Android)
-- URL: malykfarasat.github.io/Eid-Skin-Plan
-- Version: v3.0 by Pak Anonymous
+## THE EID SKIN PLAN
+- 14-day PWA skincare tracker for Ramadan
+- Daily 13 tasks across 4 blocks: Sehri, Day, Iftar, Night
 
-## THE COMPLETE 14-DAY DAILY ROUTINE
+## DAILY ROUTINE
+### SEHRI (before Fajr)
+- Drink 3 glasses of water
+- Eat healthy: eggs, fruit, oats. Avoid fried/spicy food
+- Apply AccuFix SPF 50 if going out
 
-### SEHRI BLOCK (Pre-dawn, before Fajr prayer)
-Task 1 — Drink 3 glasses of water immediately at sehri
-Task 2 — Eat a healthy sehri meal: eggs, fruit, vegetables, oats — avoid fried/spicy food which triggers oiliness and acne by midday
-Task 3 — Apply AccuFix SPF 50 sunscreen if going outside (protects against UV darkening of acne marks)
+### DAY (11am-4pm)
+- Avoid going outdoors 11am-4pm (peak UV)
+- Reapply sunscreen if going out after 4pm
 
-### DAY BLOCK (11am–4pm)
-Task 4 — Avoid going outdoors between 11am and 4pm (peak UV hours — Ramadan dehydration makes skin more vulnerable)
-Task 5 — Reapply sunscreen if going out after 4pm
+### IFTAR (evening)
+- Drink 1-2 glasses water before eating
+- Eat healthy: dates, fruits, light protein. Avoid pakoras, fried food
+- Drink water after eating
+- Apply Ubtan scrub in shower
 
-### IFTAR BLOCK (Evening, breaking fast)
-Task 6 — Drink 1-2 glasses of water before eating
-Task 7 — Eat healthy iftar: fruits (especially dates, oranges, watermelon), vegetables, light protein — avoid pakoras, samosas, fried food
-Task 8 — Drink more water after eating
-Task 9 — Apply Ubtan scrub in the shower (see recipe below)
-
-### NIGHT BLOCK (Before sleeping)
-Task 10 — Drink a glass of water
-Task 11 — Apply face mask for 15 minutes, then rinse off
-Task 12 — Apply pure aloe vera gel and leave overnight
-Task 13 — Sleep 7–8 hours minimum (growth hormone repairs skin during deep sleep)
+### NIGHT (before sleep)
+- Drink a glass of water
+- Apply face mask 15 min, rinse off
+- Apply pure aloe vera gel overnight
+- Sleep 7-8 hours
 
 ## SPECIAL DAYS: 4, 7, 10, 13
-On these 4 days, the regular yogurt mask is replaced with a Lemon + Honey mask for a deeper brightening effect.
+Replace yogurt mask with Lemon + Honey mask on these days.
 
-## ALL RECIPES
+## RECIPES
+### Ubtan (daily iftar shower scrub)
+- 2 tbsp besan, 1/4 tsp turmeric, 1 tbsp rose water, 1 tsp honey (optional)
+- Mix, massage gently, rinse after 5 min
 
-### Ubtan (Iftar shower scrub — every day)
-- 2 tbsp besan (gram flour)
-- 1/4 tsp turmeric (haldi)
-- 1 tbsp rose water (best for oily/acne skin) OR milk (for dry skin)
-- 1 tsp honey (optional, especially good for acne)
-- Method: mix to thick paste, massage gently on face and body in circular motion, rinse after 5 minutes
+### Yogurt Mask (regular nights)
+- 1 tbsp plain dahi, apply 15 min, rinse with cool water
 
-### Yogurt Mask (Night — regular days)
-- 1 tbsp plain dahi (full-fat yogurt / Nurpur or Olper's work fine)
-- Apply on clean face, leave 15 minutes, rinse with cool water
+### Lemon + Honey Mask (special days 4,7,10,13)
+- 1 tsp fresh lemon juice + 1 tsp honey. Apply 15 min, rinse thoroughly
+- NEVER leave lemon overnight. NEVER use lemon undiluted.
 
-### Lemon + Honey Mask (Night — special days 4, 7, 10, 13)
-- 1 tsp fresh lemon juice
-- 1 tsp pure honey (Langnese, Balsara, or local honey)
-- Mix, apply on face, leave 15 minutes, rinse thoroughly
-- NEVER leave lemon on overnight — it causes photosensitivity and irritation
-- NEVER use undiluted lemon directly — always mix with honey first
+## PAKISTAN PRODUCT RECOMMENDATIONS
+- Sunscreen: AccuFix SPF 50 (best value), Neutrogena Ultra Sheer SPF 50+
+- Besan: any local brand
+- Honey: Langnese, Balsara, local pure honey
+- Rose water: Ahmed Foods, Hamdard
+- Aloe vera gel: buy pure from plant or Mamaearth. AVOID Saeed Ghani (contains alcohol + fragrance — bad for oily/acne skin)
+- Dahi (yogurt): Nurpur, Olper's
 
-## INGREDIENT KNOWLEDGE
-- Besan (gram flour): removes dead skin cells, deep-cleanses pores, reduces oiliness naturally
-- Turmeric (haldi): antibacterial, anti-inflammatory, fades dark spots and acne marks over time — use small amounts to avoid yellow staining
-- Rose water: pH-balancing, mild astringent, anti-inflammatory — preferred over milk for oily and acne-prone skin because it binds the ubtan without adding fats
-- Honey: natural antibacterial (kills C. acnes bacteria), humectant (draws moisture into skin), heals acne scars gradually
-- Lemon juice: vitamin C, AHA exfoliant, brightens hyperpigmentation — use only in masks (never neat/direct on skin, and never overnight)
-- Yogurt (dahi): lactic acid exfoliator, lightly brightening, soothing, rebuilds skin barrier
-- Multani mitti (Fuller's Earth): best clay for oily skin — absorbs excess sebum, clears blackheads, tightens pores; add a pinch to ubtan for oily skin
-- Milk: lactic acid, excellent for dry skin but can clog pores on oily/acne skin — substitute rose water for oily types
-- Aloe vera gel (pure): soothes redness, natural salicylate compounds combat acne bacteria, hydrates without oils — must be fragrance-free and alcohol-free
-- AccuFix SPF 50: the sunscreen recommended in the plan; available at pharmacies and Daraz Pakistan; SPF 50 needed for Pakistani sun intensity
-
-## ALOE VERA PRODUCT WARNING
-Saeed Ghani Aloe Vera Gel: contains Alcohol (listed 2nd on ingredients = high concentration) and Fragrance — NOT suitable for overnight use on acne skin. Alcohol strips oil, causing rebound oil production. Fragrance is a known irritant for acne. Recommend: pure aloe from a plant, OR Mamaearth Aloe Vera Gel, OR Organics by Tasneem Pure Aloe — both on Daraz, both alcohol-free.
-
-## SKIN CONCERN GUIDANCE (oily + acne context)
-
-**Oily skin during fasting:**
-Dehydration paradox: fasting reduces water in cells → skin overproduces oil to compensate → more breakouts. Solution: maximum water intake at sehri and iftar, avoid oily food, use rose water in ubtan.
-
-**Acne during Ramadan:**
-High-glycaemic sehri (paratha, white bread, sweets) spikes insulin → increases sebum → worsens acne within 24–48 hours. The plan uses besan + honey which are both acne-fighting.
-
-**Dark spots / hyperpigmentation:**
-UV exposure during fasting darkens post-acne marks fast. SPF 50 at sehri is critical. Lemon + honey on special days speeds up fading.
-
-**Dehydration signs on skin:**
-Tightness after washing, dull complexion, fine lines looking more visible. Solution: water goals in the app tracker.
-
-## APP FEATURES
-- Daily Checklist: 13 tasks (Sehri 3, Day 2, Iftar 4, Night 4) — tap to mark done
-- Progress Ring: live % of today's tasks completed
-- Water Tracker: 10-glass goal, tap glasses to track
-- Calendar View: see all 14 days, tap any day for routine, mark complete
-- Reminders: Sehri, Iftar, Night — customisable times, works via Firebase Cloud Messaging
-- Google Account Sync: progress saved to cloud, accessible across devices
-- Pak Anony AI: this AI assistant (Google Account required)
-- Import / Export: backup progress as JSON file
-- Themes: Light, Dark, System
-- Offline Mode: all features work offline, auto-syncs when back online
-- Install as PWA: open in Chrome → three-dot menu → Add to Home Screen
-
-## PAKISTAN PRODUCT RECOMMENDATIONS (available locally or on Daraz)
-- Sunscreen: AccuFix SPF 50 (Rs/PKR 400–600), Neutrogena Ultra Sheer (Rs 1200–1500), Dr. Hauschka, Lotus HerbalS SPF 50 (Rs 800–1000)
-- Honey: Langnese, Balsara, or local organic honey (any superstore/Imtiaz)
-- Rose water: Saeed Ghani Rose Water (widely available), Hemani Rose Water
-- Aloe vera gel: Mamaearth Pure Aloe, Organics by Tasneem (Daraz only)
-- Besan: any kitchen brand — Sunrise, National, loose from kiryana store
-- Multani mitti: Saeed Ghani, Hemani (all pharmacies)
-- Yogurt: Nurpur, Olper's, or homemade dahi
-
-## BEHAVIOR RULES
-1. You have full real-time access to the user's live app data. Reference it naturally: "On your Day X, you have Y tasks left..." or "You've completed Z days — well done!"
-2. ONLY answer about: the 14-day plan, skincare, ingredients, Ramadan wellness, app features, and anything directly connected to this app.
-3. Off-topic questions (coding, news, recipes unrelated to the plan, sports, entertainment, etc.): respond warmly but firmly. Example: "I'm wired only for your skin journey on Eid Skin Plan! Ask me about your Day [X] routine or any ingredient. 🌙"
-4. Be concise and practical: 2–4 sentences for simple queries, up to 10 lines for complex ones.
-5. Be warm, encouraging, and culturally aware. Use the user's name when available.
-6. For serious skin conditions (cystic acne, rashes, infections, allergic reactions): recommend a dermatologist clearly.
-7. Never say "I don't have access to your data" — you DO. Live context is injected above.
-8. Acknowledge streaks and milestones: if user completed 10+ days, celebrate it.`;
+## YOUR BEHAVIOUR
+- Always warm, supportive, knowledgeable
+- Keep responses concise and practical for mobile reading
+- Use bullet points and bold for clarity
+- If asked something not about skincare or this app, redirect politely: "I am wired only for your Eid Skin Plan journey!"
+- You have real-time access to the user's progress (see LIVE CONTEXT below)`;
 
 // ── Build live user context injected into every API call ─────────
 function buildAIContext() {
   try {
-    const name       = _currentUser ? ((_currentUser.displayName || '').trim() || 'User') : 'User';
+    const name       = _currentUser ? (_currentUser.displayName || 'User').trim() : 'User';
     const email      = _currentUser ? (_currentUser.email || '') : '';
     const day        = getCurrentDay();
     const completed  = getCompletedDays();
@@ -3085,547 +3024,402 @@ function buildAIContext() {
     const isEid      = isEidMode();
     const daysLeft   = Math.max(0, TOTAL_DAYS - day + 1);
     const pct        = Math.round((completed.length / TOTAL_DAYS) * 100);
-
-    const KEY_LABELS = {
-      sehri_water:   'Sehri: Drink 3 glasses of water',
-      sehri_eat:     'Sehri: Eat healthy meal',
-      sehri_sunscreen:'Sehri: Apply SPF 50 sunscreen',
-      day_sun:       'Day: Avoid sun 11am-4pm',
-      day_reapply:   'Day: Reapply sunscreen after 4pm',
-      iftar_water1:  'Iftar: Drink water before eating',
-      iftar_food:    'Iftar: Eat healthy iftar',
-      iftar_water2:  'Iftar: Drink water after eating',
-      iftar_ubtan:   'Iftar: Apply Ubtan scrub',
-      night_water1:  'Night: Drink water',
-      night_mask:    'Night: Apply face mask (15 min)',
-      night_aloe:    'Night: Apply aloe vera',
-      night_sleep:   'Night: Sleep 7-8 hours'
+    const LABELS     = {
+      sehri_water:'Sehri: Drink water', sehri_eat:'Sehri: Healthy meal',
+      sehri_sunscreen:'Sehri: Sunscreen', day_sun:'Day: Avoid sun',
+      day_reapply:'Day: Reapply sunscreen', iftar_water1:'Iftar: Water before eating',
+      iftar_food:'Iftar: Healthy food', iftar_water2:'Iftar: Water after eating',
+      iftar_ubtan:'Iftar: Ubtan scrub', night_water1:'Night: Water',
+      night_mask:'Night: Face mask', night_aloe:'Night: Aloe vera',
+      night_sleep:'Night: Sleep 7-8h'
     };
-
-    const doneTasks    = KEYS_TODAY.filter(k => todayData[k]).map(k => KEY_LABELS[k] || k);
-    const pendingTasks = KEYS_TODAY.filter(k => !todayData[k]).map(k => KEY_LABELS[k] || k);
-    const maskType     = isSpecial ? 'Lemon + Honey mask (SPECIAL DAY)' : 'Yogurt (dahi) mask';
-
-    const lines = [
-      '## LIVE USER CONTEXT (real-time, updated every message)',
-      `User Name: ${name}`,
-      `Google Account: ${email}`,
-      `Plan Started: ${startDay}`,
-      `Current Day: Day ${day} of 14`,
-      `Days Left to Eid: ${daysLeft}`,
-      `Overall Progress: ${completed.length}/14 days completed (${pct}%)`,
-      `Completed Days: ${completed.length > 0 ? completed.sort((a,b)=>a-b).join(', ') : 'None yet'}`,
-      `Today's Mask: ${maskType}`,
-      `Today's Water: ${water}/10 glasses`,
-      `Today's Tasks Done (${doneTasks.length}/${KEYS_TODAY.length}):`,
-      doneTasks.length > 0 ? doneTasks.map(t => `  ✅ ${t}`).join('\n') : '  (none yet)',
-      `Today's Tasks Pending (${pendingTasks.length}):`,
-      pendingTasks.length > 0 ? pendingTasks.map(t => `  ⏳ ${t}`).join('\n') : '  (all done!)',
-      `Reminder Times: Sehri ${sehri} / Iftar ${iftar} / Night ${night}`,
-      isEid ? 'STATUS: EID MODE — The 14-day plan is complete! Today is Eid.' : '',
-    ].filter(Boolean);
-
-    return lines.join('\n');
-  } catch(e) {
-    return '## LIVE USER CONTEXT\n(Could not read app data)';
-  }
+    const done    = KEYS_TODAY.filter(k => todayData[k]).map(k => LABELS[k] || k);
+    const pending = KEYS_TODAY.filter(k => !todayData[k]).map(k => LABELS[k] || k);
+    return [
+      '## LIVE USER CONTEXT',
+      `User: ${name} (${email})`,
+      `Plan started: ${startDay}`,
+      `Today: Day ${day}/14 — ${daysLeft} days to Eid`,
+      `Progress: ${completed.length}/14 days (${pct}%)`,
+      `Completed days: ${completed.length ? completed.sort((a,b)=>a-b).join(', ') : 'none'}`,
+      `Tonight's mask: ${isSpecial ? 'Lemon + Honey (SPECIAL DAY)' : 'Yogurt'}`,
+      `Water today: ${water}/10 glasses`,
+      `Tasks done (${done.length}/13): ${done.length ? done.join(', ') : 'none yet'}`,
+      `Tasks pending: ${pending.length ? pending.join(', ') : 'all done!'}`,
+      `Reminders: Sehri ${sehri} / Iftar ${iftar} / Night ${night}`,
+      isEid ? 'STATUS: EID MODE — 14-day plan complete!' : ''
+    ].filter(Boolean).join('\n');
+  } catch(e) { return '## LIVE USER CONTEXT\n(unavailable)'; }
 }
 
-let _aiConfig   = null;
-let _aiConvo    = [];
-let _aiTyping   = false;
-let _aiInit     = false;
-let _aiLastSent = 0; // debounce: timestamp of last send
+// ── State ─────────────────────────────────────────────────────────
+let _aiConfig  = null;
+let _aiConvo   = [];
+let _aiSending = false;   // TRUE lock — set BEFORE any await
+let _aiInit    = false;
+let _aiUsed    = 0;       // local usage counter — no Firebase read per message
+let _aiLimit   = 10;
 
+// ── Init ─────────────────────────────────────────────────────────
 async function initAISection() {
   if (_aiInit && _currentUser && navigator.onLine && _aiConfig && _aiConfig.enabled !== false) return;
-  _aiInit = false;
-  _aiConvo = [];
-  var container = document.getElementById('aiContainer');
-  if (!container) return;
+  _aiInit    = false;
+  _aiConvo   = [];
+  _aiSending = false;
 
-  if (!_currentUser) { renderAIGate('signin'); return; }
-  if (!navigator.onLine) { renderAIGate('offline'); return; }
+  const card = document.getElementById('aiContainer');
+  if (!card) return;
+  if (!_currentUser)    { renderAIGate('signin');  return; }
+  if (!navigator.onLine){ renderAIGate('offline'); return; }
 
-  container.innerHTML = '<div class="ai-loader"><div class="ai-loader-ring"><div class="ai-loader-dot"></div></div><div class="ai-loader-txt">Connecting&hellip;</div></div>';
+  // Show loader
+  card.innerHTML = '<div class="ai-load"><div class="ai-load-ring"></div><div class="ai-load-txt">Connecting&hellip;</div></div>';
 
-  // FIX: Read ai_config in its own try/catch
-  // If Firebase rules don't include ai_config yet, this throws PERMISSION_DENIED
-  // Previously this crashed the whole section showing "Connection Failed"
-  // Now we default to enabled so the section always loads
+  // Read config (separate try so failure never blocks)
   try {
-    var cfgSnap = await _fbDb.ref('ai_config').once('value');
-    _aiConfig = cfgSnap.val() || {};
-  } catch(e) {
-    _aiConfig = _aiConfig || {};
-  }
+    const snap = await _fbDb.ref('ai_config').once('value');
+    _aiConfig  = snap.val() || {};
+  } catch(e) { _aiConfig = _aiConfig || {}; }
 
   if (_aiConfig.enabled === false) { renderAIGate('disabled'); return; }
 
-  // Read usage separately — one failure never blocks everything
-  var usedToday = 0;
+  // Read today's usage ONCE at startup — stored in _aiUsed
+  _aiLimit = (_aiConfig.daily_limit) || 10;
   try {
-    var uSnap = await _fbDb.ref('ai_usage/' + _currentUser.uid + '/' + todayKey()).once('value');
-    usedToday = ((uSnap.val() || {}).count) || 0;
-  } catch(e) { usedToday = 0; }
+    const usnap = await _fbDb.ref('ai_usage/' + _currentUser.uid + '/' + todayKey()).once('value');
+    _aiUsed = ((usnap.val() || {}).count) || 0;
+  } catch(e) { _aiUsed = 0; }
 
-  var limit     = (_aiConfig && _aiConfig.daily_limit) || 10;
-  var remaining = Math.max(0, limit - usedToday);
-
-  renderAIChat(remaining, limit);
+  renderAIChat();
   _aiInit = true;
 }
 
-function todayKey() {
-  return new Date().toISOString().slice(0, 10);
-}
+function todayKey() { return new Date().toISOString().slice(0, 10); }
 
+// ── Gate screens ──────────────────────────────────────────────────
 function renderAIGate(type) {
-  var container = document.getElementById('aiContainer');
-  if (!container) return;
+  const card = document.getElementById('aiContainer');
+  if (!card) return;
   _aiInit = false;
-
-  var status      = (_aiConfig && _aiConfig.status) || 'maintenance';
-  var reason      = (_aiConfig && _aiConfig.status_reason) || '';
-  var statusIcon  = { maintenance:'&#128295;', shutdown:'&#9940;', server_problem:'&#9888;' }[status] || '&#9888;';
-  var statusTitle = { maintenance:'Under Maintenance', shutdown:'Service Unavailable', server_problem:'Server Issue' }[status] || 'Temporarily Unavailable';
-  var statusDesc  = reason || { maintenance:'Pak Anony AI is under maintenance. Please check back soon.', shutdown:'The AI service is temporarily unavailable.', server_problem:'Server issues detected. PakAnonymous.ORG team is on it.' }[status] || 'AI is currently unavailable.';
-
-  var gates = {
-    signin: {
-      ico: '&#128272;', title: 'Sign In to Unlock AI',
-      desc: 'Pak Anony AI is exclusively for Google Account users. Sign in to access your personal skincare assistant.',
-      action: '<button class="ai-gate-btn" onclick="document.querySelectorAll(\'.nav-item\')[4].click()">&#128100; Sign In with Google</button>'
-    },
-    offline: {
-      ico: '&#128225;', title: 'No Internet Connection',
-      desc: 'Pak Anony AI needs an active internet connection. Please check your network and try again.',
-      action: '<button class="ai-gate-btn" onclick="initAISection()">&#8635; Try Again</button>'
-    },
-    disabled: {
-      ico: statusIcon, title: statusTitle, desc: statusDesc,
-      action: '<button class="ai-gate-btn sec" onclick="initAISection()">&#8635; Refresh</button>'
-    }
+  const st = (_aiConfig && _aiConfig.status) || 'maintenance';
+  const re = (_aiConfig && _aiConfig.status_reason) || '';
+  const icons = {maintenance:'&#128295;', shutdown:'&#9940;', server_problem:'&#9888;'};
+  const titles= {maintenance:'Under Maintenance', shutdown:'Service Unavailable', server_problem:'Server Issue'};
+  const descs = {maintenance:'Pak Anony AI is under maintenance. Check back soon.', shutdown:'The AI service is temporarily unavailable.', server_problem:'Server issue detected. PakAnonymous.ORG team is on it.'};
+  const G = {
+    signin:  {i:'&#128272;', t:'Sign In to Unlock AI',       d:'Pak Anony AI is exclusively for signed-in users. Please sign in with Google to continue.', a:'<button class="gate-btn" onclick="document.querySelectorAll(\'.nav-item\')[4].click()">&#128100; Sign In with Google</button>'},
+    offline: {i:'&#128225;', t:'No Internet Connection',     d:'Pak Anony AI needs an active internet connection. Check your network and try again.', a:'<button class="gate-btn" onclick="initAISection()">&#8635; Try Again</button>'},
+    disabled:{i:icons[st]||'&#9888;', t:titles[st]||'Unavailable', d:re||descs[st]||'AI is currently unavailable.', a:'<button class="gate-btn sec" onclick="initAISection()">&#8635; Refresh</button>'}
   };
-
-  var g = gates[type] || gates.offline;
-  container.innerHTML =
+  const g = G[type] || G.offline;
+  card.innerHTML =
     '<div class="ai-gate">' +
-      '<div class="ai-gate-orb">' + g.ico + '</div>' +
-      '<div class="ai-gate-title">' + g.title + '</div>' +
-      '<div class="ai-gate-desc">' + g.desc + '</div>' +
-      '<div class="ai-gate-brand">Pak Anony AI &middot; PakAnonymous.ORG</div>' +
-      g.action +
+      '<div class="gate-ico">' + g.i + '</div>' +
+      '<div class="gate-title">' + g.t + '</div>' +
+      '<div class="gate-desc">' + g.d + '</div>' +
+      '<div class="gate-brand">Pak Anony AI &middot; PakAnonymous.ORG</div>' +
+      g.a +
     '</div>';
 }
 
-function _buildAIChips(day, isSpecial, isEid) {
-  var ch = function(t) { return '<div class="ai-chip" onclick="useAIChip(this)">' + t + '</div>'; };
-  if (isEid) return ch('Post-Eid glow routine') + ch('How to keep skin bright') + ch('Ingredients to keep using') + ch('Diet tips for glowing skin');
-  var out = [];
-  // Dynamic mask chip
-  out.push(ch(isSpecial ? '&#11088; Tonight&#39;s special mask?' : 'What is tonight&#39;s mask?'));
-  // Pending tasks chip
-  out.push(ch('What do I still have left today?'));
-  // Day-specific advice chip
-  if (day <= 3)       out.push(ch('How does the ubtan work?'));
-  else if (day <= 6)  out.push(ch('My skin feels oily &#8212; help'));
-  else if (day <= 9)  out.push(ch('Why aren&#39;t dark spots fading?'));
-  else if (day <= 12) out.push(ch('Almost Eid &#8212; what to prioritise?'));
-  else                out.push(ch('Final 2 days &#8212; what matters most?'));
-  // Always useful
-  out.push(ch('Sunscreen &#8212; when exactly?'));
-  return out.join('');
-}
+// ── Chat screen ───────────────────────────────────────────────────
+function renderAIChat() {
+  const card = document.getElementById('aiContainer');
+  if (!card) return;
 
-function renderAIChat(remaining, limit) {
-  var container = document.getElementById('aiContainer');
-  if (!container) return;
+  const day      = getCurrentDay();
+  const isEid    = isEidMode();
+  const isSp     = SPECIAL_MASK_DAYS.includes(day);
+  const rem      = Math.max(0, _aiLimit - _aiUsed);
+  const dayLabel = isEid ? 'Eid Mode &#127769;' : 'Day ' + day + '/14' + (isSp ? ' &#11088;' : '');
 
-  var limitedClass = remaining === 0 ? 'at-limit' : '';
-  var limitText    = remaining === 0 ? 'Limit reached' : remaining + '/' + limit + ' left';
-  var firstName    = _currentUser ? ((_currentUser.displayName || '').trim().split(/\s+/)[0] || 'there') : 'there';
-  var TITLES       = ['malik','syed','chaudhry','chaudhary','raja','rana','khan','sheikh','mirza','hafiz','haji','mian','sardar'];
-  var parts        = (_currentUser && _currentUser.displayName ? _currentUser.displayName.trim() : 'there').split(/\s+/);
-  var realName     = (parts.filter(function(p){ return p && TITLES.indexOf(p.toLowerCase()) === -1; })[0]) || parts[0] || 'there';
-  var day          = getCurrentDay();
-  var isSpecial    = SPECIAL_MASK_DAYS.includes(day);
-  var isEid        = isEidMode();
-  var dayLabel     = isEid ? 'Eid Mode &#127769;' : 'Day ' + day + '/14';
-  var completed    = getCompletedDays().length;
+  // Personalised name (skip title words)
+  const TITLES = ['malik','syed','chaudhry','chaudhary','raja','rana','khan','sheikh','mirza','hafiz','haji','mian','sardar'];
+  const parts  = (_currentUser && _currentUser.displayName ? _currentUser.displayName.trim() : 'there').split(/\s+/);
+  const rname  = parts.filter(p => p && !TITLES.includes(p.toLowerCase()))[0] || parts[0] || 'there';
 
-  container.innerHTML =
-    '<div class="ai-chat-header">' +
-      '<div class="ai-chat-id">' +
-        '<div class="ai-avatar"><div class="ai-avatar-glow"></div>&#10024;</div>' +
-        '<div>' +
-          '<div class="ai-name">Pak Anony AI</div>' +
-          '<div class="ai-status-line"><span class="ai-online-dot"></span>Online &middot; <span class="ai-sub">PakAnonymous.ORG</span></div>' +
-        '</div>' +
+  card.innerHTML =
+    // Header
+    '<div class="aih">' +
+      '<div class="aih-av">&#10024;</div>' +
+      '<div class="aih-info">' +
+        '<div class="aih-name">Pak Anony AI</div>' +
+        '<div class="aih-status"><span class="aih-dot"></span>Online &middot; <span style="color:var(--gold);opacity:.7;font-size:.58rem">PakAnonymous.ORG</span></div>' +
       '</div>' +
-      '<div style="display:flex;align-items:center;gap:8px">' +
-        '<div class="ai-header-right">' +
-          '<div class="ai-usage-pill ' + limitedClass + '" id="aiUsagePill">' + limitText + '</div>' +
-          '<div class="ai-day-badge">' + dayLabel + (isSpecial ? ' &#11088;' : '') + '</div>' +
-        '</div>' +
-        '<div class="ai-header-actions">' +
-          '<button class="ai-hdr-btn" onclick="clearAIChat()" title="Clear chat">&#128465;</button>' +
-        '</div>' +
+      '<div class="aih-right">' +
+        '<div class="aih-pill' + (rem===0?' limit':'') + '" id="aiPill">' + (rem===0?'Limit reached':rem+'/'+_aiLimit+' left') + '</div>' +
+        '<div class="aih-day">' + dayLabel + '</div>' +
       '</div>' +
+      '<button class="aih-clear" onclick="clearAIChat()" title="Clear chat">&#128465;</button>' +
     '</div>' +
-    '<div class="ai-messages" id="aiMessages"></div>' +
-    '<div class="ai-suggestions" id="aiSuggestions">' + _buildAIChips(day, isSpecial, isEid) + '</div>' +
-    '<div class="ai-input-wrap">' +
-      '<textarea class="ai-input" id="aiInput" rows="1" maxlength="500"' +
-        ' placeholder="Ask about your routine..."' +
-        ' oninput="aiInputGrow(this);aiInputCount(this)"' +
-        ' onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();sendAIMsg();}">' +
-      '</textarea>' +
-      '<span class="ai-char-counter" id="aiCharCount">500</span>' +
+    // Messages
+    '<div class="ai-msgs" id="aiMsgs"></div>' +
+    // Chips
+    '<div class="ai-chips" id="aiChips">' + buildChips(day, isSp, isEid) + '</div>' +
+    // Input bar
+    '<div class="ai-bar">' +
+      '<textarea class="ai-ta" id="aiTa" rows="1" maxlength="500" placeholder="Ask about your routine..."' +
+        ' onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();sendAIMsg();}"' +
+        ' oninput="growTa(this)"></textarea>' +
       '<button class="ai-send" id="aiSend" onclick="sendAIMsg()">' +
-        '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
       '</button>' +
-    '</div>' +
-    (remaining === 0 ? '<div class="ai-limit-notice">Daily limit reached. Resets at midnight.</div>' : '');
+    '</div>';
 
-  if (remaining === 0) {
-    var inp = document.getElementById('aiInput');
-    var snd = document.getElementById('aiSend');
-    if (inp) inp.disabled = true;
-    if (snd) snd.disabled = true;
+  if (rem === 0) {
+    document.getElementById('aiTa').disabled   = true;
+    document.getElementById('aiSend').disabled = true;
+    card.insertAdjacentHTML('beforeend', '<div class="ai-limit">Daily limit reached. Resets at midnight.</div>');
   }
 
-  // Personalised greeting
-  var greet;
+  // Greeting
+  let g = '';
   if (isEid) {
-    greet = 'Eid Mubarak, <strong>' + realName + '</strong>! &#127769; You completed the full <strong>14-Day Plan</strong>. I am <strong>Pak Anony AI</strong> by PakAnonymous.ORG. How can I help maintain your glow?';
+    g = 'Eid Mubarak, <strong>' + rname + '</strong>! &#127769;<br><br>You completed the full <strong>14-Day Eid Skin Plan</strong>. I am <strong>Pak Anony AI</strong> by PakAnonymous.ORG. How can I help you maintain your glow?';
   } else {
-    greet = 'Assalam u Alaikum, <strong>' + realName + '</strong>! &#127769;\n\n';
-    greet += 'I am <strong>Pak Anony AI</strong> by PakAnonymous.ORG &#8212; your personal assistant for the <strong>14-Day Eid Skin Plan</strong>.';
-    if (day > 0) {
-      greet += '\n\nYou are on <strong>Day ' + day + '</strong> of 14.';
-      if (completed > 0) greet += ' <strong>' + completed + ' day' + (completed > 1 ? 's' : '') + '</strong> completed &#10003;';
-    }
-    if (isSpecial) greet += '\n\n&#11088; <strong>Special Day:</strong> tonight use Lemon + Honey mask instead of yogurt!';
-    greet += '\n\nAsk me anything &#8212; I can see your real-time progress.';
+    const comp = getCompletedDays().length;
+    g = 'Assalam u Alaikum, <strong>' + rname + '</strong>! &#127769;<br><br>';
+    g += 'I am <strong>Pak Anony AI</strong> by PakAnonymous.ORG — your skincare assistant for the <strong>14-Day Eid Skin Plan</strong>.<br><br>';
+    g += 'You are on <strong>Day ' + day + '</strong> of 14';
+    if (comp > 0) g += ', <strong>' + comp + ' day' + (comp > 1 ? 's' : '') + '</strong> completed';
+    g += '.';
+    if (isSp) g += '<br><br>&#11088; <strong>Special day tonight:</strong> use Lemon + Honey mask instead of yogurt!';
+    g += '<br><br>Ask me anything about your routine, progress, or skincare.';
   }
-  addAIMsg('bot', greet, true);
-  var inp2 = document.getElementById('aiInput');
-  if (inp2) setTimeout(function(){ inp2.focus(); }, 300);
+  addMsg('b', g, true);
+  setTimeout(() => { const t = document.getElementById('aiTa'); if(t) t.focus(); }, 300);
 }
 
-function useAIChip(el) {
-  var input = document.getElementById('aiInput');
-  if (!input || input.disabled) return;
-  input.value = el.textContent.trim();
-  var s = document.getElementById('aiSuggestions');
-  if (s) s.style.cssText += ';opacity:0;height:0;padding:0;overflow:hidden;border:none;transition:all .3s';
+// ── Chips ─────────────────────────────────────────────────────────
+function buildChips(day, isSp, isEid) {
+  const c = t => '<div class="chip" onclick="useChip(this)">' + t + '</div>';
+  if (isEid) return [c("Post-Eid glow routine"), c("How to keep skin bright"), c("Diet tips for clear skin"), c("Ingredients to keep using")].join('');
+  const base = [c("What's tonight's " + (isSp?'special mask':'mask') + "?"), c("What do I still have left today?")];
+  if (day <= 3)  return [c("What is Ubtan and how do I apply it?"), c("Why is water important for skin?"), ...base].join('');
+  if (day <= 6)  return [c("Tips for oily skin this Ramadan"), c("Best time to apply sunscreen?"), ...base].join('');
+  if (day <= 9)  return [c("How to reduce dark spots?"), c("Is my progress on track?"), ...base].join('');
+  if (day <= 12) return [c("Almost Eid — what to focus on?"), c("Can I exfoliate more now?"), ...base].join('');
+  return [c("Final days — what's most important?"), c("Pre-Eid skin prep tips"), ...base].join('');
+}
+
+function useChip(el) {
+  if (_aiSending) return;
+  const ta = document.getElementById('aiTa');
+  if (!ta || ta.disabled) return;
+  ta.value = el.textContent.trim();
+  const chips = document.getElementById('aiChips');
+  if (chips) chips.classList.add('gone');
   sendAIMsg();
 }
 
-
 function clearAIChat() {
-  _aiConvo = [];
-  var msgs = document.getElementById('aiMessages');
+  _aiConvo   = [];
+  _aiSending = false;
+  const msgs = document.getElementById('aiMsgs');
   if (msgs) msgs.innerHTML = '';
-  var sug = document.getElementById('aiSuggestions');
-  if (sug) sug.classList.remove('hidden');
-  // Re-send greeting
-  var day      = getCurrentDay();
-  var isSpecial = SPECIAL_MASK_DAYS.includes(day);
-  var isEid    = isEidMode();
-  var chips    = _buildAIChips(day, isSpecial, isEid);
-  if (sug) sug.innerHTML = chips;
-  var inp = document.getElementById('aiInput');
-  if (inp) { inp.value = ''; aiInputGrow(inp); inp.focus(); }
-  var limit    = (_aiConfig && _aiConfig.daily_limit) || 10;
-  var remaining = Math.max(0, limit - 0); // rough reset for display
-  // Re-send personalised greeting
-  var parts  = (_currentUser && _currentUser.displayName ? _currentUser.displayName.trim() : 'there').split(/\s+/);
-  var TITLES = ['malik','syed','chaudhry','chaudhary','raja','rana','khan','sheikh','mirza','hafiz','haji','mian','sardar'];
-  var realName = (parts.filter(function(p){ return p && TITLES.indexOf(p.toLowerCase()) === -1; })[0]) || parts[0] || 'there';
-  var greet = 'Chat cleared! &#127774; Ask me anything about your Day ' + day + ' routine, ' + realName + '.';
-  addAIMsg('bot', greet, true);
+  const chips = document.getElementById('aiChips');
+  if (chips) { chips.classList.remove('gone'); chips.innerHTML = buildChips(getCurrentDay(), SPECIAL_MASK_DAYS.includes(getCurrentDay()), isEidMode()); }
+  const ta = document.getElementById('aiTa');
+  if (ta) { ta.value = ''; ta.style.height = ''; ta.focus(); }
+  const day = getCurrentDay();
+  addMsg('b', 'Chat cleared! &#127774; Ask me anything about Day ' + day + '.', true);
 }
 
-function copyAIMsg(btn) {
-  var bubble = btn.closest('.ai-msg').querySelector('.ai-bubble');
-  if (!bubble) return;
-  var text = bubble.innerText || bubble.textContent;
-  navigator.clipboard.writeText(text).then(function(){
-    btn.textContent = '&#10003; Copied';
-    setTimeout(function(){ btn.innerHTML = '&#128203; Copy'; }, 1800);
-  }).catch(function(){
-    // fallback
-    var ta = document.createElement('textarea');
-    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
-    document.body.appendChild(ta); ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    btn.textContent = '&#10003; Copied';
-    setTimeout(function(){ btn.innerHTML = '&#128203; Copy'; }, 1800);
-  });
-}
-
-var _lastFailedMsg = '';
-function retryAIMsg(btn) {
-  var errorDiv = btn.closest('.ai-msg');
-  if (errorDiv) errorDiv.remove();
-  if (_lastFailedMsg) {
-    var inp = document.getElementById('aiInput');
-    if (inp) { inp.value = _lastFailedMsg; }
-    sendAIMsg();
+// ── Add a message bubble ──────────────────────────────────────────
+function addMsg(role, text, raw, isErr) {
+  const msgs = document.getElementById('aiMsgs');
+  if (!msgs) return null;
+  const time = new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+  const html = raw ? mdRender(text) : escMsg(text);
+  const div  = document.createElement('div');
+  div.className = 'msg ' + (role==='u'?'u':'b') + (isErr?' err':'');
+  if (role === 'b') {
+    div.innerHTML =
+      '<div class="msg-row"><div class="msg-av">&#10024;</div><div class="bubble">' + html + '</div></div>' +
+      '<div class="msg-time">' + time + '</div>';
+  } else {
+    div.innerHTML =
+      '<div class="msg-row"><div class="bubble">' + html + '</div></div>' +
+      '<div class="msg-time">' + time + '</div>';
   }
-}
-
-function aiInputGrow(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-}
-
-function aiInputCount(el) {
-  var counter = document.getElementById('aiCharCount');
-  if (!counter) return;
-  var left = 500 - (el.value.length);
-  counter.textContent = left;
-  counter.className = 'ai-char-counter' + (left < 60 ? ' warn' : '');
-}
-
-async function sendAIMsg() {
-  const _now = Date.now();
-  if (_aiTyping) return;
-  if (_now - _aiLastSent < 400) return; // debounce 400ms
-  _aiLastSent = _now;
-  const input   = document.getElementById('aiInput');
-  const sendBtn = document.getElementById('aiSend');
-  if (!input) return;
-  const msg = input.value.trim();
-  if (!msg) return;
-  _lastFailedMsg = msg; // store for retry
-
-  if (!navigator.onLine) { showToast('No internet. Pak Anony AI requires connection.'); return; }
-
-  // Live usage check from Firebase
-  let usedNow = 0;
-  try {
-    const snap = await _fbDb.ref('ai_usage/' + _currentUser.uid + '/' + todayKey()).once('value');
-    usedNow = (snap.val() || {}).count || 0;
-  } catch(e) {}
-
-  const limit = (_aiConfig && _aiConfig.daily_limit) || 10;
-  if (usedNow >= limit) {
-    updateAIUsagePill(0, limit);
-    if (input)   input.disabled   = true;
-    if (sendBtn) sendBtn.disabled = true;
-    addAIMsg('bot', `You've reached your daily limit of ${limit} messages. Your limit resets at midnight. Keep going with your plan! 🌙`);
-    showLimitNotice();
-    return;
-  }
-
-  input.value = '';
-  addAIMsg('user', msg);
-  _aiConvo.push({ role: 'user', content: msg });
-  if (_aiConvo.length > 14) _aiConvo = _aiConvo.slice(-14);
-
-  showAITyping();
-  _aiTyping = true;
-  if (sendBtn) sendBtn.disabled = true;
-  if (input)   input.disabled   = true;
-
-  try {
-    let groqKey = _aiConfig && _aiConfig.groq_key;
-    if (!groqKey) {
-      const keySnap = await _fbDb.ref('ai_config/groq_key').once('value');
-      groqKey = keySnap.val();
-      if (_aiConfig) _aiConfig.groq_key = groqKey;
-    }
-    if (!groqKey) {
-      hideAITyping(); _aiTyping = false;
-      if (sendBtn) sendBtn.disabled = false;
-      if (input)   input.disabled   = false;
-      addAIMsg('bot', 'Pak Anony AI is not configured yet. Please contact PakAnonymous.ORG admin.');
-      return;
-    }
-
-    // Build dynamic system prompt with live user context
-    const liveContext  = buildAIContext();
-    const systemPrompt = AI_BASE_PROMPT + '\n\n' + liveContext;
-
-    const groqPayload = {
-      model:       (_aiConfig && _aiConfig.model) || 'llama-3.3-70b-versatile',
-      messages:    [{ role: 'system', content: systemPrompt }, ..._aiConvo],
-      max_tokens:  480,
-      temperature: 0.70
-    };
-
-    let res;
-    try {
-      res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + groqKey, 'Content-Type': 'application/json' },
-        body: JSON.stringify(groqPayload)
-      });
-    } catch(netErr) {
-      throw new Error('NETWORK: ' + (netErr.message || 'fetch failed'));
-    }
-
-    if (!res.ok) {
-      let errBody = '';
-      try { const j = await res.json(); errBody = (j.error && j.error.message) ? j.error.message : JSON.stringify(j); } catch(e2){}
-      throw new Error('HTTP' + res.status + (errBody ? ': ' + errBody : ''));
-    }
-    const data  = await res.json();
-    const reply = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
-    if (!reply) throw new Error('Empty response from Groq');
-
-    _aiConvo.push({ role: 'assistant', content: reply });
-
-    // Show reply FIRST — usage save happens in background
-    // This means a Firebase rules error never hides a successful AI reply
-    hideAITyping();
-    _aiTyping = false;
-    if (sendBtn) sendBtn.disabled = false;
-    if (input)   { input.disabled = false; setTimeout(() => input.focus(), 100); }
-    addAIMsg('bot', reply);
-
-    // Save usage in background (non-blocking)
-    const newCount = usedNow + 1;
-    _fbDb.ref('ai_usage/' + _currentUser.uid + '/' + todayKey()).set({
-      count: newCount, last_message: Date.now()
-    }).then(function() {
-      const remaining = Math.max(0, limit - newCount);
-      updateAIUsagePill(remaining, limit);
-      if (remaining === 0) {
-        if (document.getElementById('aiInput'))   document.getElementById('aiInput').disabled   = true;
-        if (document.getElementById('aiSend'))    document.getElementById('aiSend').disabled    = true;
-        showLimitNotice();
-      }
-    }).catch(function(saveErr) {
-      // Usage save failed (Firebase rules not configured) — reply already shown, just log
-      console.warn('[Pak Anony AI] Usage save failed (check Firebase rules for ai_usage):', saveErr && saveErr.message);
-    });
-
-  } catch(e) {
-    hideAITyping();
-    _aiTyping = false;
-    if (sendBtn) sendBtn.disabled = false;
-    if (input)   input.disabled   = false;
-    var em = (e && e.message) ? e.message : 'unknown';
-    console.error('[Pak Anony AI] Error:', em);
-    var errTxt;
-    if (em.indexOf('401') > -1 || em.indexOf('invalid_api_key') > -1)
-      errTxt = '&#128274; <strong>Invalid API key.</strong> Admin: go to Dashboard &#8594; AI Control and re-save the Groq key.';
-    else if (em.indexOf('403') > -1)
-      errTxt = '&#128274; <strong>API key unauthorised.</strong> Check the Groq key in Dashboard &#8594; AI Control.';
-    else if (em.indexOf('429') > -1 || em.indexOf('rate') > -1)
-      errTxt = '&#9203; <strong>Rate limited.</strong> Please wait 30 seconds and try again.';
-    else if (em.indexOf('500') > -1 || em.indexOf('503') > -1 || em.indexOf('502') > -1)
-      errTxt = '&#128306; <strong>Groq server issue.</strong> Please try again in a minute.';
-    else if (em.indexOf('NETWORK') > -1 || em.indexOf('fetch') > -1 || em.indexOf('Failed to fetch') > -1)
-      errTxt = '&#128225; <strong>Network error.</strong> Check your internet connection and try again.';
-    else if (em.indexOf('Empty') > -1)
-      errTxt = '&#129300; The AI returned an empty response. Please try again.';
-    else
-      errTxt = '&#9888; <strong>Error:</strong> ' + em.substring(0, 120) + '<br><small style="opacity:.6">If this persists, admin check Dashboard &#8594; AI Control.</small>';
-    addAIMsg('bot', errTxt, true, true);
-  }
-}
-
-function addAIMsg(role, text, raw, isError) {
-  var container = document.getElementById('aiMessages');
-  if (!container) return null;
-
-  var div = document.createElement('div');
-  div.className = 'ai-msg ai-msg-' + (role === 'user' ? 'user' : 'bot') + (isError ? ' ai-msg-error' : '');
-
-  var time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-  var rendered = raw ? renderAIMd(text) : escAI(text);
-
-  var botAvatar = role === 'bot' ? '<div class="ai-bot-avatar">&#10024;</div>' : '';
-  var copyBtn   = '<button class="ai-copy-btn" onclick="copyAIMsg(this)" title="Copy">&#128203; Copy</button>';
-  var retryBtn  = isError ? '<button class="ai-retry-btn" onclick="retryAIMsg(this)" title="Retry">&#8635; Retry</button>' : '';
-
-  var inner = '<div class="ai-msg-inner">' + (role==='bot' ? botAvatar : '') + '<div class="ai-bubble">' + rendered + '</div></div>';
-  var footer = '<div class="ai-msg-footer"><span class="ai-msg-time">' + time + '</span>' + copyBtn + retryBtn + '</div>';
-  div.innerHTML = inner + footer;
-
-  // Hide chips on first user message
-  if (role === 'user') {
-    var sug = document.getElementById('aiSuggestions');
-    if (sug) sug.classList.add('hidden');
-  }
-
-  container.appendChild(div);
-  setTimeout(function(){ container.scrollTop = container.scrollHeight; }, 30);
+  msgs.appendChild(div);
+  setTimeout(() => { msgs.scrollTop = msgs.scrollHeight; }, 30);
   return div;
 }
 
-function showAITyping() {
-  const container = document.getElementById('aiMessages');
-  if (!container) return;
+// ── Typing indicator ──────────────────────────────────────────────
+let _typingEl = null;
+function showTyping() {
+  const msgs = document.getElementById('aiMsgs');
+  if (!msgs || _typingEl) return;
   const div = document.createElement('div');
-  div.id = 'aiTypingRow';
-  div.className = 'ai-msg ai-msg-bot';
-  div.innerHTML = '<div class="ai-bubble ai-typing-inner"><span></span><span></span><span></span></div>';
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
+  div.className = 'msg b';
+  div.id = 'aiTyping';
+  div.innerHTML = '<div class="msg-row"><div class="msg-av">&#10024;</div><div class="bubble tdots"><span></span><span></span><span></span></div></div>';
+  msgs.appendChild(div);
+  _typingEl = div;
+  setTimeout(() => { msgs.scrollTop = msgs.scrollHeight; }, 30);
+}
+function hideTyping() {
+  if (_typingEl) { _typingEl.remove(); _typingEl = null; }
 }
 
-function hideAITyping() {
-  const t = document.getElementById('aiTypingRow');
-  if (t) t.remove();
+// ── Textarea auto-grow — max-height caps it, no layout explosion ──
+function growTa(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 110) + 'px';
 }
 
-function updateAIUsagePill(remaining, limit) {
-  const pill = document.getElementById('aiUsagePill');
+// ── SEND — _aiSending set BEFORE any await ────────────────────────
+async function sendAIMsg() {
+  // LOCK IMMEDIATELY — before any await
+  if (_aiSending) return;
+  _aiSending = true;
+
+  const ta  = document.getElementById('aiTa');
+  const btn = document.getElementById('aiSend');
+  if (!ta) { _aiSending = false; return; }
+
+  const msg = ta.value.trim();
+  if (!msg)  { _aiSending = false; return; }
+
+  if (!navigator.onLine) {
+    showToast('No internet. Pak Anony AI needs a connection.');
+    _aiSending = false;
+    return;
+  }
+
+  // Check local usage counter — no Firebase read lag
+  const rem = Math.max(0, _aiLimit - _aiUsed);
+  if (rem <= 0) {
+    _aiSending = false;
+    if (ta)  ta.disabled  = true;
+    if (btn) btn.disabled = true;
+    addMsg('b', 'You have reached your daily limit of <strong>' + _aiLimit + '</strong> messages. Your limit resets at midnight. Keep up with your routine! &#127769;', true);
+    const card = document.getElementById('aiContainer');
+    if (card && !card.querySelector('.ai-limit'))
+      card.insertAdjacentHTML('beforeend', '<div class="ai-limit">Daily limit reached. Resets at midnight.</div>');
+    return;
+  }
+
+  // Disable UI, clear input, show message
+  ta.value = ''; ta.style.height = '';
+  if (btn) btn.disabled = true;
+  ta.disabled = true;
+  const chips = document.getElementById('aiChips');
+  if (chips) chips.classList.add('gone');
+
+  addMsg('u', msg);
+  _aiConvo.push({ role: 'user', content: msg });
+  if (_aiConvo.length > 14) _aiConvo = _aiConvo.slice(-14);
+  showTyping();
+
+  try {
+    // Get Groq key — already cached in _aiConfig
+    let groqKey = _aiConfig && _aiConfig.groq_key;
+    if (!groqKey) {
+      try {
+        const ks = await _fbDb.ref('ai_config/groq_key').once('value');
+        groqKey = ks.val();
+        if (_aiConfig) _aiConfig.groq_key = groqKey;
+      } catch(e) {}
+    }
+    if (!groqKey) {
+      throw new Error('NOT_CONFIGURED');
+    }
+
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + groqKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model:       (_aiConfig && _aiConfig.model) || 'llama-3.3-70b-versatile',
+        messages:    [{ role: 'system', content: AI_BASE_PROMPT + '\n\n' + buildAIContext() }, ..._aiConvo],
+        max_tokens:  480,
+        temperature: 0.70
+      })
+    });
+
+    if (!res.ok) {
+      let em = '';
+      try { const j = await res.json(); em = (j.error && j.error.message) || ''; } catch(e2) {}
+      throw new Error('HTTP' + res.status + (em ? ': ' + em : ''));
+    }
+
+    const data  = await res.json();
+    const reply = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+    if (!reply) throw new Error('EMPTY');
+
+    _aiConvo.push({ role: 'assistant', content: reply });
+    hideTyping();
+    addMsg('b', reply);
+
+    // Increment local counter — save to Firebase in background
+    _aiUsed++;
+    updatePill();
+    _fbDb.ref('ai_usage/' + _currentUser.uid + '/' + todayKey()).set({
+      count: _aiUsed, last_message: Date.now()
+    }).catch(e => console.warn('[AI] usage save failed:', e && e.message));
+
+  } catch(e) {
+    hideTyping();
+    const em  = (e && e.message) || 'unknown';
+    let errTxt;
+    if (em === 'NOT_CONFIGURED')
+      errTxt = '&#128274; <strong>AI not configured.</strong> Admin: Dashboard &#8594; AI Control &#8594; paste Groq key &#8594; Save.';
+    else if (em.includes('401') || em.includes('invalid_api_key'))
+      errTxt = '&#128274; <strong>Invalid API key.</strong> Admin: re-save the Groq key in Dashboard &#8594; AI Control.';
+    else if (em.includes('429') || em.includes('rate'))
+      errTxt = '&#9203; <strong>Rate limited.</strong> Wait 30 seconds and try again.';
+    else if (em.includes('5'))
+      errTxt = '&#128306; <strong>Groq server issue.</strong> Try again in a minute.';
+    else if (em === 'EMPTY')
+      errTxt = '&#129300; AI returned an empty response. Please try again.';
+    else if (em.includes('fetch') || em.includes('network') || em.includes('Failed'))
+      errTxt = '&#128225; <strong>Network error.</strong> Check your connection and try again.';
+    else
+      errTxt = '&#9888; <strong>Error:</strong> ' + em.substring(0, 100);
+    addMsg('b', errTxt, true, true);
+  }
+
+  // Re-enable UI regardless
+  _aiSending = false;
+  if (ta)  ta.disabled  = false;
+  if (btn) btn.disabled = false;
+  setTimeout(() => { if(ta) ta.focus(); }, 80);
+}
+
+// ── Pill update ───────────────────────────────────────────────────
+function updatePill() {
+  const pill = document.getElementById('aiPill');
   if (!pill) return;
-  if (remaining === 0) {
-    pill.textContent = 'Limit reached';
-    pill.classList.add('at-limit');
-  } else {
-    pill.textContent = remaining + '/' + limit + ' left';
-    pill.classList.remove('at-limit');
+  const rem = Math.max(0, _aiLimit - _aiUsed);
+  pill.textContent = rem === 0 ? 'Limit reached' : rem + '/' + _aiLimit + ' left';
+  pill.className   = 'aih-pill' + (rem === 0 ? ' limit' : '');
+  if (rem === 0) {
+    const ta  = document.getElementById('aiTa');
+    const btn = document.getElementById('aiSend');
+    if (ta)  ta.disabled  = true;
+    if (btn) btn.disabled = true;
   }
 }
 
-function showLimitNotice() {
-  const wrap = document.getElementById('aiCard');
-  if (!wrap || wrap.querySelector('.ai-limit-notice')) return;
-  const notice = document.createElement('div');
-  notice.className = 'ai-limit-notice';
-  notice.textContent = 'Daily limit reached. Resets at midnight.';
-  wrap.appendChild(notice);
+// ── Markdown renderer ─────────────────────────────────────────────
+function escMsg(s) {
+  // Escape then render markdown (for API replies — safety first)
+  const safe = String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return mdRender(safe);
 }
-
-function escAI(s) {
-  // Sanitize user/API text then render markdown
-  var safe = String(s || '')
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
-  return renderAIMd(safe);
-}
-
-function renderAIMd(s) {
-  // Full markdown renderer for AI messages
-  var out = String(s || '');
-  // Headings
-  out = out.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-  out = out.replace(/^## (.+)$/gm,  '<h3>$1</h3>');
-  // Bold / italic
-  out = out.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  out = out.replace(/\*(.+?)\*/g,     '<em>$1</em>');
-  // Inline code
-  out = out.replace(/`(.+?)`/g, '<code>$1</code>');
-  // HR
-  out = out.replace(/^---$/gm, '<hr>');
-  // Unordered lists (- or *)
-  out = out.replace(/^[\-\*] (.+)$/gm, '<li>$1</li>');
-  out = out.replace(/(<li>.*<\/li>\n?)+/gs, function(m){ return '<ul>' + m + '</ul>'; });
-  // Numbered lists
-  out = out.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
-  // Newlines to br (but not inside tags)
-  out = out.replace(/\n/g, '<br>');
-  return out;
+function mdRender(s) {
+  return String(s || '')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,'<h3>$1</h3>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/`(.+?)`/g,'<code>$1</code>')
+    .replace(/^---$/gm,'<hr>')
+    .replace(/^[\-\*] (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>[\s\S]*?<\/li>)\n?(?!<li>)/g,'<ul>$1</ul>')
+    .replace(/\n/g,'<br>');
 }
 
 </script>
