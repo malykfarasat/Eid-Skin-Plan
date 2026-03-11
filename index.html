@@ -300,8 +300,7 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 .eid-modal-wrap{text-align:center;padding:8px 0 4px}
 
 .section{display:none;animation:fadeIn .22s ease}
-.section.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.section.active{display:block}#sec-ai.active{display:flex!important}@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── CARD ── */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;transition:border-color .2s}
@@ -616,11 +615,12 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 
 <!-- AI SECTION -->
 <div class="section" id="sec-ai">
-  <div id="aiCard" style="display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;border-top:1px solid var(--border)">
-    <div id="aiContainer" style="display:flex;flex-direction:column;flex:1">
+  <div id="aiCard">
+    <div id="aiContainer">
       <div class="ai-loader">
-        <div class="ai-loader-ring"><div class="ai-loader-dot"></div></div>
+        <div class="ai-loader-orb">&#10024;</div>
         <div class="ai-loader-txt">Connecting to Pak Anony AI</div>
+        <div class="ai-loader-dots"><span></span><span></span><span></span></div>
       </div>
     </div>
   </div>
@@ -3211,7 +3211,7 @@ function renderAIGate(type) {
   var g = gates[type] || gates.offline;
   container.innerHTML =
     '<div class="ai-gate">' +
-      '<div class="ai-gate-ring">' + g.ico + '</div>' +
+      '<div class="ai-gate-orb">' + g.ico + '</div>' +
       '<div class="ai-gate-title">' + g.title + '</div>' +
       '<div class="ai-gate-desc">' + g.desc + '</div>' +
       '<div class="ai-gate-brand">Pak Anony AI &middot; PakAnonymous.ORG</div>' +
