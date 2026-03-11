@@ -594,73 +594,9 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 }
 
 
-/* ═══════════════════════════════════════
-   PAK ANONY AI
-   ═══════════════════════════════════════ */
-/* AI section: fullscreen fixed overlay when active */
-#sec-ai{display:none;position:fixed;top:0;left:0;right:0;bottom:56px;z-index:50;background:var(--bg);overflow:hidden;flex-direction:column}
-body.ai-open{overflow:hidden;position:fixed;width:100%}
-#sec-ai.active{display:flex !important}
-.ai-loader{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:52px 24px;gap:16px}
-.ai-loader-ring{width:46px;height:46px;position:relative;flex-shrink:0}
-.ai-loader-ring::before,.ai-loader-ring::after{content:'';position:absolute;inset:0;border-radius:50%;border:2.5px solid transparent}
-.ai-loader-ring::before{border-top-color:var(--gold);animation:spin .9s linear infinite}
-.ai-loader-ring::after{border-bottom-color:rgba(201,168,76,.2);animation:spin 1.5s linear infinite reverse}
-.ai-loader-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);box-shadow:0 0 12px var(--gold),0 0 24px rgba(201,168,76,.4)}
-.ai-loader-txt{font-size:.7rem;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;animation:aiPulse 1.8s infinite}
-.ai-gate{display:flex;flex-direction:column;align-items:center;text-align:center;padding:42px 22px 34px;flex:1;position:relative;overflow:hidden}
-.ai-gate::before{content:'';position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(201,168,76,.08),transparent 70%);pointer-events:none}
-.ai-gate-ring{width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(201,168,76,.04));border:1px solid rgba(201,168,76,.28);display:flex;align-items:center;justify-content:center;font-size:2.1rem;margin-bottom:18px;box-shadow:0 0 28px rgba(201,168,76,.14),inset 0 1px 0 rgba(255,255,255,.05);position:relative}
-.ai-gate-ring::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(201,168,76,.14);animation:aiPulse 3s infinite}
-.ai-gate-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text);margin-bottom:8px;font-weight:500}
-.ai-gate-desc{font-size:.76rem;color:var(--text-dim);line-height:1.8;margin-bottom:6px;max-width:280px}
-.ai-gate-brand{font-size:.58rem;color:var(--text-dim);opacity:.35;margin-bottom:26px;letter-spacing:.06em;text-transform:uppercase}
-.ai-gate-btn{padding:13px 32px;border-radius:28px;border:1px solid var(--gold);background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(201,168,76,.06));color:var(--gold);font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .22s;box-shadow:0 4px 18px rgba(201,168,76,.14)}
-.ai-gate-btn:hover{background:linear-gradient(135deg,rgba(201,168,76,.3),rgba(201,168,76,.12));transform:translateY(-2px)}
-.ai-gate-btn:active{transform:translateY(0)}
-.ai-gate-btn.sec{border-color:var(--border);color:var(--text-dim);background:transparent;box-shadow:none}
-.ai-chat-header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border);background:linear-gradient(to bottom,rgba(201,168,76,.06),rgba(201,168,76,.01));flex-shrink:0}
-.ai-chat-id{display:flex;align-items:center;gap:12px}
-.ai-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,rgba(201,168,76,.3),rgba(201,168,76,.06));border:1px solid rgba(201,168,76,.32);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;box-shadow:0 0 16px rgba(201,168,76,.18),inset 0 1px 0 rgba(255,255,255,.06);position:relative}
-.ai-avatar-glow{position:absolute;inset:-4px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.18),transparent 65%);animation:aiPulse 3s infinite;pointer-events:none}
-.ai-name{font-family:'Cormorant Garamond',serif;font-size:1.02rem;color:var(--text);font-weight:500;letter-spacing:.02em;line-height:1.2}
-.ai-status-line{font-size:.61rem;color:var(--text-dim);display:flex;align-items:center;gap:5px;margin-top:2px}
-.ai-online-dot{width:6px;height:6px;border-radius:50%;background:#4caf7d;flex-shrink:0;box-shadow:0 0 7px rgba(76,175,125,.65);animation:aiPulse 2.5s infinite}
-.ai-sub{color:var(--gold);opacity:.75;font-size:.6rem}
-.ai-usage-pill{font-size:.63rem;color:var(--gold);background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);padding:4px 11px;border-radius:99px;font-weight:500;white-space:nowrap}
-.ai-usage-pill.at-limit{color:var(--red);background:rgba(224,112,112,.08);border-color:rgba(224,112,112,.22)}
-.ai-day-badge{font-size:.58rem;color:var(--text-dim);background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:3px 9px;letter-spacing:.03em;white-space:nowrap;text-align:right}
-@keyframes aiPulse{0%,100%{opacity:1}50%{opacity:.38}}
-.ai-messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:12px;min-height:0}
-.ai-messages::-webkit-scrollbar{width:3px}
-.ai-messages::-webkit-scrollbar-thumb{background:rgba(201,168,76,.2);border-radius:3px}
-.ai-msg{display:flex;flex-direction:column;animation:aiIn .25s cubic-bezier(.4,0,.2,1)}
-@keyframes aiIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.ai-msg-user{align-items:flex-end}
-.ai-msg-bot{align-items:flex-start}
-.ai-bubble{max-width:85%;padding:11px 15px;font-size:.8rem;line-height:1.72;word-break:break-word}
-.ai-msg-user .ai-bubble{background:linear-gradient(135deg,#c9a84c,#b8953e);color:#06080a;border-radius:18px 18px 4px 18px;font-weight:400;box-shadow:0 3px 14px rgba(201,168,76,.28)}
-.ai-msg-bot .ai-bubble{background:var(--surface2);border:1px solid var(--border);border-radius:18px 18px 18px 4px;color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.1)}
-.ai-msg-time{font-size:.57rem;color:var(--text-dim);margin-top:4px;padding:0 4px;opacity:.6}
-.ai-typing-inner{display:flex;gap:6px;align-items:center;padding:13px 17px !important}
-.ai-typing-inner span{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:aiDot 1.4s ease-in-out infinite;opacity:.35}
-.ai-typing-inner span:nth-child(2){animation-delay:.18s}
-.ai-typing-inner span:nth-child(3){animation-delay:.36s}
-@keyframes aiDot{0%,60%,100%{opacity:.25;transform:scale(.85)}30%{opacity:1;transform:scale(1.2)}}
-.ai-suggestions{display:flex;gap:7px;padding:10px 14px 6px;flex-wrap:wrap;flex-shrink:0;border-top:1px solid rgba(201,168,76,.08);transition:all .3s}
-.ai-chip{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.18);border-radius:20px;padding:6px 13px;font-size:.7rem;color:var(--text-dim);cursor:pointer;transition:all .18s;white-space:nowrap}
-.ai-chip:hover{background:rgba(201,168,76,.16);border-color:rgba(201,168,76,.38);color:var(--gold);transform:translateY(-1px)}
-.ai-input-wrap{display:flex;align-items:center;gap:9px;padding:10px 14px 13px;border-top:1px solid var(--border);flex-shrink:0}
-.ai-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:26px;padding:11px 18px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:300;outline:none;transition:border-color .2s,box-shadow .2s}
-.ai-input:focus{border-color:rgba(201,168,76,.5);box-shadow:0 0 0 3px rgba(201,168,76,.07)}
-.ai-input:disabled{opacity:.3;cursor:not-allowed}
-.ai-input::placeholder{color:var(--text-dim);opacity:.55}
-.ai-send{width:40px;height:40px;min-width:40px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#b8953e);border:none;color:#06080a;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:transform .15s,box-shadow .15s;box-shadow:0 3px 14px rgba(201,168,76,.32)}
-.ai-send:hover:not(:disabled){transform:scale(1.09);box-shadow:0 5px 18px rgba(201,168,76,.42)}
-.ai-send:active:not(:disabled){transform:scale(.93)}
-.ai-send:disabled{opacity:.28;cursor:not-allowed;box-shadow:none;background:var(--border)}
-.ai-limit-notice{text-align:center;padding:8px;font-size:.68rem;color:var(--red);background:rgba(224,112,112,.05);border-top:1px solid rgba(224,112,112,.12);flex-shrink:0}
+
 </style>
+  <link rel="stylesheet" href="ai-chat.css">
 </head>
 <body>
 
@@ -2535,12 +2471,7 @@ window.onload = async function() {
 // ══════════════════════════════════════
 function navTo(sec, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  // Lock body scroll when AI section opens, restore when leaving
-  if (sec === 'ai') {
-    document.body.classList.add('ai-open');
-  } else {
-    document.body.classList.remove('ai-open');
-  }
+  // AI section is position:fixed — no body scroll lock needed
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
   document.getElementById('sec-' + sec).classList.add('active');
   if (btn && btn.classList) btn.classList.add('active');
@@ -3204,6 +3135,7 @@ let _aiConfig   = null;
 let _aiConvo    = [];
 let _aiTyping   = false;
 let _aiInit     = false;
+let _aiLastSent = 0; // debounce: timestamp of last send
 
 async function initAISection() {
   if (_aiInit && _currentUser && navigator.onLine && _aiConfig && _aiConfig.enabled !== false) return;
@@ -3311,12 +3243,16 @@ function renderAIChat(remaining, limit) {
   if (!container) return;
 
   var limitedClass = remaining === 0 ? 'at-limit' : '';
-  var limitText    = remaining === 0 ? 'Limit reached' : remaining + '/' + limit + ' msgs left';
-  var firstName    = _currentUser ? ((_currentUser.displayName || '').split(' ')[0] || 'there') : 'there';
+  var limitText    = remaining === 0 ? 'Limit reached' : remaining + '/' + limit + ' left';
+  var firstName    = _currentUser ? ((_currentUser.displayName || '').trim().split(/\s+/)[0] || 'there') : 'there';
+  var TITLES       = ['malik','syed','chaudhry','chaudhary','raja','rana','khan','sheikh','mirza','hafiz','haji','mian','sardar'];
+  var parts        = (_currentUser && _currentUser.displayName ? _currentUser.displayName.trim() : 'there').split(/\s+/);
+  var realName     = (parts.filter(function(p){ return p && TITLES.indexOf(p.toLowerCase()) === -1; })[0]) || parts[0] || 'there';
   var day          = getCurrentDay();
   var isSpecial    = SPECIAL_MASK_DAYS.includes(day);
   var isEid        = isEidMode();
   var dayLabel     = isEid ? 'Eid Mode &#127769;' : 'Day ' + day + '/14';
+  var completed    = getCompletedDays().length;
 
   container.innerHTML =
     '<div class="ai-chat-header">' +
@@ -3327,17 +3263,25 @@ function renderAIChat(remaining, limit) {
           '<div class="ai-status-line"><span class="ai-online-dot"></span>Online &middot; <span class="ai-sub">PakAnonymous.ORG</span></div>' +
         '</div>' +
       '</div>' +
-      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">' +
-        '<div class="ai-usage-pill ' + limitedClass + '" id="aiUsagePill">' + limitText + '</div>' +
-        '<div class="ai-day-badge">' + dayLabel + (isSpecial ? ' &#11088;' : '') + '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px">' +
+        '<div class="ai-header-right">' +
+          '<div class="ai-usage-pill ' + limitedClass + '" id="aiUsagePill">' + limitText + '</div>' +
+          '<div class="ai-day-badge">' + dayLabel + (isSpecial ? ' &#11088;' : '') + '</div>' +
+        '</div>' +
+        '<div class="ai-header-actions">' +
+          '<button class="ai-hdr-btn" onclick="clearAIChat()" title="Clear chat">&#128465;</button>' +
+        '</div>' +
       '</div>' +
     '</div>' +
     '<div class="ai-messages" id="aiMessages"></div>' +
     '<div class="ai-suggestions" id="aiSuggestions">' + _buildAIChips(day, isSpecial, isEid) + '</div>' +
     '<div class="ai-input-wrap">' +
-      '<input class="ai-input" id="aiInput" type="text" maxlength="500"' +
+      '<textarea class="ai-input" id="aiInput" rows="1" maxlength="500"' +
         ' placeholder="Ask about your routine..."' +
-        ' onkeydown="if(event.key===&#39;Enter&#39;&&!event.shiftKey){event.preventDefault();sendAIMsg();}">' +
+        ' oninput="aiInputGrow(this);aiInputCount(this)"' +
+        ' onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();sendAIMsg();}">' +
+      '</textarea>' +
+      '<span class="ai-char-counter" id="aiCharCount">500</span>' +
       '<button class="ai-send" id="aiSend" onclick="sendAIMsg()">' +
         '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
       '</button>' +
@@ -3345,20 +3289,16 @@ function renderAIChat(remaining, limit) {
     (remaining === 0 ? '<div class="ai-limit-notice">Daily limit reached. Resets at midnight.</div>' : '');
 
   if (remaining === 0) {
-    document.getElementById('aiInput').disabled = true;
-    document.getElementById('aiSend').disabled  = true;
+    var inp = document.getElementById('aiInput');
+    var snd = document.getElementById('aiSend');
+    if (inp) inp.disabled = true;
+    if (snd) snd.disabled = true;
   }
 
-  var completed = getCompletedDays().length;
-
-  // Smart name: skip Pakistani/South Asian title words
-  var TITLES = ['malik','syed','chaudhry','chaudhary','raja','rana','khan','sheikh','mirza','hafiz','haji','mian','sardar'];
-  var nameParts = (_currentUser && _currentUser.displayName ? _currentUser.displayName.trim() : 'there').split(/\s+/);
-  var realName  = (nameParts.filter(function(p){ return p && TITLES.indexOf(p.toLowerCase()) === -1; })[0]) || nameParts[0] || 'there';
-
+  // Personalised greeting
   var greet;
   if (isEid) {
-    greet = 'Eid Mubarak, <strong>' + realName + '</strong>! &#127769; You completed the full <strong>14-Day Plan</strong>. I am <strong>Pak Anony AI</strong> by PakAnonymous.ORG. How can I help you maintain your glow?';
+    greet = 'Eid Mubarak, <strong>' + realName + '</strong>! &#127769; You completed the full <strong>14-Day Plan</strong>. I am <strong>Pak Anony AI</strong> by PakAnonymous.ORG. How can I help maintain your glow?';
   } else {
     greet = 'Assalam u Alaikum, <strong>' + realName + '</strong>! &#127769;\n\n';
     greet += 'I am <strong>Pak Anony AI</strong> by PakAnonymous.ORG &#8212; your personal assistant for the <strong>14-Day Eid Skin Plan</strong>.';
@@ -3366,13 +3306,12 @@ function renderAIChat(remaining, limit) {
       greet += '\n\nYou are on <strong>Day ' + day + '</strong> of 14.';
       if (completed > 0) greet += ' <strong>' + completed + ' day' + (completed > 1 ? 's' : '') + '</strong> completed &#10003;';
     }
-    if (isSpecial) greet += '\n\n&#11088; <strong>Special Day:</strong> tonight use <strong>Lemon + Honey</strong> mask instead of yogurt!';
-    greet += '\n\nAsk me anything &#8212; I have full access to your progress and routines.';
+    if (isSpecial) greet += '\n\n&#11088; <strong>Special Day:</strong> tonight use Lemon + Honey mask instead of yogurt!';
+    greet += '\n\nAsk me anything &#8212; I can see your real-time progress.';
   }
-
   addAIMsg('bot', greet, true);
-  var input = document.getElementById('aiInput');
-  if (input) setTimeout(function() { input.focus(); }, 300);
+  var inp2 = document.getElementById('aiInput');
+  if (inp2) setTimeout(function(){ inp2.focus(); }, 300);
 }
 
 function useAIChip(el) {
@@ -3384,13 +3323,85 @@ function useAIChip(el) {
   sendAIMsg();
 }
 
+
+function clearAIChat() {
+  _aiConvo = [];
+  var msgs = document.getElementById('aiMessages');
+  if (msgs) msgs.innerHTML = '';
+  var sug = document.getElementById('aiSuggestions');
+  if (sug) sug.classList.remove('hidden');
+  // Re-send greeting
+  var day      = getCurrentDay();
+  var isSpecial = SPECIAL_MASK_DAYS.includes(day);
+  var isEid    = isEidMode();
+  var chips    = _buildAIChips(day, isSpecial, isEid);
+  if (sug) sug.innerHTML = chips;
+  var inp = document.getElementById('aiInput');
+  if (inp) { inp.value = ''; aiInputGrow(inp); inp.focus(); }
+  var limit    = (_aiConfig && _aiConfig.daily_limit) || 10;
+  var remaining = Math.max(0, limit - 0); // rough reset for display
+  // Re-send personalised greeting
+  var parts  = (_currentUser && _currentUser.displayName ? _currentUser.displayName.trim() : 'there').split(/\s+/);
+  var TITLES = ['malik','syed','chaudhry','chaudhary','raja','rana','khan','sheikh','mirza','hafiz','haji','mian','sardar'];
+  var realName = (parts.filter(function(p){ return p && TITLES.indexOf(p.toLowerCase()) === -1; })[0]) || parts[0] || 'there';
+  var greet = 'Chat cleared! &#127774; Ask me anything about your Day ' + day + ' routine, ' + realName + '.';
+  addAIMsg('bot', greet, true);
+}
+
+function copyAIMsg(btn) {
+  var bubble = btn.closest('.ai-msg').querySelector('.ai-bubble');
+  if (!bubble) return;
+  var text = bubble.innerText || bubble.textContent;
+  navigator.clipboard.writeText(text).then(function(){
+    btn.textContent = '&#10003; Copied';
+    setTimeout(function(){ btn.innerHTML = '&#128203; Copy'; }, 1800);
+  }).catch(function(){
+    // fallback
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '&#10003; Copied';
+    setTimeout(function(){ btn.innerHTML = '&#128203; Copy'; }, 1800);
+  });
+}
+
+var _lastFailedMsg = '';
+function retryAIMsg(btn) {
+  var errorDiv = btn.closest('.ai-msg');
+  if (errorDiv) errorDiv.remove();
+  if (_lastFailedMsg) {
+    var inp = document.getElementById('aiInput');
+    if (inp) { inp.value = _lastFailedMsg; }
+    sendAIMsg();
+  }
+}
+
+function aiInputGrow(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function aiInputCount(el) {
+  var counter = document.getElementById('aiCharCount');
+  if (!counter) return;
+  var left = 500 - (el.value.length);
+  counter.textContent = left;
+  counter.className = 'ai-char-counter' + (left < 60 ? ' warn' : '');
+}
+
 async function sendAIMsg() {
+  const _now = Date.now();
   if (_aiTyping) return;
+  if (_now - _aiLastSent < 400) return; // debounce 400ms
+  _aiLastSent = _now;
   const input   = document.getElementById('aiInput');
   const sendBtn = document.getElementById('aiSend');
   if (!input) return;
   const msg = input.value.trim();
   if (!msg) return;
+  _lastFailedMsg = msg; // store for retry
 
   if (!navigator.onLine) { showToast('No internet. Pak Anony AI requires connection.'); return; }
 
@@ -3516,22 +3527,37 @@ async function sendAIMsg() {
       errTxt = '&#129300; The AI returned an empty response. Please try again.';
     else
       errTxt = '&#9888; <strong>Error:</strong> ' + em.substring(0, 120) + '<br><small style="opacity:.6">If this persists, admin check Dashboard &#8594; AI Control.</small>';
-    addAIMsg('bot', errTxt, true);
+    addAIMsg('bot', errTxt, true, true);
   }
 }
 
-function addAIMsg(role, text, raw) {
-  const container = document.getElementById('aiMessages');
-  if (!container) return;
-  const div  = document.createElement('div');
-  div.className = 'ai-msg ai-msg-' + (role === 'user' ? 'user' : 'bot');
-  const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-  // raw=true: text is already safe HTML (bot greetings) — just convert newlines
-  // raw=false (default): sanitize then convert **bold** markdown (user input / API output)
-  const rendered = raw ? text.split('\n').join('<br>') : escAI(text);
-  div.innerHTML = '<div class="ai-bubble">' + rendered + '</div><div class="ai-msg-time">' + time + '</div>';
+function addAIMsg(role, text, raw, isError) {
+  var container = document.getElementById('aiMessages');
+  if (!container) return null;
+
+  var div = document.createElement('div');
+  div.className = 'ai-msg ai-msg-' + (role === 'user' ? 'user' : 'bot') + (isError ? ' ai-msg-error' : '');
+
+  var time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  var rendered = raw ? renderAIMd(text) : escAI(text);
+
+  var botAvatar = role === 'bot' ? '<div class="ai-bot-avatar">&#10024;</div>' : '';
+  var copyBtn   = '<button class="ai-copy-btn" onclick="copyAIMsg(this)" title="Copy">&#128203; Copy</button>';
+  var retryBtn  = isError ? '<button class="ai-retry-btn" onclick="retryAIMsg(this)" title="Retry">&#8635; Retry</button>' : '';
+
+  var inner = '<div class="ai-msg-inner">' + (role==='bot' ? botAvatar : '') + '<div class="ai-bubble">' + rendered + '</div></div>';
+  var footer = '<div class="ai-msg-footer"><span class="ai-msg-time">' + time + '</span>' + copyBtn + retryBtn + '</div>';
+  div.innerHTML = inner + footer;
+
+  // Hide chips on first user message
+  if (role === 'user') {
+    var sug = document.getElementById('aiSuggestions');
+    if (sug) sug.classList.add('hidden');
+  }
+
   container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
+  setTimeout(function(){ container.scrollTop = container.scrollHeight; }, 30);
+  return div;
 }
 
 function showAITyping() {
@@ -3572,10 +3598,34 @@ function showLimitNotice() {
 }
 
 function escAI(s) {
-  return String(s || '')
+  // Sanitize user/API text then render markdown
+  var safe = String(s || '')
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-    .replace(/\n/g,'<br>');
+    .replace(/"/g,'&quot;');
+  return renderAIMd(safe);
+}
+
+function renderAIMd(s) {
+  // Full markdown renderer for AI messages
+  var out = String(s || '');
+  // Headings
+  out = out.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  out = out.replace(/^## (.+)$/gm,  '<h3>$1</h3>');
+  // Bold / italic
+  out = out.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  out = out.replace(/\*(.+?)\*/g,     '<em>$1</em>');
+  // Inline code
+  out = out.replace(/`(.+?)`/g, '<code>$1</code>');
+  // HR
+  out = out.replace(/^---$/gm, '<hr>');
+  // Unordered lists (- or *)
+  out = out.replace(/^[\-\*] (.+)$/gm, '<li>$1</li>');
+  out = out.replace(/(<li>.*<\/li>\n?)+/gs, function(m){ return '<ul>' + m + '</ul>'; });
+  // Numbered lists
+  out = out.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+  // Newlines to br (but not inside tags)
+  out = out.replace(/\n/g, '<br>');
+  return out;
 }
 
 </script>
