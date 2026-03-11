@@ -392,8 +392,8 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 .step-text strong{color:var(--text);font-weight:500}
 
 /* ── TIP CARD ── */
-.tip-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:15px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
-.tip-icon{font-size:1.3rem;flex-shrink:0;margin-top:1px}
+.tip-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:15px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:center}
+.tip-icon{width:42px;height:42px;border-radius:13px;background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.18);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;box-shadow:0 2px 8px rgba(201,168,76,.1)}
 .tip-title{font-size:.86rem;color:var(--text);font-weight:500;margin-bottom:3px}
 .tip-body{font-size:.77rem;color:var(--text-dim);line-height:1.5}
 
@@ -864,7 +864,7 @@ body::before {
   transition: border-color .2s, box-shadow .2s;
 }
 .tip-card:hover { border-color: rgba(201,168,76,.22); box-shadow: var(--shadow-md); }
-.tip-icon { font-size: 1.4rem; margin-top: 0; }
+.tip-icon { width:42px;height:42px;border-radius:13px;background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.18);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;box-shadow:0 2px 8px rgba(201,168,76,.1); }
 .tip-title { font-size: .88rem; }
 .tip-body { font-size: .78rem; line-height: 1.6; }
 
@@ -1528,6 +1528,98 @@ html[data-theme="light"] .progress-card { background: linear-gradient(145deg, #f
 }
 .gate-btn.sec:hover{background:rgba(201,168,76,.06);color:var(--text)}
 
+
+/* ── AI PAGE FEEL FIXES v5.1 ── */
+/* Better atmospheric section background */
+#sec-ai {
+  background:
+    radial-gradient(ellipse 90% 40% at 50% -2%, rgba(201,168,76,.09) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 50% at 2% 98%,  rgba(201,168,76,.05) 0%, transparent 50%),
+    var(--bg) !important;
+}
+/* Messages area — subtle ambient texture */
+.ai-msgs {
+  background:
+    radial-gradient(ellipse 60% 30% at 50% 0%, rgba(201,168,76,.03) 0%, transparent 40%);
+}
+/* Thinking mode button */
+.ai-think-btn {
+  width:34px;height:34px;border-radius:50%;
+  border:1.5px solid rgba(201,168,76,.22);
+  background:rgba(201,168,76,.06);
+  color:var(--text-dim);font-size:.85rem;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;
+  transition:all .2s var(--ease);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  position:relative;
+}
+.ai-think-btn.on {
+  border-color:rgba(168,100,220,.5);
+  background:rgba(168,100,220,.14);
+  color:#c87aff;
+  box-shadow:0 0 14px rgba(168,100,220,.2),inset 0 1px 0 rgba(255,255,255,.06);
+}
+.ai-think-btn .think-tip {
+  position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
+  background:rgba(14,18,32,.97);border:1px solid rgba(168,100,220,.3);
+  color:#c87aff;font-size:.58rem;white-space:nowrap;
+  padding:4px 9px;border-radius:8px;pointer-events:none;
+  opacity:0;transition:opacity .15s;letter-spacing:.04em;
+}
+.ai-think-btn:hover .think-tip { opacity:1; }
+/* Thinking mode cost badge */
+.think-cost {
+  font-size:.56rem;color:rgba(200,122,255,.7);
+  position:absolute;top:-4px;right:-4px;
+  background:rgba(14,18,32,.9);border:1px solid rgba(168,100,220,.3);
+  border-radius:4px;padding:1px 4px;font-weight:500;
+  line-height:1;
+}
+/* Deep think bubble label */
+.think-label {
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:.56rem;color:#c87aff;
+  background:rgba(168,100,220,.1);border:1px solid rgba(168,100,220,.2);
+  border-radius:5px;padding:2px 7px;margin-bottom:6px;
+  letter-spacing:.04em;text-transform:uppercase;font-weight:500;
+}
+/* Thinking animation — different from regular typing */
+.thinking-wave {
+  display:flex;gap:4px;align-items:center;padding:13px 17px !important;
+}
+.thinking-wave span {
+  width:5px;height:5px;border-radius:50%;
+  background:#c87aff;opacity:.25;
+  animation:tw 1.2s ease-in-out infinite;
+}
+.thinking-wave span:nth-child(1){animation-delay:0s}
+.thinking-wave span:nth-child(2){animation-delay:.15s}
+.thinking-wave span:nth-child(3){animation-delay:.3s}
+.thinking-wave span:nth-child(4){animation-delay:.45s}
+.thinking-wave span:nth-child(5){animation-delay:.6s}
+@keyframes tw {
+  0%,60%,100%{opacity:.15;transform:scaleY(.6)}
+  30%{opacity:1;transform:scaleY(1.4)}
+}
+/* History restore notice */
+.ai-history-note {
+  text-align:center;font-size:.6rem;color:var(--text-dim);
+  opacity:.45;padding:6px 14px 0;letter-spacing:.04em;
+}
+/* Better empty chip area hint */
+.ai-chips:empty::after {
+  content:'Loading suggestions...';
+  font-size:.65rem;color:var(--text-dim);opacity:.35;
+  padding:4px 2px;letter-spacing:.04em;
+}
+/* Light mode feel */
+[data-theme="light"] #sec-ai {
+  background:
+    radial-gradient(ellipse 90% 40% at 50% -2%, rgba(160,114,32,.07) 0%, transparent 50%),
+    #f5f0e8 !important;
+}
+
 /* ── LIGHT MODE ── */
 [data-theme="light"] #sec-ai{background:linear-gradient(to bottom,rgba(248,245,238,1),#f0ebe0)}
 [data-theme="light"] .aih{background:linear-gradient(to bottom,rgba(201,168,76,.08),transparent)}
@@ -1851,10 +1943,10 @@ html[data-theme="light"] .progress-card { background: linear-gradient(145deg, #f
   <div class="section" id="sec-tips">
     <div class="sec-title">Tips &amp; Avoid</div>
     <div class="sec-sub">Follow strictly for best results</div>
-    <div class="tip-card"><span class="tip-icon">☀️</span><div><div class="tip-title">AccuFix SPF 50, Your #1 Weapon</div><div class="tip-body">Apply every morning at sehri. Reapply every 2 to 3 hrs outside. Without this, ALL efforts wasted.</div></div></div>
-    <div class="tip-card"><span class="tip-icon">💧</span><div><div class="tip-title">10 Glasses Water = Fairer Skin</div><div class="tip-body">Flushes toxins inside out. Spread across Sehri → Iftar → Night. Skin clears visibly in 5 days.</div></div></div>
-    <div class="tip-card"><span class="tip-icon">😴</span><div><div class="tip-title">Sleep Before 1am Maximum</div><div class="tip-body">Skin produces collagen only during sleep. Late night = dark circles + dull skin.</div></div></div>
-    <div class="tip-card"><span class="tip-icon">🍉</span><div><div class="tip-title">Best Iftar Foods for Skin</div><div class="tip-body">Watermelon (92% water), cucumber, papaya, coconut water, plain yogurt. Include 1 or 2 daily.</div></div></div>
+    <div class="tip-card"><div class="tip-icon">☀️</div><div><div class="tip-title">AccuFix SPF 50, Your #1 Weapon</div><div class="tip-body">Apply every morning at sehri. Reapply every 2 to 3 hrs outside. Without this, ALL efforts wasted.</div></div></div>
+    <div class="tip-card"><div class="tip-icon">💧</div><div><div class="tip-title">10 Glasses Water = Fairer Skin</div><div class="tip-body">Flushes toxins inside out. Spread across Sehri → Iftar → Night. Skin clears visibly in 5 days.</div></div></div>
+    <div class="tip-card"><div class="tip-icon">😴</div><div><div class="tip-title">Sleep Before 1am Maximum</div><div class="tip-body">Skin produces collagen only during sleep. Late night = dark circles + dull skin.</div></div></div>
+    <div class="tip-card"><div class="tip-icon">🍉</div><div><div class="tip-title">Best Iftar Foods for Skin</div><div class="tip-body">Watermelon (92% water), cucumber, papaya, coconut water, plain yogurt. Include 1 or 2 daily.</div></div></div>
     <div class="card">
       <div class="card-header"><span class="card-icon">🚫</span><span class="card-title">Strictly Avoid for 14 Days</span></div>
       <div class="avoid-item"><div class="avoid-x">✕</div><div class="avoid-text"><strong>Cold drinks &amp; soda</strong>Sugar causes skin to dull and darken</div></div>
@@ -4030,14 +4122,32 @@ async function initAISection() {
 
   if (_aiConfig.enabled === false) { renderAIGate('disabled'); return; }
 
-  // Read today's usage ONCE at startup — stored in _aiUsed
-  _aiLimit = (_aiConfig.daily_limit) || 10;
+  // Check if this user is banned
+  try {
+    var banSnap = await _fbDb.ref('ai_config/banned/' + _currentUser.uid).once('value');
+    if (banSnap.val() === true) { renderAIGate('disabled'); return; }
+  } catch(e) {}
+
+  // Per-user limit override takes priority over global limit
+  var globalLimit = (_aiConfig.daily_limit) || 10;
+  try {
+    var overrideSnap = await _fbDb.ref('ai_config/user_limits/' + _currentUser.uid).once('value');
+    var overrideVal  = overrideSnap.val();
+    _aiLimit = (overrideVal !== null && overrideVal !== undefined) ? parseInt(overrideVal) : globalLimit;
+  } catch(e) { _aiLimit = globalLimit; }
   try {
     const usnap = await _fbDb.ref('ai_usage/' + _currentUser.uid + '/' + todayKey()).once('value');
     _aiUsed = ((usnap.val() || {}).count) || 0;
   } catch(e) { _aiUsed = 0; }
 
+  _aiLimit = (_aiConfig.daily_limit) || 10;  // ensure fresh
+  _thinkMode = false; // reset think mode on re-init
+
   renderAIChat();
+
+  // Load chat history after render (non-blocking)
+  loadChatHistory().catch(function(){});
+
   _aiInit = true;
 }
 
@@ -4105,6 +4215,7 @@ function renderAIChat() {
     '<div class="ai-chips" id="aiChips">' + buildChips(day, isSp, isEid) + '</div>' +
     // Input bar
     '<div class="ai-bar">' +
+      '<button class="ai-think-btn" id="aiThinkBtn" onclick="toggleThink()" title="Deep Think">&#129504;<span class="think-tip">Deep Think (costs 2)</span><span class="think-cost">&#215;2</span></button>' +
       '<textarea class="ai-ta" id="aiTa" rows="1" maxlength="500" placeholder="Ask about your routine..."' +
         ' onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();sendAIMsg();}"' +
         ' oninput="growTa(this)"></textarea>' +
@@ -4197,6 +4308,7 @@ function addMsg(role, text, raw, isErr) {
 // ── Typing indicator ──────────────────────────────────────────────
 let _typingEl = null;
 function showTyping() {
+  if (_thinkMode) { showThinkTyping(); return; }
   const msgs = document.getElementById('aiMsgs');
   if (!msgs || _typingEl) return;
   const div = document.createElement('div');
@@ -4275,14 +4387,30 @@ async function sendAIMsg() {
       throw new Error('NOT_CONFIGURED');
     }
 
+    // Thinking mode: check cost, use deep prompt, purple typing
+    var thinkCost = (_aiConfig && _aiConfig.think_cost) || 2;
+    if (_thinkMode) {
+      if (_aiUsed + thinkCost > _aiLimit) {
+        _aiSending = false;
+        hideTyping();
+        if (ta) ta.disabled = false;
+        if (btn) btn.disabled = false;
+        addMsg('b', '&#129504; Not enough messages for Deep Think (needs ' + thinkCost + ', you have ' + Math.max(0,_aiLimit-_aiUsed) + ' left). Switch to standard mode or wait for midnight reset.', true);
+        return;
+      }
+    }
+
+    const systemPrompt = AI_BASE_PROMPT + '\n\n' + buildAIContext() +
+      (_thinkMode ? '\n\n## DEEP THINK MODE\nThink carefully and step by step before answering. Reason through the problem thoroughly. Provide a comprehensive, well-structured response.' : '');
+
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + groqKey, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model:       (_aiConfig && _aiConfig.model) || 'llama-3.3-70b-versatile',
-        messages:    [{ role: 'system', content: AI_BASE_PROMPT + '\n\n' + buildAIContext() }, ..._aiConvo],
-        max_tokens:  480,
-        temperature: 0.70
+        messages:    [{ role: 'system', content: systemPrompt }, ..._aiConvo],
+        max_tokens:  _thinkMode ? 900 : 480,
+        temperature: _thinkMode ? 0.50 : 0.70
       })
     });
 
@@ -4298,14 +4426,25 @@ async function sendAIMsg() {
 
     _aiConvo.push({ role: 'assistant', content: reply });
     hideTyping();
-    addMsg('b', reply);
 
-    // Increment local counter — save to Firebase in background
-    _aiUsed++;
+    // If thinking mode, show label + deduct 2
+    var usedCost = _thinkMode ? ((_aiConfig && _aiConfig.think_cost) || 2) : 1;
+    if (_thinkMode) {
+      var labelledReply = '<span class="think-label">&#129504; Deep Think</span><br>' + reply;
+      addMsg('b', labelledReply, true);
+    } else {
+      addMsg('b', reply);
+    }
+
+    // Increment local counter by cost
+    _aiUsed += usedCost;
     updatePill();
+
+    // Save usage + chat history in background
     _fbDb.ref('ai_usage/' + _currentUser.uid + '/' + todayKey()).set({
       count: _aiUsed, last_message: Date.now()
     }).catch(e => console.warn('[AI] usage save failed:', e && e.message));
+    saveChatHistory();
 
   } catch(e) {
     hideTyping();
@@ -4336,6 +4475,70 @@ async function sendAIMsg() {
 }
 
 // ── Pill update ───────────────────────────────────────────────────
+
+// ── Thinking mode ─────────────────────────────────────────────────
+var _thinkMode = false;
+
+function toggleThink() {
+  _thinkMode = !_thinkMode;
+  var btn = document.getElementById('aiThinkBtn');
+  if (!btn) return;
+  btn.className = 'ai-think-btn' + (_thinkMode ? ' on' : '');
+  // Show toast with cost info
+  var cost = (_aiConfig && _aiConfig.think_cost) || 2;
+  showToast(_thinkMode
+    ? '&#129504; Deep Think ON — costs ' + cost + ' per message'
+    : '&#128161; Standard mode restored'
+  );
+}
+
+// ── Show deep-think typing (purple wave) ───────────────────────────
+function showThinkTyping() {
+  var msgs = document.getElementById('aiMsgs');
+  if (!msgs || _typingEl) return;
+  var div = document.createElement('div');
+  div.className = 'msg b';
+  div.id = 'aiTyping';
+  div.innerHTML = '<div class="msg-row"><div class="msg-av">&#129504;</div><div class="bubble thinking-wave"><span></span><span></span><span></span><span></span><span></span></div></div>';
+  msgs.appendChild(div);
+  _typingEl = div;
+  setTimeout(function(){ msgs.scrollTop = msgs.scrollHeight; }, 30);
+}
+
+// ── Chat history — save/load from Firebase ────────────────────────
+function saveChatHistory() {
+  if (!_currentUser || !_fbDb) return;
+  var limit = (_aiConfig && _aiConfig.history_limit) || 30;
+  var toSave = _aiConvo.slice(-limit);
+  _fbDb.ref('ai_chats/' + _currentUser.uid).set({
+    messages: toSave,
+    saved_at: Date.now()
+  }).catch(function(e){ console.warn('[AI] chat save failed:', e && e.message); });
+}
+
+async function loadChatHistory() {
+  if (!_currentUser || !_fbDb) return false;
+  try {
+    var snap = await _fbDb.ref('ai_chats/' + _currentUser.uid).once('value');
+    var data = snap.val();
+    if (!data || !data.messages || !data.messages.length) return false;
+    var limit = (_aiConfig && _aiConfig.history_limit) || 30;
+    _aiConvo = data.messages.slice(-limit);
+    // Render saved messages
+    var msgs = document.getElementById('aiMsgs');
+    if (!msgs) return false;
+    _aiConvo.forEach(function(m) {
+      addMsg(m.role === 'user' ? 'u' : 'b', m.content);
+    });
+    // Show restore notice
+    var note = document.createElement('div');
+    note.className = 'ai-history-note';
+    note.textContent = '&#8635; Previous conversation restored';
+    msgs.insertBefore(note, msgs.firstChild);
+    return true;
+  } catch(e) { return false; }
+}
+
 function updatePill() {
   const pill = document.getElementById('aiPill');
   if (!pill) return;
