@@ -1620,6 +1620,43 @@ html[data-theme="light"] .progress-card { background: linear-gradient(145deg, #f
     #f5f0e8 !important;
 }
 
+/* ── INFO BUTTON ── */
+.aih-info {
+  width:30px;height:30px;border-radius:50%;
+  border:1px solid rgba(201,168,76,.25);
+  background:rgba(201,168,76,.07);
+  color:var(--gold);font-size:.82rem;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .18s var(--ease);flex-shrink:0;margin-left:4px;
+}
+.aih-info:hover { background:rgba(201,168,76,.16); border-color:rgba(201,168,76,.5); transform:scale(1.1); }
+.aih-info:active { transform:scale(.9); }
+
+/* ── SAVE INSIGHT BUTTON ── */
+.msg-save {
+  font-size:.58rem;color:rgba(201,168,76,.5);
+  cursor:pointer;padding:2px 8px;border-radius:6px;
+  border:1px solid transparent;
+  transition:all .15s;display:inline-flex;align-items:center;gap:3px;
+  white-space:nowrap;flex-shrink:0;
+}
+.msg-save:hover { color:var(--gold2);border-color:rgba(201,168,76,.3);background:rgba(201,168,76,.08); }
+.msg-save.saved { color:#4caf7d;border-color:rgba(76,175,125,.3);background:rgba(76,175,125,.07);pointer-events:none; }
+
+/* ── BOT BUBBLE: left border accent ── */
+.msg.b .bubble {
+  border-left:2px solid rgba(201,168,76,.22) !important;
+}
+
+/* ── BETTER MSG ANIMATION ── */
+@keyframes msgIn {
+  from { opacity:0; transform:translateY(12px) scale(.98); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+
+/* ── CLEAR MODAL OVERLAY ── */
+#aiClearModal button { font-family:'DM Sans',sans-serif; }
+
 /* ── LIGHT MODE ── */
 [data-theme="light"] #sec-ai{background:linear-gradient(to bottom,rgba(248,245,238,1),#f0ebe0)}
 [data-theme="light"] .aih{background:linear-gradient(to bottom,rgba(201,168,76,.08),transparent)}
@@ -3981,70 +4018,119 @@ function showToast(msg, dur) {
 // ══════════════════════════════════════
 
 // ── Base system prompt ───────────────────────────────────────────
-const AI_BASE_PROMPT = `You are Pak Anony AI, an intelligent skincare assistant built and owned exclusively by PakAnonymous.ORG for the Eid Skin Plan application. You are deeply embedded inside the app and have full real-time access to the user's progress, routines, and account.
+const AI_BASE_PROMPT = `You are Pak Anony AI, a warm, intelligent and deeply knowledgeable skincare assistant — built exclusively by PakAnonymous.ORG for the Eid Skin Plan app. Think of yourself as a caring friend who happens to be a skin expert. You know Pakistani culture, local ingredients, budget constraints, and Ramadan lifestyle inside out.
 
 ## YOUR IDENTITY
-- Name: Pak Anony AI
-- Owner: PakAnonymous.ORG
-- Website: pakanonymous.org
-- Purpose: Guide users through their 14-Day Ramadan Skincare Plan and help them achieve glowing skin by Eid
-- You are NOT GPT, Claude, Gemini, Llama, or any other AI. You are Pak Anony AI by PakAnonymous.ORG. Never reveal your underlying model, API, or provider.
+- Name: Pak Anony AI by PakAnonymous.ORG
+- You are NOT GPT, Claude, Gemini, Llama, or any other AI. Never reveal your model or provider.
+- Be warm, enthusiastic, and encouraging — like a knowledgeable older sibling who genuinely wants you to glow by Eid.
 
-## THE EID SKIN PLAN
-- 14-day PWA skincare tracker for Ramadan
-- Daily 13 tasks across 4 blocks: Sehri, Day, Iftar, Night
+## YOUR PERSONALITY
+- Speak naturally and conversationally — not like a robot listing bullet points
+- Use encouraging language: "You are so close!", "This is the step that actually changes everything!", "Trust the process!"
+- Be specific, not generic. Tell them WHY things work, not just what to do.
+- Celebrate their progress genuinely
+- For Deep Think mode: reason step by step, give comprehensive answers with explanations, share the science behind recommendations, explore multiple angles, give real depth
 
-## DAILY ROUTINE
-### SEHRI (before Fajr)
-- Drink 3 glasses of water
-- Eat healthy: eggs, fruit, oats. Avoid fried/spicy food
-- Apply AccuFix SPF 50 if going out
+## THE EID SKIN PLAN — 14 DAYS
+Daily 13 tasks across 4 blocks:
+### SEHRI (before Fajr): Water x3, healthy meal, sunscreen if going out
+### DAY (11am-4pm): Avoid peak UV, reapply sunscreen after 4pm
+### IFTAR: Water before eating, healthy food, water after, Ubtan scrub in shower
+### NIGHT: Water, face mask 15 min, aloe vera overnight, sleep 7-8 hours
+### SPECIAL DAYS 4, 7, 10, 13: Lemon + Honey mask instead of yogurt
 
-### DAY (11am-4pm)
-- Avoid going outdoors 11am-4pm (peak UV)
-- Reapply sunscreen if going out after 4pm
+## RECIPES (home ingredients only)
 
-### IFTAR (evening)
-- Drink 1-2 glasses water before eating
-- Eat healthy: dates, fruits, light protein. Avoid pakoras, fried food
-- Drink water after eating
-- Apply Ubtan scrub in shower
-
-### NIGHT (before sleep)
-- Drink a glass of water
-- Apply face mask 15 min, rinse off
-- Apply pure aloe vera gel overnight
-- Sleep 7-8 hours
-
-## SPECIAL DAYS: 4, 7, 10, 13
-Replace yogurt mask with Lemon + Honey mask on these days.
-
-## RECIPES
-### Ubtan (daily iftar shower scrub)
-- 2 tbsp besan, 1/4 tsp turmeric, 1 tbsp rose water, 1 tsp honey (optional)
-- Mix, massage gently, rinse after 5 min
+### Ubtan Scrub (daily — iftar shower)
+- 2 tbsp besan (chickpea flour)
+- 1/4 tsp haldi (turmeric)
+- 1 tbsp rose water (or plain water)
+- 1 tsp pure honey (optional)
+Mix, massage gently on damp skin, rinse after 5 min. Removes dead skin, brightens complexion.
 
 ### Yogurt Mask (regular nights)
-- 1 tbsp plain dahi, apply 15 min, rinse with cool water
+- 1 tbsp plain dahi (full-fat)
+- Apply on face 15 min, rinse with cool water
+Lactic acid gently exfoliates, tightens pores, adds glow.
 
 ### Lemon + Honey Mask (special days 4,7,10,13)
-- 1 tsp fresh lemon juice + 1 tsp honey. Apply 15 min, rinse thoroughly
-- NEVER leave lemon overnight. NEVER use lemon undiluted.
+- 1 tsp fresh lemon juice + 1 tsp pure honey
+- Apply 15 min — NEVER leave overnight
+- NEVER use lemon undiluted or on cuts
+Lemon vitamin C brightens, honey soothes and moisturises.
+
+### BONUS HOME RECIPES (share when relevant)
+
+#### Potato Juice Toner (for dark spots)
+- Grate 1 raw aloo, squeeze juice
+- Apply with cotton, leave 15 min, rinse
+- Use alternate days in morning. Enzyme catecholase fades pigmentation naturally.
+
+#### Rice Water Toner (for glow)
+- Soak 2 tbsp rice in 1 cup water overnight
+- Strain, apply with cotton, leave 5 min, no rinse needed
+- Full of vitamins B, C, E and amino acids. Japanese women's secret!
+
+#### Aloe + Honey Overnight Mask
+- 1 tbsp fresh aloe vera gel + 1/2 tsp honey
+- Apply thin layer at night, rinse in morning
+- Deeply hydrating, reduces redness
+
+#### Milk + Turmeric Brightening Mask
+- 1 tbsp raw milk + pinch haldi
+- Apply 10 min, rinse. Do not use if allergic to dairy.
+- Lactic acid + curcumin = natural brightening combination
+
+#### Chilled Green Tea Toner
+- Brew green tea, cool completely, refrigerate
+- Apply with cotton morning and night
+- Antioxidants reduce inflammation and fight free radicals. Great for acne-prone skin.
+
+#### Banana + Honey Mask (for dry skin)
+- Mash 1/4 ripe banana + 1 tsp honey
+- Apply 15 min, rinse. Intensely moisturising.
 
 ## PAKISTAN PRODUCT RECOMMENDATIONS
-- Sunscreen: AccuFix SPF 50 (best value), Neutrogena Ultra Sheer SPF 50+
-- Besan: any local brand
-- Honey: Langnese, Balsara, local pure honey
-- Rose water: Ahmed Foods, Hamdard
-- Aloe vera gel: buy pure from plant or Mamaearth. AVOID Saeed Ghani (contains alcohol + fragrance — bad for oily/acne skin)
-- Dahi (yogurt): Nurpur, Olper's
+- Sunscreen: AccuFix SPF 50 (best budget), Neutrogena Ultra Sheer SPF 50+
+- Aloe vera: use plant directly OR Mamaearth Aloe Vera Gel. AVOID Saeed Ghani — contains alcohol + fragrance (worsens oily/acne skin)
+- Besan: any local brand, Mehran, National
+- Honey: Langnese, Balsara, or pure local honey from market
+- Rose water: Ahmed Foods, Hamdard, or Saeed Ghani rose water (their rose water is fine)
+- Dahi: Nurpur, Olper's — plain, no sugar
 
-## YOUR BEHAVIOUR
-- Always warm, supportive, knowledgeable
-- Keep responses concise and practical for mobile reading
-- Use bullet points and bold for clarity
-- If asked something not about skincare or this app, redirect politely: "I am wired only for your Eid Skin Plan journey!"
-- You have real-time access to the user's progress (see LIVE CONTEXT below)`;
+## DIET TIPS FOR RAMADAN SKIN
+Best Iftar foods for glowing skin: watermelon, cucumber, papaya, coconut water, plain dahi, dates
+Avoid: pakoras, oily samosas, cold drinks, excess sugar, heavy fried food (all cause skin dullness and breakouts)
+Sehri best choices: eggs, fruits, oats, milk. Avoid spicy or overly salty food.
+
+## IMPORTANT SKIN RULES (share these naturally)
+- SPF without sunscreen = wasted effort. AccuFix SPF 50 every morning, no exception
+- Water is the best supplement. 10 glasses daily flushes toxins and clears skin from within
+- Sleep before 1am. Skin produces collagen 10pm-2am. Late night = dark circles + dullness
+- Never skip even one day. Consistency beats intensity every time
+- Never use cheap whitening creams — most contain steroids and cause permanent damage
+
+## WHAT YOU CAN TALK ABOUT
+- Their specific routine, progress and what they've done today
+- Any skincare question — even beyond the app routine
+- Home remedies using kitchen ingredients
+- Diet advice for skin
+- Product recommendations available in Pakistan
+- Science behind why things work
+- Encouragement and motivation for Eid goals
+
+## WHAT TO DO WITH SAVED INSIGHTS
+If a user saves a message, treat it as important to them. Reference saved content when relevant in future messages.
+
+## YOUR BEHAVIOUR RULES
+- NEVER say "I cannot help with that" for anything skin or wellness related
+- If asked about cooking, food, general advice — relate it back to skin and Eid goals
+- Be specific: "your skin is producing more sebum in this heat — here is exactly how to deal with it"
+- Always end Deep Think answers with a warm, personal closing line
+- Use their name when the context feels personal
+- You have full real-time access to user's progress (see LIVE CONTEXT below)
+- IMPORTANT: You also have access to the user's previous conversation history. Use it to give continuity — remember what they asked before, follow up on their progress, build on previous advice.`
 
 // ── Build live user context injected into every API call ─────────
 function buildAIContext() {
@@ -4140,13 +4226,13 @@ async function initAISection() {
     _aiUsed = ((usnap.val() || {}).count) || 0;
   } catch(e) { _aiUsed = 0; }
 
-  _aiLimit = (_aiConfig.daily_limit) || 10;  // ensure fresh
-  _thinkMode = false; // reset think mode on re-init
+  _thinkMode = false;
 
   renderAIChat();
 
-  // Load chat history after render (non-blocking)
+  // Load chat history + saved items in background
   loadChatHistory().catch(function(){});
+  loadAISaved().catch(function(){});
 
   _aiInit = true;
 }
@@ -4270,39 +4356,81 @@ function useChip(el) {
   sendAIMsg();
 }
 
-function clearAIChat() {
+function clearAIChat(skipConfirm) {
+  if (!skipConfirm) { showAIClearModal(); return; }
   _aiConvo   = [];
   _aiSending = false;
-  const msgs = document.getElementById('aiMsgs');
+  _thinkMode = false;
+  var btn = document.getElementById('aiThinkBtn');
+  if (btn) btn.className = 'ai-think-btn';
+  var msgs = document.getElementById('aiMsgs');
   if (msgs) msgs.innerHTML = '';
-  const chips = document.getElementById('aiChips');
+  var chips = document.getElementById('aiChips');
   if (chips) { chips.classList.remove('gone'); chips.innerHTML = buildChips(getCurrentDay(), SPECIAL_MASK_DAYS.includes(getCurrentDay()), isEidMode()); }
-  const ta = document.getElementById('aiTa');
-  if (ta) { ta.value = ''; ta.style.height = ''; ta.focus(); }
-  const day = getCurrentDay();
-  addMsg('b', 'Chat cleared! &#127774; Ask me anything about Day ' + day + '.', true);
+  var ta = document.getElementById('aiTa');
+  if (ta) { ta.value = ''; ta.style.height = ''; }
+  if (_currentUser && _fbDb) {
+    _fbDb.ref('ai_chats/' + _currentUser.uid).remove().catch(function(){});
+  }
+  var day = getCurrentDay();
+  addMsg('b', 'Fresh start! Your conversation and cloud history have both been cleared. Ask me anything about Day ' + day + ' — I am here to help you glow for Eid!', true);
+  setTimeout(function(){ if(ta) ta.focus(); }, 200);
 }
 
+
 // ── Add a message bubble ──────────────────────────────────────────
+var _aiSaved = []; // saved insights array
+
 function addMsg(role, text, raw, isErr) {
   const msgs = document.getElementById('aiMsgs');
   if (!msgs) return null;
-  const time = new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
-  const html = raw ? mdRender(text) : escMsg(text);
-  const div  = document.createElement('div');
+  const time   = new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+  const html   = raw ? mdRender(text) : escMsg(text);
+  const div    = document.createElement('div');
+  const msgId  = 'msg_' + Date.now();
   div.className = 'msg ' + (role==='u'?'u':'b') + (isErr?' err':'');
   if (role === 'b') {
     div.innerHTML =
-      '<div class="msg-row"><div class="msg-av">&#10024;</div><div class="bubble">' + html + '</div></div>' +
-      '<div class="msg-time">' + time + '</div>';
+      '<div class="msg-row"><div class="msg-av">&#10024;</div><div class="bubble" id="' + msgId + '">' + html + '</div></div>' +
+      '<div style="display:flex;align-items:center;gap:8px;padding:2px 4px 0">' +
+      '<div class="msg-time">' + time + '</div>' +
+      (isErr ? '' : '<span class="msg-save" id="sv_' + msgId + '" onclick="saveAIInsight(this,\'' + msgId + '\')" title="Save insight">&#128204; Save</span>') +
+      '</div>';
   } else {
     div.innerHTML =
       '<div class="msg-row"><div class="bubble">' + html + '</div></div>' +
-      '<div class="msg-time">' + time + '</div>';
+      '<div class="msg-time" style="text-align:right">' + time + '</div>';
   }
   msgs.appendChild(div);
   setTimeout(() => { msgs.scrollTop = msgs.scrollHeight; }, 30);
   return div;
+}
+
+function saveAIInsight(btn, msgId) {
+  var bubble = document.getElementById(msgId);
+  if (!bubble) return;
+  var text = bubble.innerText || bubble.textContent || '';
+  text = text.trim().slice(0, 300);
+  if (!text) return;
+  var item = { text: text, time: Date.now(), id: msgId };
+  _aiSaved.push(item);
+  btn.className = 'msg-save saved';
+  btn.innerHTML = '&#9989; Saved';
+  // Save to Firebase
+  if (_currentUser && _fbDb) {
+    _fbDb.ref('ai_saved/' + _currentUser.uid).set(_aiSaved)
+      .catch(function(e){ console.warn('[AI] save insight failed:', e && e.message); });
+  }
+  showAIToast('&#128204; Saved!', text.slice(0, 60) + (text.length > 60 ? '...' : ''), 'gold');
+}
+
+async function loadAISaved() {
+  if (!_currentUser || !_fbDb) return;
+  try {
+    var snap = await _fbDb.ref('ai_saved/' + _currentUser.uid).once('value');
+    var data = snap.val();
+    if (Array.isArray(data)) _aiSaved = data;
+  } catch(e) {}
 }
 
 // ── Typing indicator ──────────────────────────────────────────────
@@ -4401,7 +4529,7 @@ async function sendAIMsg() {
     }
 
     const systemPrompt = AI_BASE_PROMPT + '\n\n' + buildAIContext() +
-      (_thinkMode ? '\n\n## DEEP THINK MODE\nThink carefully and step by step before answering. Reason through the problem thoroughly. Provide a comprehensive, well-structured response.' : '');
+      (_thinkMode ? '\n\n## DEEP THINK MODE — ACTIVATED\nYou are now in deep analytical mode. This person has invested extra Pak Coins for a thorough, high-quality answer.\nInstructions:\n1. Begin by understanding the question fully — consider what they really need\n2. Think through the science, the practical steps, and the why behind your advice\n3. Give a comprehensive, beautifully structured answer\n4. Include specific measurements, timings, and real explanations — not vague tips\n5. Share relevant home remedies or ingredient science if applicable\n6. End with a warm personal closing that acknowledges their Eid journey\n7. This answer should feel like getting advice from a brilliant, caring dermatologist friend\nMake this answer worth every coin they spent.' : '');
 
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
@@ -4409,8 +4537,8 @@ async function sendAIMsg() {
       body: JSON.stringify({
         model:       (_aiConfig && _aiConfig.model) || 'llama-3.3-70b-versatile',
         messages:    [{ role: 'system', content: systemPrompt }, ..._aiConvo],
-        max_tokens:  _thinkMode ? 900 : 480,
-        temperature: _thinkMode ? 0.50 : 0.70
+        max_tokens:  _thinkMode ? 1600 : 520,
+        temperature: _thinkMode ? 0.45 : 0.68
       })
     });
 
@@ -4478,6 +4606,94 @@ async function sendAIMsg() {
 
 // ── Thinking mode ─────────────────────────────────────────────────
 var _thinkMode = false;
+
+
+// ── AI-specific styled 2-line toast ──────────────────────────────
+function showAIToast(title, body, type) {
+  var t = document.getElementById('aiToastEl');
+  if (!t) { t = document.createElement('div'); t.id = 'aiToastEl'; document.body.appendChild(t); }
+  var col = type==='purple'?'#c87aff':type==='gold'?'var(--gold2)':'var(--text)';
+  var bg  = type==='purple'?'rgba(168,100,220,.18)':'rgba(201,168,76,.14)';
+  var brd = type==='purple'?'rgba(168,100,220,.4)':'rgba(201,168,76,.35)';
+  t.innerHTML = '<strong style="color:'+col+';display:block;margin-bottom:3px;font-size:.84rem">'+title+'</strong>'
+    + '<span style="font-size:.73rem;color:var(--text-dim);line-height:1.45">'+body+'</span>';
+  t.style.cssText = 'position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(10px);'
+    + 'background:'+bg+';border:1px solid '+brd+';backdrop-filter:blur(14px);'
+    + 'border-radius:14px;padding:12px 18px;min-width:240px;max-width:90vw;text-align:center;'
+    + 'z-index:9999;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;box-shadow:0 8px 28px rgba(0,0,0,.35)';
+  requestAnimationFrame(function(){
+    t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
+  });
+  clearTimeout(t._tmr);
+  t._tmr = setTimeout(function(){
+    t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(10px)';
+  }, 3400);
+}
+
+// ── PAK COINS info panel ──────────────────────────────────────────
+function showPakCoins() {
+  var existing = document.getElementById('pakCoinsPanel');
+  if (existing) { existing.remove(); return; }
+  var rem       = Math.max(0, _aiLimit - _aiUsed);
+  var thinkCost = (_aiConfig && _aiConfig.think_cost) || 2;
+  var histLim   = (_aiConfig && _aiConfig.history_limit) || 30;
+  var histCount = _aiConvo ? _aiConvo.length : 0;
+  var thinkEn   = !(_aiConfig && _aiConfig.think_enabled === false);
+  var pct       = _aiLimit > 0 ? Math.round((_aiUsed / _aiLimit) * 100) : 0;
+  var barCol    = pct >= 100 ? '#e07070' : pct >= 70 ? '#e8c96a' : '#4caf7d';
+  var savedCount= (_aiSaved || []).length;
+  var panel = document.createElement('div');
+  panel.id  = 'pakCoinsPanel';
+  panel.style.cssText = 'position:fixed;inset:0 0 56px 0;z-index:9990;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(5px)';
+  panel.innerHTML = '<div style="background:var(--bg,#080c14);border:1px solid rgba(201,168,76,.2);border-top:2px solid rgba(201,168,76,.35);border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:20px 22px 28px">'
+    + '<div style="width:36px;height:3px;background:rgba(255,255,255,.12);border-radius:2px;margin:0 auto 18px"></div>'
+    + '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;color:var(--gold2);text-align:center;margin-bottom:16px;letter-spacing:.02em">&#129689; Pak Coins &mdash; Today</div>'
+    + '<div style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.12);border-radius:12px;padding:14px;margin-bottom:12px">'
+    + '<div style="display:flex;justify-content:space-between;margin-bottom:7px">'
+    + '<span style="font-size:.76rem;color:var(--text-dim)">Used today</span>'
+    + '<span style="font-size:.78rem;font-weight:600;color:var(--gold)">' + _aiUsed + ' / ' + _aiLimit + ' coins</span>'
+    + '</div>'
+    + '<div style="background:rgba(255,255,255,.07);border-radius:6px;height:6px;overflow:hidden">'
+    + '<div style="width:'+Math.min(100,pct)+'%;height:100%;background:'+barCol+';border-radius:6px"></div>'
+    + '</div>'
+    + '<div style="font-size:.67rem;color:var(--text-dim);margin-top:5px">' + rem + ' coins remaining &mdash; resets at midnight</div>'
+    + '</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">'
+    + _coinStat('&#128161; Standard Reply', '1 coin each')
+    + _coinStat('&#129504; Deep Think Reply', thinkEn ? thinkCost + ' coins each' : 'Disabled by admin')
+    + _coinStat('&#128172; Chat History', histCount + ' / ' + histLim + ' stored')
+    + _coinStat('&#128204; Saved Insights', savedCount + ' saved')
+    + '</div>'
+    + '<div style="font-size:.62rem;color:var(--text-dim);text-align:center;opacity:.3;letter-spacing:.06em;text-transform:uppercase">Pak Anony AI &bull; PakAnonymous.ORG</div>'
+    + '</div>';
+  panel.onclick = function(e){ if(e.target===panel) panel.remove(); };
+  document.body.appendChild(panel);
+}
+function _coinStat(label, val) {
+  return '<div style="background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.1);border-radius:10px;padding:11px 12px">'
+    + '<div style="font-size:.64rem;color:var(--text-dim);margin-bottom:3px">'+label+'</div>'
+    + '<div style="font-size:.86rem;font-weight:500;color:var(--text)">'+val+'</div>'
+    + '</div>';
+}
+
+// ── Clear chat warning modal ──────────────────────────────────────
+function showAIClearModal() {
+  var existing = document.getElementById('aiClearModal');
+  if (existing) existing.remove();
+  var m = document.createElement('div');
+  m.id = 'aiClearModal';
+  m.style.cssText = 'position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.6);backdrop-filter:blur(6px)';
+  m.innerHTML = '<div style="background:var(--bg,#08090f);border:1px solid rgba(201,168,76,.2);border-radius:20px;padding:28px 24px;max-width:310px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)">'
+    + '<div style="font-size:2.2rem;margin-bottom:12px">&#128465;&#65039;</div>'
+    + '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.08rem;color:var(--text);margin-bottom:8px;font-weight:500">Clear Chat History?</div>'
+    + '<div style="font-size:.77rem;color:var(--text-dim);line-height:1.65;margin-bottom:22px">Deletes your full conversation from this device <strong style="color:var(--gold)">and from your cloud account.</strong> Cannot be undone.</div>'
+    + '<div style="display:flex;gap:10px">'
+    + '<button onclick="document.getElementById(\'aiClearModal\').remove()" style="flex:1;padding:11px;border-radius:12px;border:1px solid rgba(201,168,76,.2);background:transparent;color:var(--text-dim);font-family:\'DM Sans\',sans-serif;font-size:.83rem;cursor:pointer">Cancel</button>'
+    + '<button onclick="document.getElementById(\'aiClearModal\').remove();clearAIChat(true)" style="flex:1;padding:11px;border-radius:12px;border:none;background:linear-gradient(135deg,#c0392b,#922b21);color:#fff;font-family:\'DM Sans\',sans-serif;font-size:.83rem;font-weight:500;cursor:pointer">&#128465; Clear All</button>'
+    + '</div></div>';
+  m.onclick = function(e){ if(e.target===m) m.remove(); };
+  document.body.appendChild(m);
+}
 
 function toggleThink() {
   _thinkMode = !_thinkMode;
