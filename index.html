@@ -49,7 +49,8 @@ html{scroll-behavior:smooth}
 body{
   background:var(--bg);color:var(--text);
   font-family:'DM Sans',sans-serif;font-weight:300;
-  min-height:100vh;overflow-x:hidden;padding-bottom:86px;
+  min-height:100vh;overflow-x:hidden;
+  padding-bottom:calc(80px + env(safe-area-inset-bottom, 0px));
   -webkit-user-select:none;-moz-user-select:none;user-select:none;
 }
 body::before{
@@ -117,17 +118,18 @@ body::before{
   background:rgba(7,9,15,0.97);
   backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
   border-top:1px solid var(--border);
-  display:flex;padding:6px 0 max(6px,env(safe-area-inset-bottom));
+  display:flex;padding:4px 0 max(4px,env(safe-area-inset-bottom));
   z-index:100;
 }
 .nav-item{
-  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
-  padding:5px 0;cursor:pointer;color:var(--text-dim);
-  font-size:.6rem;letter-spacing:.03em;border:none;
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;
+  padding:4px 2px;cursor:pointer;color:var(--text-dim);
+  font-size:.55rem;letter-spacing:.02em;border:none;
   background:transparent;transition:color .2s;font-family:'DM Sans',sans-serif;
+  min-width:0;overflow:hidden;
 }
 .nav-item.active{color:var(--gold2)}
-.nav-icon{font-size:1.1rem;transition:transform .2s}
+.nav-icon{font-size:1rem;transition:transform .2s}
 .nav-item.active .nav-icon{transform:translateY(-2px)}
 .notif-dot{
   position:absolute;top:-2px;right:-4px;
@@ -148,7 +150,7 @@ body::before{
 .sync-status{font-size:.7rem;padding:8px 16px 10px;border-top:1px solid var(--border);color:var(--text-dim);display:flex;align-items:center;gap:6px}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+/* slideUp used for modal bottom sheet */
 
 /* ══ LIGHT MODE (system auto + manual override) ══ */
 
@@ -299,8 +301,10 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 /* Eid modal */
 .eid-modal-wrap{text-align:center;padding:8px 0 4px}
 
-.section{display:none;animation:fadeIn .22s ease}
-.section.active{display:block}#sec-ai.active{display:flex!important}@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.section{display:none}
+.section.active{display:block;animation:fadeIn .22s ease both}
+#sec-ai.active{display:flex!important;animation:fadeIn .18s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── CARD ── */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;transition:border-color .2s}
@@ -479,7 +483,7 @@ body.eid-mode .nav-item.active{color:#f5d27a}
   border-radius:24px 24px 0 0;padding:18px 18px 40px;
   width:100%;max-width:430px;
   animation:slideUp .3s cubic-bezier(.4,0,.2,1);
-  max-height:75vh;overflow-y:auto;position:relative;
+  max-height:85vh;overflow-y:auto;position:relative;
 }
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .modal-handle{width:36px;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;margin:0 auto 16px}
@@ -492,7 +496,7 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 
 /* ── TOAST ── */
 .toast{
-  position:fixed;bottom:94px;left:50%;transform:translateX(-50%) translateY(16px);
+  position:fixed;bottom:calc(80px + env(safe-area-inset-bottom, 0px));left:50%;transform:translateX(-50%) translateY(16px);
   background:var(--surface2);border:1px solid var(--border);color:var(--text);
   padding:10px 20px;border-radius:30px;font-size:.8rem;
   opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:9990;
@@ -555,6 +559,7 @@ body.eid-mode .nav-item.active{color:#f5d27a}
   transform:translateY(-100%);transition:transform .3s ease;
 }
 #offlineBanner.visible{transform:translateY(0)}
+.wrap{transition:padding-top .3s ease}
 #offlineBanner .ob-dot{
   width:7px;height:7px;border-radius:50%;
   background:#888;flex-shrink:0;
@@ -583,14 +588,9 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 .progress-card{transition:opacity .3s ease}
 .progress-card.loading-state{opacity:.5}
 
-/* Smoother section transitions */
-.section{transition:opacity .2s ease}
-.section:not(.active){display:none}
-
 /* Smooth toast */
-.toast{
-  transition:opacity .25s ease,transform .25s cubic-bezier(.34,1.56,.64,1);
-}
+
+
 
 
 
@@ -607,7 +607,7 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 
 /* ─── SECTION SHELL ─── */
 #sec-ai {
-  display:none; position:fixed; inset:0 0 56px 0; z-index:50;
+  display:none; position:fixed; inset:0 0 calc(56px + env(safe-area-inset-bottom, 0px)) 0; z-index:50;
   flex-direction:column; overflow:hidden;
   background:
     radial-gradient(ellipse 120% 50% at 50% -10%, rgba(201,168,76,.13) 0%, transparent 55%),
@@ -740,7 +740,13 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 .msg-row { display:flex; align-items:flex-end; gap:8px; max-width:100%; }
 .msg.u .msg-row { flex-direction:row-reverse; }
 
-/* Bot mini orb */
+/* Allow text selection in AI bubbles so users can copy responses */
+.bubble {
+  max-width:83%; padding:12px 16px;
+  font-family:'Inter',sans-serif; font-size:.82rem; font-weight:300; line-height:1.75;
+  word-break:break-word; overflow-wrap:break-word;
+  user-select:text; -webkit-user-select:text;
+}
 .msg-av {
   width:26px; height:26px; border-radius:50%; flex-shrink:0; margin-bottom:18px;
   position:relative; display:flex; align-items:center; justify-content:center;
@@ -1006,7 +1012,7 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 }
 /* ── SAVED INSIGHTS PANEL ── */
 #aiSavedPanel {
-  position:fixed; inset:0 0 56px 0; z-index:201;
+  position:fixed; inset:0 0 calc(56px + env(safe-area-inset-bottom, 0px)) 0; z-index:201;
   display:flex; flex-direction:column; overflow:hidden;
   background:rgba(5,7,14,0.97);
   backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
@@ -1944,7 +1950,7 @@ function showUpdateBanner() {
     <button onclick="document.getElementById('updateBanner').remove()" style="flex-shrink:0;background:transparent;border:none;color:var(--text-dim);font-size:1rem;cursor:pointer;padding:4px 6px;line-height:1">✕</button>
   `;
   Object.assign(banner.style, {
-    position:'fixed', bottom:'80px', left:'12px', right:'12px',
+    position:'fixed', bottom:'calc(70px + env(safe-area-inset-bottom, 0px))', left:'12px', right:'12px',
     background:'var(--surface)', border:'1px solid var(--gold)',
     borderRadius:'12px', padding:'12px 14px', display:'flex',
     alignItems:'center', gap:'10px', zIndex:'200',
@@ -2172,12 +2178,14 @@ function updateAccountUI(user) {
 // Export keys that belong to progress (not device-specific)
 function getAllProgressKeys() {
   const keys = [];
-  for (let i = 0; i < localStorage.length; i++) {
-    const k = localStorage.key(i);
-    if (k && (k.startsWith('eid_') || k.startsWith('reminder_')) && !SYNC_SKIP.includes(k)) {
-      keys.push(k);
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && (k.startsWith('eid_') || k.startsWith('reminder_')) && !SYNC_SKIP.includes(k)) {
+        keys.push(k);
+      }
     }
-  }
+  } catch(e) {}
   return keys;
 }
 
@@ -2276,9 +2284,14 @@ function updateSyncStatus(state, detail) {
   };
   el.textContent = msgs[state] || msgs.idle;
 
-  // Offline banner
   const banner = document.getElementById('offlineBanner');
-  if (banner) banner.classList.toggle('visible', state === 'offline');
+  if (banner) {
+    const isOffline = state === 'offline';
+    banner.classList.toggle('visible', isOffline);
+    // Push content down so banner doesn't overlap header
+    const wrap = document.querySelector('.wrap');
+    if (wrap) wrap.style.paddingTop = isOffline ? '44px' : '';
+  }
 }
 
 // Network listeners — TASK 2: auto-sync when back online
@@ -2953,9 +2966,13 @@ function navTo(sec, btn) {
   });
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  document.getElementById('sec-' + sec).classList.add('active');
+  const target = document.getElementById('sec-' + sec);
+  if (target) target.classList.add('active');
   if (btn && btn.classList) btn.classList.add('active');
-  window.scrollTo(0, 0);
+  // Smooth scroll to top for content sections (AI is fixed so no scroll needed)
+  if (sec !== 'ai') {
+    try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e) { window.scrollTo(0, 0); }
+  }
   if (sec === 'ai') { try { initAISection(); } catch(e) {} }
 }
 
@@ -3013,6 +3030,7 @@ function updateBadges() {
 }
 
 function checkAllDone() {
+  if (isEidMode()) return; // Skip in eid mode — plan is complete
   const data = getTodayData();
   if (KEYS_TODAY.every(k => data[k]) && !isDayComplete(currentDay)) {
     markDayComplete(currentDay);
@@ -3391,14 +3409,22 @@ function applyImport() {
 // ══════════════════════════════════════
 // SECURITY — disable right-click, copy, inspect shortcuts
 // ══════════════════════════════════════
-document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('contextmenu', e => {
+  // Allow right-click in AI messages area (users need to copy responses)
+  if (e.target && e.target.closest && (e.target.closest('.ai-msgs') || e.target.closest('#aiSavedPanel'))) return;
+  e.preventDefault();
+});
 document.addEventListener('keydown', e => {
   // Block F12, Ctrl+U, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+S
   if (e.key === 'F12') { e.preventDefault(); return false; }
   if (e.ctrlKey && ['u','U','s','S'].includes(e.key)) { e.preventDefault(); return false; }
   if (e.ctrlKey && e.shiftKey && ['i','I','j','J','c','C'].includes(e.key)) { e.preventDefault(); return false; }
 });
-document.addEventListener('copy', e => e.preventDefault());
+document.addEventListener('copy', e => {
+  // Allow copying from AI chat bubbles and saved insights panel
+  if (e.target && e.target.closest && (e.target.closest('.ai-msgs') || e.target.closest('#aiSavedPanel'))) return;
+  e.preventDefault();
+});
 document.addEventListener('cut',  e => e.preventDefault());
 
 let _toastTimer = null;
@@ -3596,7 +3622,10 @@ let _aiLimit   = 10;
 
 // ── Init ─────────────────────────────────────────────────────────
 async function initAISection() {
+  // Only skip full reinit if already showing a working chat for this same user
   if (_aiInit && _currentUser && navigator.onLine && _aiConfig && _aiConfig.enabled !== false) return;
+  // Always reset if user changed or went offline
+  const prevUser = _aiInit ? _currentUser : null;
   _aiInit    = false;
   _aiConvo   = [];
   _aiSending = false;
@@ -3706,7 +3735,7 @@ function renderAIChat() {
     +     '<div class="aih-status"><span class="aih-dot"></span>Online &nbsp;&middot;&nbsp; PakAnonymous.ORG</div>'
     +   '</div>'
     +   '<div class="aih-pill' + (rem===0?' limit':'') + '" id="aiPill">'
-    +     (rem===0 ? 'Limit' : rem + '/' + _aiLimit) + ' &#129689;'
+    +     (rem===0 ? '&#128683; Limit' : rem + '/' + _aiLimit + ' &#128172;')
     +   '</div>'
     +   '<div class="aih-ring-wrap">'
     +     '<div class="aih-ring">'
@@ -4142,7 +4171,7 @@ function showPakCoins() {
   var savedCount= (_aiSaved || []).length;
   var panel = document.createElement('div');
   panel.id  = 'pakCoinsPanel';
-  panel.style.cssText = 'position:fixed;inset:0 0 56px 0;z-index:9990;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(5px)';
+  panel.style.cssText = 'position:fixed;inset:0 0 calc(56px + env(safe-area-inset-bottom,0px)) 0;z-index:9990;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(5px)';
   panel.innerHTML = '<div style="background:var(--bg,#080c14);border:1px solid rgba(201,168,76,.2);border-top:2px solid rgba(201,168,76,.35);border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:20px 22px 28px">'
     + '<div style="width:36px;height:3px;background:rgba(255,255,255,.12);border-radius:2px;margin:0 auto 18px"></div>'
     + '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;color:var(--gold2);text-align:center;margin-bottom:16px;letter-spacing:.02em">&#129689; Pak Coins &mdash; Today</div>'
@@ -4279,7 +4308,7 @@ function updatePill() {
   const pill = document.getElementById('aiPill');
   if (!pill) return;
   const rem = Math.max(0, _aiLimit - _aiUsed);
-  pill.textContent = rem === 0 ? 'Limit reached' : rem + '/' + _aiLimit + ' left';
+  pill.innerHTML = rem === 0 ? '&#128683; Limit' : rem + '/' + _aiLimit + ' &#128172;';
   pill.className   = 'aih-pill' + (rem === 0 ? ' limit' : '');
   if (rem === 0) {
     const ta  = document.getElementById('aiTa');
