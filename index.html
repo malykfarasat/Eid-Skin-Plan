@@ -1621,16 +1621,7 @@ html[data-theme="light"] .progress-card { background: linear-gradient(145deg, #f
 }
 
 /* ── INFO BUTTON ── */
-.aih-info {
-  width:30px;height:30px;border-radius:50%;
-  border:1px solid rgba(201,168,76,.25);
-  background:rgba(201,168,76,.07);
-  color:var(--gold);font-size:.82rem;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all .18s var(--ease);flex-shrink:0;margin-left:4px;
-}
-.aih-info:hover { background:rgba(201,168,76,.16); border-color:rgba(201,168,76,.5); transform:scale(1.1); }
-.aih-info:active { transform:scale(.9); }
+
 
 /* ── SAVE INSIGHT BUTTON ── */
 .msg-save {
@@ -1656,6 +1647,24 @@ html[data-theme="light"] .progress-card { background: linear-gradient(145deg, #f
 
 /* ── CLEAR MODAL OVERLAY ── */
 #aiClearModal button { font-family:'DM Sans',sans-serif; }
+
+/* ── COINS BUTTON (header) ── */
+.aih-coins {
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;margin-left:4px;
+  border:1px solid rgba(201,168,76,.25);background:rgba(201,168,76,.07);
+  color:var(--gold);font-size:.8rem;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .16s var(--ease);
+}
+.aih-coins:hover  { background:rgba(201,168,76,.15); border-color:rgba(201,168,76,.45); transform:scale(1.1); }
+.aih-coins:active { transform:scale(.91); }
+
+/* ── MESSAGE META ROW (time + save) ── */
+.msg-meta {
+  display:flex;align-items:center;gap:8px;
+  padding:2px 4px 0;margin-top:1px;
+}
+.msg.u .msg-meta { justify-content:flex-end; }
 
 /* ── LIGHT MODE ── */
 [data-theme="light"] #sec-ai{background:linear-gradient(to bottom,rgba(248,245,238,1),#f0ebe0)}
@@ -4287,12 +4296,13 @@ function renderAIChat() {
       '<div class="aih-av">&#10024;</div>' +
       '<div class="aih-info">' +
         '<div class="aih-name">Pak Anony AI</div>' +
-        '<div class="aih-status"><span class="aih-dot"></span>Online &middot; <span style="color:var(--gold);opacity:.7;font-size:.58rem">PakAnonymous.ORG</span></div>' +
+        '<div class="aih-status"><span class="aih-dot"></span>Online &middot; <span style="color:var(--gold);opacity:.65;font-size:.56rem">PakAnonymous.ORG</span></div>' +
       '</div>' +
       '<div class="aih-right">' +
         '<div class="aih-pill' + (rem===0?' limit':'') + '" id="aiPill">' + (rem===0?'Limit reached':rem+'/'+_aiLimit+' left') + '</div>' +
         '<div class="aih-day">' + dayLabel + '</div>' +
       '</div>' +
+      '<button class="aih-coins" onclick="showPakCoins()" title="Pak Coins &amp; info">&#129689;</button>' +
       '<button class="aih-clear" onclick="clearAIChat()" title="Clear chat">&#128465;</button>' +
     '</div>' +
     // Messages
@@ -4392,14 +4402,14 @@ function addMsg(role, text, raw, isErr) {
   if (role === 'b') {
     div.innerHTML =
       '<div class="msg-row"><div class="msg-av">&#10024;</div><div class="bubble" id="' + msgId + '">' + html + '</div></div>' +
-      '<div style="display:flex;align-items:center;gap:8px;padding:2px 4px 0">' +
-      '<div class="msg-time">' + time + '</div>' +
+      '<div class="msg-meta">' +
+      '<span class="msg-time">' + time + '</span>' +
       (isErr ? '' : '<span class="msg-save" id="sv_' + msgId + '" onclick="saveAIInsight(this,\'' + msgId + '\')" title="Save insight">&#128204; Save</span>') +
       '</div>';
   } else {
     div.innerHTML =
       '<div class="msg-row"><div class="bubble">' + html + '</div></div>' +
-      '<div class="msg-time" style="text-align:right">' + time + '</div>';
+      '<div class="msg-meta"><span class="msg-time">' + time + '</span></div>';
   }
   msgs.appendChild(div);
   setTimeout(() => { msgs.scrollTop = msgs.scrollHeight; }, 30);
