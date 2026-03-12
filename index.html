@@ -49,7 +49,7 @@ html{scroll-behavior:smooth}
 body{
   background:var(--bg);color:var(--text);
   font-family:'DM Sans',sans-serif;font-weight:300;
-  min-height:100vh;overflow-x:hidden;padding-bottom:110px;
+  min-height:100vh;overflow-x:hidden;padding-bottom:86px;
   -webkit-user-select:none;-moz-user-select:none;user-select:none;
 }
 body::before{
@@ -123,7 +123,7 @@ body::before{
 .nav-item{
   flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
   padding:5px 0;cursor:pointer;color:var(--text-dim);
-  font-size:.52rem;letter-spacing:.03em;border:none;
+  font-size:.6rem;letter-spacing:.03em;border:none;
   background:transparent;transition:color .2s;font-family:'DM Sans',sans-serif;
 }
 .nav-item.active{color:var(--gold2)}
@@ -402,7 +402,7 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 .avoid-item:last-child{border-bottom:none}
 .avoid-x{width:22px;height:22px;border-radius:6px;background:var(--red-dim);color:var(--red);font-size:.72rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700}
 .avoid-text{font-size:.81rem;color:var(--text-dim);line-height:1.4}
-.avoid-text strong{color:var(--text);display:block;font-weight:500}
+.avoid-text strong{color:var(--text);display:block;font-weight:500;margin-bottom:3px}
 
 /* ── SETTINGS ── */
 .setting-group{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px}
@@ -495,7 +495,7 @@ body.eid-mode .nav-item.active{color:#f5d27a}
   position:fixed;bottom:94px;left:50%;transform:translateX(-50%) translateY(16px);
   background:var(--surface2);border:1px solid var(--border);color:var(--text);
   padding:10px 20px;border-radius:30px;font-size:.8rem;
-  opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:200;
+  opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:9990;
   max-width:calc(100vw - 32px);text-align:center;
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -1004,23 +1004,96 @@ body.eid-mode .nav-item.active{color:#f5d27a}
   html:not([data-theme="dark"]) .msg.b .bubble { background:rgba(255,255,255,.7); border-color:rgba(201,168,76,.22); border-left-color:rgba(201,168,76,.5); color:#1a160e; }
   html:not([data-theme="dark"]) .ai-ta { background:rgba(255,255,255,.7); border-color:rgba(201,168,76,.28); color:#1a160e; }
 }
+/* ── SAVED INSIGHTS PANEL ── */
+#aiSavedPanel {
+  position:fixed; inset:0 0 56px 0; z-index:201;
+  display:flex; flex-direction:column; overflow:hidden;
+  background:rgba(5,7,14,0.97);
+  backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+  animation:fadeIn .2s ease;
+}
+.saved-panel-hdr {
+  flex-shrink:0; display:flex; align-items:center; gap:10px;
+  padding:13px 16px 11px;
+  background:rgba(10,12,20,.8);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(201,168,76,.18);
+  position:relative;
+}
+.saved-panel-hdr::after {
+  content:''; position:absolute; bottom:-1px; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, transparent 0%, rgba(201,168,76,.5) 30%, rgba(201,168,76,.7) 50%, rgba(201,168,76,.5) 70%, transparent 100%);
+}
+.saved-panel-title {
+  flex:1; font-family:'Montserrat',sans-serif; font-size:.88rem; font-weight:600;
+  color:var(--gold2); letter-spacing:.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.saved-panel-close {
+  width:30px; height:30px; border-radius:50%; border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.05); color:rgba(255,255,255,.45);
+  font-size:.85rem; cursor:pointer; display:flex; align-items:center;
+  justify-content:center; transition:all .15s; flex-shrink:0;
+}
+.saved-panel-close:active { transform:scale(.9); }
+.saved-panel-body {
+  flex:1; overflow-y:auto; padding:12px 14px 16px;
+  display:flex; flex-direction:column; gap:10px;
+}
+.saved-panel-body::-webkit-scrollbar { width:2px; }
+.saved-panel-body::-webkit-scrollbar-thumb { background:rgba(201,168,76,.2); border-radius:2px; }
+.saved-item {
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(201,168,76,.14);
+  border-left:2px solid rgba(201,168,76,.45);
+  border-radius:2px 12px 12px 12px;
+  padding:12px 14px; transition:border-color .18s;
+  animation:msgIn .22s ease;
+}
+.saved-item-text {
+  font-family:'Inter',sans-serif; font-size:.79rem; font-weight:300;
+  color:rgba(255,255,255,.82); line-height:1.72; margin-bottom:9px;
+  word-break:break-word; overflow-wrap:break-word;
+}
+.saved-item-meta {
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.saved-item-time {
+  font-family:'Inter',sans-serif; font-size:.55rem; color:rgba(255,255,255,.24);
+}
+.saved-item-del {
+  font-family:'Inter',sans-serif; font-size:.58rem; color:rgba(224,112,112,.5);
+  cursor:pointer; padding:2px 8px; border-radius:6px;
+  border:1px solid transparent; transition:all .14s; white-space:nowrap;
+}
+.saved-item-del:active { transform:scale(.93); }
+.saved-empty {
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:40px 20px;
+  font-family:'Inter',sans-serif; font-size:.8rem; color:rgba(255,255,255,.28);
+  line-height:2; gap:4px;
+}
+.saved-empty strong { color:rgba(201,168,76,.6); font-weight:500; }
+/* Light mode — saved panel */
+[data-theme="light"] #aiSavedPanel { background:rgba(242,237,226,0.98); }
+[data-theme="light"] .saved-panel-hdr { background:rgba(250,246,238,.85); border-bottom-color:rgba(160,114,32,.2); }
+[data-theme="light"] .saved-item { background:rgba(255,255,255,.8); border-color:rgba(160,114,32,.18); border-left-color:rgba(160,114,32,.45); }
+[data-theme="light"] .saved-item-text { color:#1a160e; }
+[data-theme="light"] .saved-item-time { color:rgba(0,0,0,.32); }
+[data-theme="light"] .saved-panel-close { color:rgba(0,0,0,.38); border-color:rgba(0,0,0,.08); background:rgba(0,0,0,.04); }
+[data-theme="light"] .saved-empty { color:rgba(0,0,0,.3); }
+@media (prefers-color-scheme:light) {
+  html:not([data-theme="dark"]) #aiSavedPanel { background:rgba(242,237,226,0.98); }
+  html:not([data-theme="dark"]) .saved-panel-hdr { background:rgba(250,246,238,.85); }
+  html:not([data-theme="dark"]) .saved-item { background:rgba(255,255,255,.8); border-color:rgba(160,114,32,.18); border-left-color:rgba(160,114,32,.45); }
+  html:not([data-theme="dark"]) .saved-item-text { color:#1a160e; }
+  html:not([data-theme="dark"]) .saved-item-time { color:rgba(0,0,0,.32); }
+}
 </style>
 </head>
 <body>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
-
-<!-- INSTALL BANNER -->
-<div class="install-banner hidden" id="installBanner">
-  <span class="install-icon">📲</span>
-  <div class="install-text">
-    <strong>Add to Home Screen</strong>
-    <span>Works offline too!</span>
-  </div>
-  <button class="install-btn" id="installBtn">Install</button>
-  <button class="install-dismiss" id="installDismiss">✕</button>
-</div>
 
 <!-- AI SECTION -->
 <div class="section" id="sec-ai">
@@ -2485,7 +2558,6 @@ window.addEventListener('beforeinstallprompt', e => {
   if (!lsGet('install_dismissed')) {
     document.getElementById('installBannerInner').classList.remove('hidden');
   }
-  document.getElementById('installBtn').onclick = triggerInstall;
   document.getElementById('installBtnInner').onclick = triggerInstall;
 });
 
@@ -2875,12 +2947,15 @@ window.onload = async function() {
 // NAVIGATION
 // ══════════════════════════════════════
 function navTo(sec, btn) {
+  // Close any lingering panels before switching tab
+  ['aiSavedPanel','savedMsgPanel','pakCoinsPanel','aiClearModal'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.remove();
+  });
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  // AI section is position:fixed — no body scroll lock needed
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
   document.getElementById('sec-' + sec).classList.add('active');
   if (btn && btn.classList) btn.classList.add('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo(0, 0);
   if (sec === 'ai') { try { initAISection(); } catch(e) {} }
 }
 
@@ -3986,58 +4061,8 @@ function showAIToast(title, body, type) {
 
 // ── PAK COINS info panel ──────────────────────────────────────────
 
-// ── SAVED MESSAGES VIEWER ────────────────────────────────────────
-function showSavedMessages() {
-  var existing = document.getElementById('savedMsgPanel');
-  if (existing) { existing.remove(); return; }
-
-  var overlay = document.createElement('div');
-  overlay.id = 'savedMsgPanel';
-  overlay.className = 'saved-panel-overlay';
-
-  var saved = _aiSaved || [];
-  var items = '';
-  if (!saved.length) {
-    items = '<div class="saved-empty">&#128204; No saved insights yet.<br><span style="font-size:.7rem;opacity:.5">Tap the pin icon below any AI reply to save it.</span></div>';
-  } else {
-    items = saved.slice().reverse().map(function(s, ri) {
-      var realIdx = saved.length - 1 - ri;
-      var timeStr = s.time ? new Date(s.time).toLocaleDateString('en-PK',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
-      return '<div class="saved-item">' +
-        '<div class="saved-item-text">' + escMsg(s.text || '') + '</div>' +
-        '<div class="saved-item-meta">' +
-          '<span class="saved-item-time">&#128197; ' + timeStr + '</span>' +
-          '<span class="saved-item-del" onclick="deleteSavedInsight(' + realIdx + ')">&#128465; Remove</span>' +
-        '</div>' +
-        '</div>';
-    }).join('');
-  }
-
-  overlay.innerHTML =
-    '<div class="saved-panel">' +
-      '<div class="saved-panel-hdr">' +
-        '<div class="saved-panel-title">&#128204; Saved Insights (' + saved.length + ')</div>' +
-        '<button class="saved-panel-close" onclick="document.getElementById(\'savedMsgPanel\').remove()">&#10005;</button>' +
-      '</div>' +
-      '<div class="saved-panel-body" id="savedPanelBody">' + items + '</div>' +
-    '</div>';
-
-  overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
-  document.body.appendChild(overlay);
-}
-
-function deleteSavedInsight(idx) {
-  _aiSaved.splice(idx, 1);
-  if (_currentUser && _fbDb) {
-    _fbDb.ref('ai_saved/' + _currentUser.uid).set(_aiSaved).catch(function(){});
-  }
-  // Refresh panel
-  var existing = document.getElementById('savedMsgPanel');
-  if (existing) { existing.remove(); showSavedMessages(); }
-}
 
 
-// ── Saved Insights panel ──────────────────────────────────────────
 function showSavedInsights() {
   var existing = document.getElementById('aiSavedPanel');
   if (existing) { existing.remove(); return; }
@@ -4049,16 +4074,16 @@ function showSavedInsights() {
 
   var rows = '';
   if (!items.length) {
-    rows = '<div class="saved-empty">&#128204;<br><br>No saved insights yet.<br>Tap <strong>Save</strong> below any AI reply to bookmark it here.</div>';
+    rows = '<div class="saved-empty"><span style="font-size:2rem">📌</span><br>No saved insights yet.<br><span style="font-size:.72rem">Tap <strong>Save</strong> below any AI reply to bookmark it here.</span></div>';
   } else {
     rows = items.map(function(item, i) {
-      var realIdx = items.length - 1 - i; // actual index in _aiSaved
+      var realIdx = items.length - 1 - i;
       var d = new Date(item.time);
-      var timeStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+      var timeStr = d.toLocaleDateString('en-PK',{month:'short',day:'numeric'}) + ' \u00b7 ' + d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
       return '<div class="saved-item">'
         + '<div class="saved-item-text">' + escMsg(item.text) + '</div>'
         + '<div class="saved-item-meta">'
-        +   '<span class="saved-item-time">' + timeStr + '</span>'
+        +   '<span class="saved-item-time">&#128197; ' + timeStr + '</span>'
         +   '<span class="saved-item-del" onclick="deleteSavedInsight(' + realIdx + ')">&#128465; Delete</span>'
         + '</div></div>';
     }).join('');
@@ -4066,13 +4091,13 @@ function showSavedInsights() {
 
   panel.innerHTML =
     '<div class="saved-panel-hdr">'
-    + '<span style="font-size:1.1rem">&#128204;</span>'
+    + '<span style="font-size:1.05rem">&#128204;</span>'
     + '<span class="saved-panel-title">Saved Insights (' + (_aiSaved||[]).length + ')</span>'
     + '<button class="saved-panel-close" onclick="document.getElementById(\'aiSavedPanel\').remove()">&#10005;</button>'
     + '</div>'
     + '<div class="saved-panel-body" id="savedPanelBody">' + rows + '</div>';
 
-  document.getElementById('sec-ai').appendChild(panel);
+  document.body.appendChild(panel);
 }
 
 function deleteSavedInsight(idx) {
