@@ -1,7 +1,7 @@
 {
   "name": "Eid Skin Plan",
   "short_name": "Eid Skin",
-  "description": "14-Day Ramadan Skin Care Tracker for Farasat Ali",
+  "description": "15-Day Ramadan Skin Care Tracker for Farasat Ali",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -46,6 +46,9 @@
       "purpose": "maskable"
     }
   ],
-  "categories": ["health", "lifestyle"],
+  "categories": [
+    "health",
+    "lifestyle"
+  ],
   "lang": "en"
 }

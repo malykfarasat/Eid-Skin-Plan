@@ -1732,7 +1732,7 @@ body.eid-mode #offlineBanner { background: rgba(245,197,24,0.12); border-bottom-
       <div class="recipe-step"><div class="step-num">4</div><div class="step-text">Wash with <strong>cold water</strong>, then apply aloe vera</div></div>
     </div>
     <div class="recipe-card">
-      <div class="recipe-hdr"><span>🍋</span><span class="recipe-name">Lemon + Honey (Day 4, 7, 10, 13 Only)</span></div>
+      <div class="recipe-hdr"><span>🍋</span><span class="recipe-name">Lemon + Honey (Days 4, 7, 10, 13, 15)</span></div>
       <div class="recipe-step"><div class="step-num">1</div><div class="step-text">Mix <strong>1 spoon honey</strong> + <strong>4 to 5 drops lemon</strong></div></div>
       <div class="recipe-step"><div class="step-num">2</div><div class="step-text">Apply on face &amp; arms. Wait <strong>15 minutes</strong>.</div></div>
       <div class="recipe-step"><div class="step-num">3</div><div class="step-text">Wash with <strong>cold water</strong></div></div>
@@ -2105,7 +2105,7 @@ body.eid-mode #offlineBanner { background: rgba(245,197,24,0.12); border-bottom-
           <div style="font-size:.72rem;color:var(--text-dim)">Mask · Aloe Vera</div>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:rgba(201,168,76,0.05);border-radius:10px;border:1px solid rgba(201,168,76,0.2)">
-          <div style="font-size:.78rem;color:var(--gold)">⭐ Days 4,7,10,13</div>
+          <div style="font-size:.78rem;color:var(--gold)">⭐ Days 4,7,10,13,15</div>
           <div style="font-size:.72rem;color:var(--text-dim)">Lemon + Honey Mask</div>
         </div>
       </div>
@@ -2505,6 +2505,7 @@ async function confirmSignOut() {
 // Called automatically when user signs in
 // Central render function — called once when app is ready to show
 function _renderAll() {
+  currentDay = getCurrentDay(); // Always refresh before rendering
   try { initTodayChecks(); }  catch(e) { console.warn('[render] initTodayChecks:', e.message); }
   try { renderWater(); }      catch(e) { console.warn('[render] renderWater:', e.message); }
   try { renderProgress(); }   catch(e) { console.warn('[render] renderProgress:', e.message); }
@@ -3116,7 +3117,7 @@ window.addEventListener('appinstalled', () => {
 // ══════════════════════════════════════
 // INIT
 // ══════════════════════════════════════
-const currentDay = getCurrentDay();
+let currentDay = getCurrentDay();
 
 // ══════════════════════════════════════
 // EID MODE — Full celebration transformation
@@ -3812,8 +3813,19 @@ function renderProgress() {
   const ps = document.getElementById('progressSub');
   if (ps) ps.textContent = isDayComplete(currentDay) ? '✅ Done for today.' : `${done}/${KEYS_TODAY.length} tasks done today`;
   const dl = document.getElementById('daysLeft');
-  const left = TOTAL_DAYS - currentDay + 1;
-  if (dl) dl.textContent = `⏳ ${left} day${left !== 1 ? 's' : ''} to Eid`;
+  const headerSub = document.getElementById('headerSub');
+  const isEidEvDay = currentDay === TOTAL_DAYS;
+  const left = TOTAL_DAYS - currentDay;
+  let daysLeftText, headerSubText;
+  if (isEidEvDay) {
+    daysLeftText = '🌙 Eid Eve! Tomorrow is Eid';
+    headerSubText = 'Eid Eve 🌙';
+  } else {
+    daysLeftText = `⏳ ${left} day${left !== 1 ? 's' : ''} to Eid`;
+    headerSubText = `${left} Day${left !== 1 ? 's' : ''} to Eid`;
+  }
+  if (dl) dl.textContent = daysLeftText;
+  if (headerSub) headerSub.textContent = headerSubText;
 }
 
 // ══════════════════════════════════════
@@ -4216,7 +4228,7 @@ Daily 13 tasks across 4 blocks:
 ### DAY (11am-4pm): Avoid peak UV, reapply sunscreen after 4pm
 ### IFTAR: Water before eating, healthy food, water after, Ubtan scrub in shower
 ### NIGHT: Water, face mask 15 min, aloe vera overnight, sleep 7-8 hours
-### SPECIAL DAYS 4, 7, 10, 13: Lemon + Honey mask instead of yogurt
+### SPECIAL DAYS 4, 7, 10, 13, 15: Lemon + Honey mask instead of yogurt
 
 ## RECIPES (home ingredients only)
 
@@ -4325,7 +4337,7 @@ function buildAIContext() {
     const startDay   = getStartDay().toDateString();
     const isSpecial  = SPECIAL_MASK_DAYS.includes(day);
     const isEid      = isEidMode();
-    const daysLeft   = Math.max(0, TOTAL_DAYS - day + 1);
+    const daysLeft   = Math.max(0, TOTAL_DAYS - day);
     const pct        = Math.round((completed.length / TOTAL_DAYS) * 100);
     const LABELS     = {
       sehri_water:'Sehri: Drink water', sehri_eat:'Sehri: Healthy meal',
@@ -4342,7 +4354,7 @@ function buildAIContext() {
       '## LIVE USER CONTEXT',
       `User: ${name} (${email})`,
       `Plan started: ${startDay}`,
-      `Today: Day ${day}/${TOTAL_DAYS} — ${daysLeft} days to Eid`,
+      `Today: Day ${day}/${TOTAL_DAYS} — ${day === TOTAL_DAYS ? "Eid Eve! 🌙" : daysLeft + " day" + (daysLeft !== 1 ? "s" : "") + " to Eid"}`,
       `Progress: ${completed.length}/15 days (${pct}%)`,
       `Completed days: ${completed.length ? completed.sort((a,b)=>a-b).join(', ') : 'none'}`,
       `Tonight's mask: ${isSpecial ? 'Lemon + Honey (SPECIAL DAY)' : 'Yogurt'}`,
