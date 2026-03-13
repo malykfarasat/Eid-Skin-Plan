@@ -1752,7 +1752,7 @@ body.eid-mode #offlineBanner { background: rgba(245,197,24,0.12); border-bottom-
         <div><div class="check-label">Skin looks visibly brighter</div><div class="check-sub">Tan fading, even skin tone appearing</div></div>
       </div>
       <div class="check-item" style="cursor:default">
-        <div style="width:26px;height:26px;border-radius:8px;background:rgba(76,175,125,0.15);display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;color:var(--green)">14</div>
+        <div style="width:26px;height:26px;border-radius:8px;background:rgba(76,175,125,0.15);display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;color:var(--green)">15</div>
         <div><div class="check-label">Visible fairness &amp; glow ✨</div><div class="check-sub">Ready for Eid.</div></div>
       </div>
     </div>
@@ -2611,7 +2611,7 @@ async function onUserSignedIn(user) {
     registerFCMAndSave().catch(e => console.warn('[FCM] register error:', e.message));
   }
 
-  // Watch admin_config/eid_test_mode in Firebase — dashboard can toggle this live
+  // Watch ai_config/eid_test_mode in Firebase — dashboard can toggle this live
   listenEidTestMode();
 
   _renderAll();
@@ -2625,13 +2625,13 @@ function onUserSignedOut() {
 }
 
 // ── Eid Test Mode listener ────────────────────────────────────────
-// Dashboard (script.google.com) writes to Firebase /admin_config/eid_test_mode
+// Dashboard (script.google.com) writes to Firebase /ai_config/eid_test_mode
 // This listener picks it up in real-time on any open app session
 let _eidTestListener = null;
 function listenEidTestMode() {
   if (!_fbDb || _eidTestListener) return;
   try {
-    const ref = _fbDb.ref('admin_config/eid_test_mode');
+    const ref = _fbDb.ref('ai_config/eid_test_mode');
     _eidTestListener = ref.on('value', snap => {
       const val = snap.val();
       const wasTest = window._eidTestMode === true;
