@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Eid Skin">
-<meta name="description" content="14-Day Ramadan Skin Care Tracker for Farasat Ali">
+<meta name="description" content="15-Day Ramadan Skin Care Tracker for Farasat Ali">
 <title>Eid Skin Plan 🌙</title>
 <link rel="manifest" href="./manifest.json">
 <!-- Apply theme before render - prevents any flash -->
@@ -1624,7 +1624,7 @@ body.eid-mode #offlineBanner { background: rgba(245,197,24,0.12); border-bottom-
       </div>
     </div>
     <div class="progress-info">
-      <h3 id="progressTitle">Day 1 of 14</h3>
+      <h3 id="progressTitle">Day 1 of 15</h3>
       <p id="progressSub">Let's get today done.</p>
       <span class="days-left" id="daysLeft">⏳ 15 days to Eid</span>
     </div>
@@ -1736,7 +1736,7 @@ body.eid-mode #offlineBanner { background: rgba(245,197,24,0.12); border-bottom-
 
   <!-- ═══ CALENDAR ═══ -->
   <div class="section" id="sec-calendar">
-    <div class="sec-title">14-Day Journey</div>
+    <div class="sec-title">15-Day Journey</div>
     <div class="sec-sub">Tap any day · 🟡 Today · 🟢 Done · ⭐ Special mask</div>
     <div class="card" style="padding:14px">
       <div class="cal-grid" id="calGrid"></div>
@@ -2611,6 +2611,9 @@ async function onUserSignedIn(user) {
     registerFCMAndSave().catch(e => console.warn('[FCM] register error:', e.message));
   }
 
+  // Watch admin_config/eid_test_mode in Firebase — dashboard can toggle this live
+  listenEidTestMode();
+
   _renderAll();
   hideSplash(300);
 }
@@ -2619,6 +2622,33 @@ async function onUserSignedIn(user) {
 function onUserSignedOut() {
   updateAccountUI(null);
   // App continues working with localStorage
+}
+
+// ── Eid Test Mode listener ────────────────────────────────────────
+// Dashboard (script.google.com) writes to Firebase /admin_config/eid_test_mode
+// This listener picks it up in real-time on any open app session
+let _eidTestListener = null;
+function listenEidTestMode() {
+  if (!_fbDb || _eidTestListener) return;
+  try {
+    const ref = _fbDb.ref('admin_config/eid_test_mode');
+    _eidTestListener = ref.on('value', snap => {
+      const val = snap.val();
+      const wasTest = window._eidTestMode === true;
+      window._eidTestMode = (val === true || val === 1 || val === 'true');
+
+      if (window._eidTestMode && !wasTest) {
+        // Switched ON — activate Eid mode immediately
+        document.body.classList.remove('eid-mode'); // reset first
+        try { initEidMode(); } catch(e) {}
+        showToast('🌙 Eid Test Mode ON');
+      } else if (!window._eidTestMode && wasTest) {
+        // Switched OFF — reload page to restore normal state cleanly
+        showToast('↩️ Eid Test Mode OFF, reloading...');
+        setTimeout(() => window.location.reload(), 1200);
+      }
+    });
+  } catch(e) { console.warn('[EidTest] listener failed:', e.message); }
 }
 
 // Title-case a string (handles ALL-CAPS Google names)
@@ -3141,6 +3171,8 @@ const currentDay = getCurrentDay();
 
 function isEidMode() {
   try {
+    // Admin test mode — set via Firebase by dashboard toggle
+    if (window._eidTestMode === true) return true;
     const start = getStartDay();
     const diff = Math.floor((new Date() - start) / 86400000);
     return diff >= TOTAL_DAYS; // Day 16+ = Eid day
@@ -3718,7 +3750,7 @@ function renderCalendar() {
     const isComplete = eidMode ? true : isDayComplete(d);
     const isFuture  = !eidMode && d > currentDay;
     const isSpecial = SPECIAL_MASK_DAYS.includes(d);
-    const isEidEve  = d === 14;
+    const isEidEve  = d === TOTAL_DAYS; // Day 15 = Eid Eve
     let cls = 'day-cell' + (isToday ? ' today' : isComplete ? ' complete' : isFuture ? ' future' : '');
     let emoji = isComplete ? (eidMode ? '🌟' : '✅') : isEidEve ? '🌙' : isSpecial ? '⭐' : isToday ? '📍' : '';
     let lbl = isEidEve && eidMode ? 'Eid Eve ✨' : isEidEve ? 'Eid Eve' : isSpecial ? 'Special' : '';
@@ -3728,6 +3760,14 @@ function renderCalendar() {
       ${lbl ? `<span class="day-lbl">${lbl}</span>` : ''}
     </div>`;
   }
+  // Day 16 — Eid day cell (always shown, special styling)
+  const eidCellCls = 'day-cell' + (eidMode ? ' complete' : ' future');
+  const eidCellEmoji = eidMode ? '🎉' : '🌙';
+  html += `<div class="${eidCellCls}" style="border-color:rgba(245,197,24,${eidMode?'0.5':'0.2'});background:${eidMode?'linear-gradient(135deg,rgba(245,197,24,0.15),rgba(240,98,146,0.08))':'rgba(245,197,24,0.04)'};position:relative;overflow:hidden;">
+    <span class="day-num" style="color:${eidMode?'#fce06a':'rgba(245,197,24,0.4)'};font-size:.95rem">Eid</span>
+    <span class="day-emoji">${eidCellEmoji}</span>
+    <span class="day-lbl" style="color:${eidMode?'rgba(252,224,106,0.8)':'rgba(245,197,24,0.3)'}">Day 16</span>
+  </div>`;
   grid.innerHTML = html;
 }
 
@@ -3739,7 +3779,7 @@ function showDayModal(day) {
   const isComplete = isDayComplete(day);
   const isToday = day === currentDay;
   const isFuture = day > currentDay;
-  const isEidEve = day === 14;
+  const isEidEve = day === TOTAL_DAYS; // Day 15 = Eid Eve
   const mask = isSpecial ? '🍋 Lemon + Honey mask ⭐' : '🥛 Yogurt mask';
   let badge = isComplete ? '<span style="color:var(--green);font-size:.78rem">✅ Completed</span>'
     : isToday ? '<span style="color:var(--gold);font-size:.78rem">📍 Today</span>'
@@ -4196,7 +4236,7 @@ function buildAIContext() {
       '## LIVE USER CONTEXT',
       `User: ${name} (${email})`,
       `Plan started: ${startDay}`,
-      `Today: Day ${day}/14 — ${daysLeft} days to Eid`,
+      `Today: Day ${day}/${TOTAL_DAYS} — ${daysLeft} days to Eid`,
       `Progress: ${completed.length}/15 days (${pct}%)`,
       `Completed days: ${completed.length ? completed.sort((a,b)=>a-b).join(', ') : 'none'}`,
       `Tonight's mask: ${isSpecial ? 'Lemon + Honey (SPECIAL DAY)' : 'Yogurt'}`,
@@ -4309,8 +4349,8 @@ function renderAIChat() {
   const isEid    = isEidMode();
   const isSp     = SPECIAL_MASK_DAYS.includes(day);
   const rem      = Math.max(0, _aiLimit - _aiUsed);
-  const dayLabel = isEid ? 'Eid Mode' : 'Day ' + day + '/14';
-  const ringPct  = Math.round((day / 14) * 100);
+  const dayLabel = isEid ? 'Eid Mode' : 'Day ' + day + '/' + TOTAL_DAYS;
+  const ringPct  = Math.round((day / TOTAL_DAYS) * 100);
   const ringC    = 2 * Math.PI * 13; // circumference for r=13
   const dash     = (ringPct / 100) * ringC;
 
@@ -4342,7 +4382,7 @@ function renderAIChat() {
     +         ' stroke-dashoffset="0"/></svg>'
     +       '<div class="aih-ring-num">' + day + '</div>'
     +     '</div>'
-    +     '<div class="aih-ring-label">' + (isEid ? 'Eid!' : 'of 14') + '</div>'
+    +     '<div class="aih-ring-label">' + (isEid ? 'Eid!' : 'of ' + TOTAL_DAYS) + '</div>'
     +   '</div>'
     +   '<button class="aih-btn" onclick="showSavedInsights()" title="Saved insights">&#128204;</button>'
     +   '<button class="aih-btn" onclick="clearAIChat()" title="Clear chat">&#128465;</button>'
@@ -4374,13 +4414,13 @@ function renderAIChat() {
   let g = '';
   if (isEid) {
     g = 'Eid Mubarak, <strong>' + rname + '</strong>! &#127769;<br><br>'
-      + 'You completed the full <strong>14-Day Eid Skin Plan</strong>. '
+      + 'You completed the full <strong>15-Day Eid Skin Plan</strong>. '
       + 'I am <strong>Pak Anony AI</strong> by PakAnonymous.ORG. How can I help you maintain your glow?';
   } else {
     const comp = getCompletedDays().length;
     g = 'Assalam u Alaikum, <strong>' + rname + '</strong>! &#127769;<br><br>';
-    g += 'I am <strong>Pak Anony AI</strong> by PakAnonymous.ORG — your skincare assistant for the <strong>14-Day Eid Skin Plan</strong>.<br><br>';
-    g += 'You are on <strong>Day ' + day + '</strong> of 14';
+    g += 'I am <strong>Pak Anony AI</strong> by PakAnonymous.ORG — your skincare assistant for the <strong>15-Day Eid Skin Plan</strong>.<br><br>';
+    g += 'You are on <strong>Day ' + day + '</strong> of ' + TOTAL_DAYS;
     if (comp > 0) g += ', <strong>' + comp + ' day' + (comp > 1 ? 's' : '') + '</strong> completed';
     g += '.';
     if (isSp) g += '<br><br>&#11088; <strong>Special day tonight:</strong> use Lemon + Honey mask instead of yogurt!';
