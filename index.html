@@ -554,12 +554,13 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 
 /* Logo in splash */
 .splash-logo {
-  width:80px; height:80px;
+  width:84px; height:84px;
   border-radius:18px;
-  box-shadow:0 0 32px rgba(201,168,76,0.35), 0 4px 24px rgba(0,0,0,0.4);
+  overflow:hidden;
+  box-shadow:0 0 32px rgba(201,168,76,0.35), 0 4px 24px rgba(0,0,0,0.5);
   animation:splashFloat 3s ease-in-out infinite;
   margin-bottom:20px;
-  display:block;
+  display:block; flex-shrink:0;
 }
 @keyframes splashFloat {
   0%,100%{transform:translateY(0) scale(1)}
@@ -1244,7 +1245,24 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 
 <!-- ═══ APP SPLASH SCREEN ═══ -->
 <div id="appSplash">
-  <img src="./icon.svg" class="splash-logo" alt="Eid Skin Plan" draggable="false"/>
+  <svg class="splash-logo" xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'>
+    <rect width='512' height='512' rx='102' fill='#07090f'/>
+    <defs>
+      <radialGradient id='splashG' cx='50%' cy='45%' r='55%'>
+        <stop offset='0%' stop-color='#e8c97a' stop-opacity='0.25'/>
+        <stop offset='100%' stop-color='#c9a84c' stop-opacity='0'/>
+      </radialGradient>
+    </defs>
+    <rect width='512' height='512' rx='102' fill='url(#splashG)'/>
+    <path d='M 295 90 A 165 165 0 1 0 295 422 A 115 115 0 1 1 295 90 Z' fill='#c9a84c'/>
+    <circle cx='375' cy='145' r='22' fill='#e8c97a' opacity='0.95'/>
+    <circle cx='415' cy='230' r='16' fill='#e8c97a' opacity='0.75'/>
+    <circle cx='368' cy='308' r='12' fill='#e8c97a' opacity='0.55'/>
+    <line x1='375' y1='145' x2='375' y2='118' stroke='#e8c97a' stroke-width='5' stroke-linecap='round' opacity='0.7'/>
+    <line x1='375' y1='145' x2='375' y2='172' stroke='#e8c97a' stroke-width='5' stroke-linecap='round' opacity='0.7'/>
+    <line x1='375' y1='145' x2='348' y2='145' stroke='#e8c97a' stroke-width='5' stroke-linecap='round' opacity='0.7'/>
+    <line x1='375' y1='145' x2='402' y2='145' stroke='#e8c97a' stroke-width='5' stroke-linecap='round' opacity='0.7'/>
+  </svg>
   <div class="splash-title">Eid Skin Plan</div>
   <div class="splash-tagline">Farasat Ali &middot; 14 Days to Eid</div>
   <div class="splash-steps">
@@ -1268,7 +1286,12 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 
 <!-- ═══ RECONNECT SYNC OVERLAY ═══ -->
 <div id="reconnectOverlay">
-  <img src="./icon.svg" style="width:48px;height:48px;border-radius:12px;margin-bottom:4px;opacity:.85" draggable="false" alt=""/>
+  <svg style="width:52px;height:52px;border-radius:12px;margin-bottom:4px;flex-shrink:0" xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'>
+    <rect width='512' height='512' rx='102' fill='#07090f'/><rect width='512' height='512' rx='102' fill='url(#splashG)'/>
+    <path d='M 295 90 A 165 165 0 1 0 295 422 A 115 115 0 1 1 295 90 Z' fill='#c9a84c'/>
+    <circle cx='375' cy='145' r='22' fill='#e8c97a' opacity='0.95'/><circle cx='415' cy='230' r='16' fill='#e8c97a' opacity='0.75'/><circle cx='368' cy='308' r='12' fill='#e8c97a' opacity='0.55'/>
+    <line x1='375' y1='145' x2='375' y2='118' stroke='#e8c97a' stroke-width='5' stroke-linecap='round' opacity='0.7'/><line x1='375' y1='145' x2='375' y2='172' stroke='#e8c97a' stroke-width='5' stroke-linecap='round' opacity='0.7'/><line x1='375' y1='145' x2='348' y2='145' stroke='#e8c97a' stroke-width='5' stroke-linecap='round' opacity='0.7'/><line x1='375' y1='145' x2='402' y2='145' stroke='#e8c97a' stroke-width='5' stroke-linecap='round' opacity='0.7'/>
+  </svg>
   <div class="reconnect-ring"></div>
   <div class="reconnect-title">Back Online</div>
   <div class="reconnect-sub" id="reconnectSubText">Syncing your data...</div>
@@ -2345,6 +2368,7 @@ function _renderAll() {
 }
 
 async function onUserSignedIn(user) {
+  hideSignInLoading(); // always hide if was open from Google sign-in flow
   updateAccountUI(user);
 
   // ── OFFLINE PATH ─────────────────────────────────────────────────
