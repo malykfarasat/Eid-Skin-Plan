@@ -1485,10 +1485,10 @@ body.eid-mode #offlineBanner { background: rgba(245,197,24,0.12); border-bottom-
   <button class="nav-item active" onclick="navTo('today',this)">
     <span class="nav-icon">☀️</span>Today
   </button>
-  <button class="nav-item" onclick="navTo('calendar',this)">
+  <button class="nav-item" id="navBtnCalendar" onclick="navTo('calendar',this)">
     <span class="nav-icon">📅</span>Calendar
   </button>
-  <button class="nav-item" onclick="navTo('recipes',this)">
+  <button class="nav-item" id="navBtnMasks" onclick="navTo('recipes',this)">
     <span class="nav-icon">🌿</span>Masks
   </button>
   <button class="nav-item" onclick="navTo('tips',this)">
@@ -2506,12 +2506,13 @@ async function confirmSignOut() {
 // Central render function — called once when app is ready to show
 function _renderAll() {
   currentDay = getCurrentDay(); // Always refresh before rendering
-  try { initTodayChecks(); }  catch(e) { console.warn('[render] initTodayChecks:', e.message); }
+  const _eid = isEidMode();
+  if (!_eid) { try { initTodayChecks(); }  catch(e) { console.warn('[render] initTodayChecks:', e.message); } }
   try { renderWater(); }      catch(e) { console.warn('[render] renderWater:', e.message); }
   try { renderProgress(); }   catch(e) { console.warn('[render] renderProgress:', e.message); }
-  try { renderCalendar(); }   catch(e) { console.warn('[render] renderCalendar:', e.message); }
-  try { renderMaskBadge(); }  catch(e) { console.warn('[render] renderMaskBadge:', e.message); }
-  try { updateBadges(); }     catch(e) { console.warn('[render] updateBadges:', e.message); }
+  if (!_eid) { try { renderCalendar(); }   catch(e) { console.warn('[render] renderCalendar:', e.message); } }
+  if (!_eid) { try { renderMaskBadge(); }  catch(e) { console.warn('[render] renderMaskBadge:', e.message); } }
+  if (!_eid) { try { updateBadges(); }     catch(e) { console.warn('[render] updateBadges:', e.message); } }
   try { loadReminderTimes(); }catch(e) { console.warn('[render] loadReminderTimes:', e.message); }
   try { updateNotifUI(); }    catch(e) {}
   try { updateFCMStatus(); }  catch(e) {}
@@ -3180,7 +3181,7 @@ function initEidMode() {
     const rl = document.querySelector('.ring-label');
     if (rl) rl.textContent = '% DONE';
     const pt = document.getElementById('progressTitle');
-    if (pt) { pt.textContent = '15 of 15 Complete!'; pt.style.color = '#fce06a'; }
+    if (pt) { pt.textContent = 'Plan Complete! 🌟'; pt.style.color = '#fce06a'; }
     const ps = document.getElementById('progressSub');
     if (ps) { ps.textContent = '🌟 ' + completedDays + ' out of 15 days done.'; }
     const dl = document.getElementById('daysLeft');
@@ -3204,7 +3205,22 @@ function initEidMode() {
   // 8. Transform Settings section
   transformEidSettings();
 
-  // 9. Reinit AI with Eid persona
+  // 9. Hide Masks + Calendar nav buttons and their sections (not needed on Eid)
+  const navCal  = document.getElementById('navBtnCalendar');
+  const navMask = document.getElementById('navBtnMasks');
+  const secCal  = document.getElementById('sec-calendar');
+  const secMask = document.getElementById('sec-recipes');
+  if (navCal)  navCal.style.display  = 'none';
+  if (navMask) navMask.style.display = 'none';
+  if (secCal)  secCal.style.display  = 'none';
+  if (secMask) secMask.style.display = 'none';
+  // If currently on calendar or masks tab, redirect to Today
+  const activeSec = document.querySelector('.section.active');
+  if (activeSec && (activeSec.id === 'sec-calendar' || activeSec.id === 'sec-recipes')) {
+    navTo('today', document.querySelector('.nav-item:first-child'));
+  }
+
+  // 10. Reinit AI with Eid persona
   setTimeout(() => { try { initAISection(); } catch(e){} }, 200);
 
   // ONE-TIME effects (only on first initEidMode call per session)
@@ -3788,6 +3804,7 @@ function updateNightMaskLabel() {
 }
 
 function renderMaskBadge() {
+  if (isEidMode()) return;
   const el = document.getElementById('today-mask-badge');
   if (!el) return;
   el.innerHTML = SPECIAL_MASK_DAYS.includes(currentDay)
@@ -3859,6 +3876,7 @@ function toggleGlass(i) {
 // CALENDAR
 // ══════════════════════════════════════
 function renderCalendar() {
+  if (isEidMode()) return; // Calendar hidden in Eid mode
   const grid = document.getElementById('calGrid');
   if (!grid) return;
   const eidMode = isEidMode();
@@ -4596,7 +4614,10 @@ function clearAIChat(skipConfirm) {
     _fbDb.ref('ai_chats/' + _currentUser.uid).remove().catch(function(){});
   }
   var day = getCurrentDay();
-  addMsg('b', 'Fresh start! Your conversation and cloud history have both been cleared. Ask me anything about Day ' + day + ' — I am here to help you glow for Eid!', true);
+  var _clearMsg = isEidMode()
+    ? '🌙 Fresh start! Conversation cleared. Eid Mubarak! Ask me anything — protecting your glow, post-Eid routine, home remedies, anything!'
+    : 'Fresh start! Your conversation and cloud history have both been cleared. Ask me anything about Day ' + day + '!';
+  addMsg('b', _clearMsg, true);
   setTimeout(function(){ if(ta) ta.focus(); }, 200);
 }
 
