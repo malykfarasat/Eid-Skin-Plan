@@ -554,10 +554,12 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 
 /* Logo in splash */
 .splash-logo {
-  width:72px; height:72px;
-  filter:drop-shadow(0 0 24px rgba(201,168,76,0.5));
+  width:80px; height:80px;
+  border-radius:18px;
+  box-shadow:0 0 32px rgba(201,168,76,0.35), 0 4px 24px rgba(0,0,0,0.4);
   animation:splashFloat 3s ease-in-out infinite;
   margin-bottom:20px;
+  display:block;
 }
 @keyframes splashFloat {
   0%,100%{transform:translateY(0) scale(1)}
@@ -670,13 +672,14 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 }
 
 /* Light mode splash */
-[data-theme="light"] #appSplash,
-@media (prefers-color-scheme:light) {
-  html:not([data-theme="dark"]) #appSplash { background:#f5f0e8; }
-}
 [data-theme="light"] #appSplash { background:#f5f0e8; }
 [data-theme="light"] #reconnectOverlay { background:rgba(245,240,232,0.88); }
 [data-theme="light"] #signInLoadingOverlay { background:rgba(245,240,232,0.75); }
+@media (prefers-color-scheme:light) {
+  html:not([data-theme="dark"]) #appSplash { background:#f5f0e8; }
+  html:not([data-theme="dark"]) #reconnectOverlay { background:rgba(245,240,232,0.88); }
+  html:not([data-theme="dark"]) #signInLoadingOverlay { background:rgba(245,240,232,0.75); }
+}
 
 #appLoadingBar{
   position:fixed;top:0;left:0;right:0;height:3px;z-index:9999;
@@ -1241,20 +1244,7 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 
 <!-- ═══ APP SPLASH SCREEN ═══ -->
 <div id="appSplash">
-  <svg class="splash-logo" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <radialGradient id="splashGlow" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#e8c97a" stop-opacity="0.35"/>
-        <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
-      </radialGradient>
-    </defs>
-    <circle cx="40" cy="40" r="38" fill="url(#splashGlow)"/>
-    <path d="M 48 14 A 26 26 0 1 0 48 66 A 18 18 0 1 1 48 14 Z" fill="#c9a84c"/>
-    <circle cx="60" cy="22" r="2.5" fill="#e8c97a" opacity=".9"/>
-    <circle cx="67" cy="36" r="1.8" fill="#e8c97a" opacity=".7"/>
-    <circle cx="58" cy="48" r="1.4" fill="#e8c97a" opacity=".5"/>
-    <path d="M 60 22 L 63 19 M 60 22 L 63 25 M 60 22 L 56 22 M 60 22 L 64 22" stroke="#e8c97a" stroke-width="1" stroke-linecap="round" opacity=".6"/>
-  </svg>
+  <img src="./icon.svg" class="splash-logo" alt="Eid Skin Plan" draggable="false"/>
   <div class="splash-title">Eid Skin Plan</div>
   <div class="splash-tagline">Farasat Ali &middot; 14 Days to Eid</div>
   <div class="splash-steps">
@@ -1278,6 +1268,7 @@ body.eid-mode .nav-item.active{color:#f5d27a}
 
 <!-- ═══ RECONNECT SYNC OVERLAY ═══ -->
 <div id="reconnectOverlay">
+  <img src="./icon.svg" style="width:48px;height:48px;border-radius:12px;margin-bottom:4px;opacity:.85" draggable="false" alt=""/>
   <div class="reconnect-ring"></div>
   <div class="reconnect-title">Back Online</div>
   <div class="reconnect-sub" id="reconnectSubText">Syncing your data...</div>
